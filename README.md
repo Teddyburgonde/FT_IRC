@@ -15,7 +15,6 @@ Live chat server
 https://www.youtube.com/watch?v=0kU9ql3TWPg
 
 Building a web server in c++ part 1
-<br>
 https://www.youtube.com/watch?v=Kc1kwm1WyVM&list=PLPUbh_UILtZW1spXkwszDBN9YhtB0tFKC
 
 Building a web server in c++ part 2
