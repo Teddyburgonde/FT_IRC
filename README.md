@@ -28,7 +28,7 @@ https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm
 
 Hexchat pour le client
 <br>
-https://www.rfc-editor.org/rfc/rfc2812#section-3.2.4 : 
+https://www.rfc-editor.org/rfc/rfc2812#section-3.2.4
 <br>
 ecriture pour les clients irc
 
