@@ -1,5 +1,8 @@
 # FT_IRC
 
+1/25
+
+
 a regarder : 
 
 C'est quoi irc ?
