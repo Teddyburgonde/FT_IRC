@@ -22,11 +22,12 @@ Building a web server in c++ part 2
 <br>
 https://www.youtube.com/watch?v=YqEqjODUkWY&list=PLPUbh_UILtZW1spXkwszDBN9YhtB0tFKC&index=2
 
-Creer un server 
+Creer un server
+<br>
 https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm
 
 Hexchat pour le client
-[14:48]
+<br>
 https://www.rfc-editor.org/rfc/rfc2812#section-3.2.4 : ecriture pour les clients irc
 
 
