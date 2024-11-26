@@ -40,7 +40,7 @@ ecriture pour les clients irc
 -------------------------------------------------
 Definition :
 
-##IRC
+# IRC
 ```c
 IRC (Internet Relay Chat) est un protocole qui permet de dialoguer en temps réel à l'aide d'un logiciel client qui se connecte à un serveur IRC. <br>
 Ce serveur gère les échanges de messages entre les utilisateurs et les canaux (salons de discussion).<br>
