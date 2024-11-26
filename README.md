@@ -47,7 +47,7 @@ IRC (Internet Relay Chat) est un protocole qui permet de dialoguer en temps rée
 Ce serveur gère les échanges de messages entre les utilisateurs et les canaux (salons de discussion).
 Points importants à retenir :
 Protocole : IRC est un protocole standardisé pour la communication en temps réel.
-   1. Client-Serveur : Les utilisateurs utilisent un client IRC pour se connecter à un serveur.
+   1. Client-Serveur : Les utilisateurs utilisent un client IRC(Un logiciel ) pour se connecter à un serveur IRC.
    2. Serveur IRC : Il joue le rôle de "hub" qui relaye les messages entre les clients connectés.
    3. Canaux : Les discussions se font dans des "channels" (ex : #general), mais des messages privés
 entre utilisateurs sont aussi possibles.
