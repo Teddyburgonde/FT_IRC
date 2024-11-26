@@ -54,5 +54,9 @@ entre utilisateurs sont aussi possibles.
 ```
 ![irc](https://github.com/user-attachments/assets/e0a922e9-4d2b-4f45-8e6c-841c307b9e12)
 
-
-
+# Socket
+```c
+La socket sert de pont entre le client (par exemple HexChat) et ton serveur IRC. 
+Elle permet d'établir une communication bidirectionnelle pour que le serveur et
+le client puissent échanger des messages.
+```
