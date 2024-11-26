@@ -52,6 +52,7 @@ Protocole : IRC est un protocole standardisé pour la communication en temps ré
    3. Canaux : Les discussions se font dans des "channels" (ex : #general), mais des messages privés
 entre utilisateurs sont aussi possibles.
 ```
+![irc](https://github.com/user-attachments/assets/e0a922e9-4d2b-4f45-8e6c-841c307b9e12)
 
-![server_irc](https://github.com/user-attachments/assets/adedc805-8c5b-43de-b1cd-6e9015f871d4)
+
 
