@@ -29,7 +29,9 @@ A la fin les deux clients (utilisateurs) voient le message sur Hexchat.
 ```
 <br>
 <br>
-# Socket
+
+# Socket :
+
 <br>
 
 ```c
