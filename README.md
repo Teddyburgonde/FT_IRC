@@ -28,6 +28,7 @@ A la fin les deux clients (utilisateurs) voient le message sur Hexchat.
 <br>
 # Socket
 <br>
+
 ```c
 La socket sert de pont entre le client (par exemple HexChat) et ton serveur IRC. 
 Elle permet d'établir une communication bidirectionnelle pour que le serveur et
