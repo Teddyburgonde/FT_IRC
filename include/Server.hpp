@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/11/27 09:47:48 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/27 12:14:38 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 #include <poll.h> 
 
 class Client;
+/*
+Dans la class Server, il y a toute les informations  sur le serveur.
+Il y a aussi un vecteur de clients qui sont connectes au serveur.
+*/
 class Server
 {
 	private:
