@@ -25,6 +25,7 @@ entre utilisateurs sont aussi possibles.
 3. Le serve Irc renvoie le message au bon endroit ( dans le bon canal).
 A la fin les deux clients (utilisateurs) voient le message sur Hexchat.
 <br>
+<br>
 # Socket
 ```c
 La socket sert de pont entre le client (par exemple HexChat) et ton serveur IRC. 
