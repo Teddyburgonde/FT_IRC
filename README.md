@@ -28,9 +28,9 @@ En d'autre terme chaque client se sert de la socket pour se connecter au serveur
 ```
 
 
-Source : 
+Sources : 
 
-a regarder : 
+Videos : 
 
 C'est quoi irc ?
 <br>
@@ -54,6 +54,8 @@ Ps: C'est long est pas tres agreable a regarder.
 <br>
 https://www.youtube.com/watch?v=YqEqjODUkWY&list=PLPUbh_UILtZW1spXkwszDBN9YhtB0tFKC&index=2
 
+
+Blogs : <br>
 Creer un server
 <br>
 https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm
