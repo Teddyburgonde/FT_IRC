@@ -63,4 +63,5 @@ entre utilisateurs sont aussi possibles.
 La socket sert de pont entre le client (par exemple HexChat) et ton serveur IRC. 
 Elle permet d'établir une communication bidirectionnelle pour que le serveur et
 le client puissent échanger des messages.
+En d'autre terme chaque client se sert de la socket pour se connecter au serveur IRC. 
 ```

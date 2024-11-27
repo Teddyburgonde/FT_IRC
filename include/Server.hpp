@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/11/26 21:23:06 by teddybandam      ###   ########.fr       */
+/*   Updated: 2024/11/27 09:47:48 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define SERVER_HPP
 #include <iostream>
 #include <vector>
+#include <poll.h> 
 
 class Client;
 class Server
@@ -32,7 +33,7 @@ class Server
 		void receiveMessage(); // reception des messages
 		static void signalHandler(int signal); // handler pour le signal
 		void closeFds(); // fermeture des file descriptors
-		void clearClients(); // effacer les clients
+		void clearClients(int fd); // effacer les clients
 };
 
 
