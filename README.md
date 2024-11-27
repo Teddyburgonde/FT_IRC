@@ -55,7 +55,8 @@ Ps: C'est long est pas tres agreable a regarder.
 https://www.youtube.com/watch?v=YqEqjODUkWY&list=PLPUbh_UILtZW1spXkwszDBN9YhtB0tFKC&index=2
 
 
-Blogs : <br>
+Blogs :
+<br>
 Creer un server
 <br>
 https://www.tutorialspoint.com/unix_sockets/what_is_socket.htm
