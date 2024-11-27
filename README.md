@@ -19,6 +19,12 @@ entre utilisateurs sont aussi possibles.
 ```
 ![architecture(2)](https://github.com/user-attachments/assets/98a103ea-4d4d-4846-a46f-8594743ad073)
 
+<br>
+1. Le Message est transmit au logiciel Hexchat.
+2. Hexchat se connecte au Server Irc grace a une socket et lui transmet le message.
+3. Le serve Irc renvoie le message au bon endroit ( dans le bon canal).
+A la fin les deux clients (utilisateurs) voient le message sur Hexchat.
+<br>
 # Socket
 ```c
 La socket sert de pont entre le client (par exemple HexChat) et ton serveur IRC. 
