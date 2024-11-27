@@ -68,8 +68,8 @@ https://www.rfc-editor.org/rfc/rfc2812#section-3.2.4
 <br>
 ecriture pour les clients irc
 
-Medium (tres bonne sources pour setup le projet d'apres moi)
+Medium (tres bonne sources pour setup le projet d'apres moi) <br>
 https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9
 
-reactiveso(guide irc)
+reactiveso(guide irc) <br>
 https://reactive.so/post/42-a-comprehensive-guide-to-ft_irc/
