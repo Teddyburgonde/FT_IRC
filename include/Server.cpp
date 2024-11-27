@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/27 11:14:01 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/27 13:01:09 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,16 @@ void Server::clearClients(int fd)
 			break;
 		}
 	}
+}
+
+/*
+
+*/
+bool Server::Signal = false; // On initialise la variable Signal a false ici car c'est une variable statique
+void Server::signalHandler(int signal)
+{
+	(void)signal;
+	std::cout << std::endl << "Signal Received!" << std::endl;
+	// On change la variable Signal a true
+	Server::Signal = true;
 }
