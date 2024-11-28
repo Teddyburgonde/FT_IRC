@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/28 13:27:06 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/28 20:38:08 by teddybandam      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,8 @@ Le but de cette fonction est de créer une socket serveur qui :
 Crée la socket avec socket(). ✅
 Vérifie les erreurs (par exemple : si socket() échoue). ✅
 Configure l’adresse et le port dans une structure sockaddr_in. ✅
-Associe la socket avec bind(). ❌
-Prépare la socket pour les connexions avec listen(). ❌
+Associe la socket avec bind(). ✅
+Prépare la socket pour les connexions avec listen(). ✅
 (Optionnel) Configure des options comme SO_REUSEADDR. ❌
 Sauvegarde le descripteur dans _serverSocketFd. ❌
 
@@ -118,17 +118,33 @@ Sauvegarde le descripteur dans _serverSocketFd. ❌
 /*
 Passe maintenant à l'étape 4 avec bind() pour associer ces paramètres à la socket.
 */
+
 void Server::createServerSocket()
 {
 	struct sockaddr_in serverAddr; // Cette structure est déjà déclarée dans #include <netinet/in.h>
+	// 1. Creation de la socket 
 	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocketFd == -1)
 	{
 		std::cerr << "The socket could not be created." << std::endl;
-		return ;
+		exit(EXIT_FAILURE);
 	}
 	std::cout << "The socket is created with fd: " << _serverSocketFd << std::endl;
+	// 2 Configuration de la structure sockaddr_in
 	serverAddr.sin_family = AF_INET; // La famille d'adresse 
 	serverAddr.sin_port = htons(this->_port); // Le port utilisé
 	serverAddr.sin_addr.s_addr = INADDR_ANY; // Accepte les connexions depuis toutes les interfaces réseau.
+	// 3. Associe la socket à l'adresse et au port définis dans serverAddr
+	if (bind(_serverSocketFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
+	{
+		perror("Bind failed");
+		exit(EXIT_FAILURE);
+	}
+	// 4. Mettre le server en mode ecoute 
+	if (listen(_serverSocketFd, 10) == -1)
+	{
+		perror("Bind failed");
+		exit(EXIT_FAILURE);
+	}
+	std::cout << "Server is now listening for connections..." << std::endl;
 }
