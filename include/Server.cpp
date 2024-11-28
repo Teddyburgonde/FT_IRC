@@ -6,12 +6,15 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/28 09:39:13 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/28 13:27:06 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Client.hpp"
+#include <algorithm>
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 /*
 Le but de cette fonction est de supprimer un client de la liste des clients connectés au serveur.
@@ -63,6 +66,12 @@ void Server::signalHandler(int signal)
 	Server::Signal = true;
 }
 
+/*
+Le but de cette fonction est de fermer les file descriptors des clients connectés au serveur.
+On parcours la liste des clients connectés au serveur et on ferme les file descriptors de chaque client.
+On ferme aussi le file descriptor du serveur.
+Cela evite les fuites de memoire.
+*/
 void Server::closeFds()
 {
 	// On ferme tous les file descriptors des clients connectés au serveur
@@ -82,6 +91,44 @@ void Server::closeFds()
 	{
 		std::cout << "Closing server socket" << std::endl;
 		close(_serverSocketFd);
+	}	
+}
+/*
+Le but de cette fonction est de créer une socket serveur qui :
+
+   - Ecoute sur un port donné.
+   - Accepte les connexions entrantes des clients;
+   - Utilise un prodotocole reseau fiable, comme TCP 
+
+*/
+
+/*
+
+Crée la socket avec socket(). ✅
+Vérifie les erreurs (par exemple : si socket() échoue). ✅
+Configure l’adresse et le port dans une structure sockaddr_in. ✅
+Associe la socket avec bind(). ❌
+Prépare la socket pour les connexions avec listen(). ❌
+(Optionnel) Configure des options comme SO_REUSEADDR. ❌
+Sauvegarde le descripteur dans _serverSocketFd. ❌
+
+*/
+
+
+/*
+Passe maintenant à l'étape 4 avec bind() pour associer ces paramètres à la socket.
+*/
+void Server::createServerSocket()
+{
+	struct sockaddr_in serverAddr; // Cette structure est déjà déclarée dans #include <netinet/in.h>
+	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
+	if (_serverSocketFd == -1)
+	{
+		std::cerr << "The socket could not be created." << std::endl;
+		return ;
 	}
-	
+	std::cout << "The socket is created with fd: " << _serverSocketFd << std::endl;
+	serverAddr.sin_family = AF_INET; // La famille d'adresse 
+	serverAddr.sin_port = htons(this->_port); // Le port utilisé
+	serverAddr.sin_addr.s_addr = INADDR_ANY; // Accepte les connexions depuis toutes les interfaces réseau.
 }

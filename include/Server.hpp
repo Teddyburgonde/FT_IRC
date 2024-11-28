@@ -6,15 +6,18 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/11/27 12:14:38 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/28 12:02:39 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
+
 #include <iostream>
 #include <vector>
-#include <poll.h> 
+#include <poll.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 class Client;
 /*
