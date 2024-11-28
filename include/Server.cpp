@@ -6,7 +6,7 @@
 /*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/28 20:38:08 by teddybandam      ###   ########.fr       */
+/*   Updated: 2024/11/28 20:49:28 by teddybandam      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,15 +109,19 @@ Vérifie les erreurs (par exemple : si socket() échoue). ✅
 Configure l’adresse et le port dans une structure sockaddr_in. ✅
 Associe la socket avec bind(). ✅
 Prépare la socket pour les connexions avec listen(). ✅
-(Optionnel) Configure des options comme SO_REUSEADDR. ❌
-Sauvegarde le descripteur dans _serverSocketFd. ❌
+setsockopt. ❌
+fcntl. ❌
 
 */
 
 
 /*
-Passe maintenant à l'étape 4 avec bind() pour associer ces paramètres à la socket.
+if(setsockopt(SerSocketFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1) //-> set the socket option (SO_REUSEADDR) to reuse the address
+	throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
+if (fcntl(SerSocketFd, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
+	throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
 */
+
 
 void Server::createServerSocket()
 {
@@ -137,12 +141,14 @@ void Server::createServerSocket()
 	// 3. Associe la socket à l'adresse et au port définis dans serverAddr
 	if (bind(_serverSocketFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
 	{
+		// remplacer par throw 
 		perror("Bind failed");
 		exit(EXIT_FAILURE);
 	}
 	// 4. Mettre le server en mode ecoute 
 	if (listen(_serverSocketFd, 10) == -1)
 	{
+		// remplacer par throw 
 		perror("Bind failed");
 		exit(EXIT_FAILURE);
 	}
