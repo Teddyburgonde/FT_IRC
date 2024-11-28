@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/27 13:01:09 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/28 09:39:13 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,27 @@ void Server::signalHandler(int signal)
 	std::cout << std::endl << "Signal Received!" << std::endl;
 	// On change la variable Signal a true
 	Server::Signal = true;
+}
+
+void Server::closeFds()
+{
+	// On ferme tous les file descriptors des clients connectés au serveur
+	for (size_t i = 0; i < _clients.size(); i++)
+	{
+		std::cout << "Closing fd: " << _clients[i].getFd() << "> Disconnected" << std::endl;
+		close(_clients[i].getFd());
+	}
+	// On ferme le file descriptor du serveur
+	for (size_t i = 0; i < _pollFds.size(); i++)
+	{
+		std::cout << "Closing fd: " << _pollFds[i].fd << "> Disconnected" << std::endl;
+		close(_pollFds[i].fd);
+	}
+	// On ferme le file descriptor du serveur
+	if (_serverSocketFd != -1)
+	{
+		std::cout << "Closing server socket" << std::endl;
+		close(_serverSocketFd);
+	}
+	
 }
