@@ -6,7 +6,7 @@
 /*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 20:30:20 by teddybandam      ###   ########.fr       */
+/*   Updated: 2024/11/29 22:09:59 by teddybandam      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,5 +148,9 @@ void Server::createServerSocket()
 // Faire la fonction server init 
 void Server::serverInit()
 {
+	this->_port = 4444; // Port du serveur
+	createServerSocket(); // Creation de la socket serveur
 	
+	std::cout << "Server <" << _serverSocketFd << "> Connected"  << std::endl;
+	std::cout << "Waiting to accept a connection...\n";
 }
