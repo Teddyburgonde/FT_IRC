@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 11:21:08 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/29 20:30:20 by teddybandam      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,13 @@ void Server::createServerSocket()
 	_pollFds.push_back(newPoll); // Ajouter à la liste des descripteurs surveillés
 }
 
+
+
+// 1. Initialisation des structures nécessaires au serveur (comme _pollFds)
+// 2. Création et configuration de la socket serveur (via createServerSocket)
+// 3. Ajout de la socket serveur à _pollFds pour la surveiller avec poll()
+// 4. Configuration des signaux (facultatif)
+// 5. Affichage d’un message indiquant que le serveur est prêt
 
 // Faire la fonction server init 
 void Server::serverInit()
