@@ -41,6 +41,217 @@ le client puissent échanger des messages.
 En d'autre terme chaque client se sert de la socket pour se connecter au serveur IRC. 
 ```
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**Explication des fonctions :**
+
+- signal [✅ ] 
+
+**Définition :**
+
+Associe le signal SIGINT (Ctrl+C) à la méthode statique 
+Server::signalHandler.
+En d'autre terme , il gere le Ctrl C dans ce cas la. 
+
+**Exemple d'utilisation :** 
+signal(SIGINT, Server::signalHandler);
+
+------------------------------------------------------------------------------------------
+- sigaction [✅]
+
+**Définition :**
+
+Comme signal(),  elle permet de spécifier une fonction à exécuter lorsque le programme reçoit un signal.
+Avec sigaction, tu peux définir des options supplémentaires, comme :
+    Bloquer d'autres signaux pendant l'exécution du handler.
+    Remplacer ou restaurer un ancien gestionnaire de signal.
+    Différencier les signaux capturés.
+
+```c
+int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);
+```
+------------------------------------------------------------------------------------------------
+- socket [✅ ]
+
+**Prototype :** 
+
+```c
+int socket(int domain, int type, int protocol);
+```
+
+**Paramètres de socket() :** 
+
+**Domain :** 
+Indique le type d'adresse que la socket utilisera : 
+AF_INET : Adresse IPv4 (la plus courante pour un serveur réseau classique). :+1: 
+AF_INET6 : Adresse IPv6.
+AF_UNIX : Communication locale (entre processus sur la même machine).
+
+**Type :**
+Indique le protocole de communication utilisé : 
+SOCK_STREAM : Pour une communication orientée connexion.
+Utilise le protocole TCP (fiable, ordonné). :+1: 
+SOCK_DGRAM : Pour une communication sans connexion.
+Utilise le protocole UDP (moins fiable, rapide).
+SOCK_RAW : Pour manipuler directement les paquets réseau (nécessite des droits spécifiques).
+
+**Protocole :** 
+indique le protocole réseau utilisé. Géneralement, tu peux mettre 0 pour
+utiliser le protocole par défaut associé au type : 
+Pour SOCK_STREAM, cela utilise TCP. :+1: 
+Pour SOCK_DGRAM, cela utilise UDP.
+
+**Définition :**
+
+La fonction socket sert  a creer une socket.
+C'est la premiere étape pour établir une communication via un réseau.
+
+**return :** 
+
+Si la création de la socket est réussit elle retun un entier posititf (Le descripteur de fichier ou fd).
+En cas d'échec, elle return -1 et errno contient l'erreur.
+
+
+**Exemple :** 
+
+int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+if (sockfd == -1) {
+    perror("Erreur lors de la création de la socket");
+    exit(EXIT_FAILURE);
+}
+
+-------------------------------------------------------------------------------------------------
+
+- htons  [ ✅]
+
+**Prototype :** 
+
+```c
+#include <arpa/inet.h>
+uint16_t htons(uint16_t hostshort);
+```
+
+hostshort : Un entier de 16 bits représentant un nombre en ordre d'octets local (host byte order).
+
+**return :** 
+La valeur convertie en ordre d'octets réseau (network byte order).
+
+**Que fait la fonction :**
+htons() convertit un entier de 16 bits (comme un numéro de port) au format utilisé sur le réseau, afin qu'il soit compris par toutes les machines, quel que soit leur système.
+
+-------------------------------------------------------------------------------------------------
+
+- bind [ ✅ ]
+
+**Prototype :**
+
+```c
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+```
+
+**Paramètres de bind() :**
+
+sockfd :
+	Le descripteur de fichier de la socket (créé par socket()).
+addr :
+	Un pointeur vers une structure contenant l’adresse et le port à associer.
+	Généralement, c’est une structure sockaddr_in convertie en type générique sockaddr avec un cast.
+addrlen :
+	La taille de la structure pointée par addr (en octets).
+	Pour une structure sockaddr_in, utilise sizeof(struct sockaddr_in).
+
+**Que fais bind() ?**
+
+1. Associe une socket à une adresse réseau (IP et port) :
+    - La socket, créée avec socket(), est une "interface vierge".
+    - bind() lui attribue une adresse réseau spécifique 
+	(définie dans une structure comme sockaddr_in).
+2. Prépare la socket pour écouter sur un port spécifique :
+    - Sans bind(), une socket ne peut pas recevoir de connexions 
+	ou de données pour un port donné.
+
+**Return value :** 
+
+Succès : Retourne 0.
+Échec : Retourne -1 et définit errno 
+avec une valeur correspondant à l'erreur (par exemple, port déjà utilisé).
+
+-------------------------------------------------------------------------------------------------
+
+- listen [✅ ]
+
+**Prototype :**
+
+```c
+int listen(int sockfd, int backlog);
+```
+
+**Paramètres de listen()**
+
+sockfd :
+	Le descripteur de fichier de la socket (retourné par socket()).
+	Ce doit être une socket déjà configurée avec bind().
+backlog :
+	Nombre maximum de connexions en attente dans la file d'attente.
+	Si la file est pleine, les nouvelles connexions peuvent être rejetées ou ignorées.
+
+**Que fait listen() ?**
+
+Prépare une socket pour accepter les connexions :
+- Après avoir associé la socket à une adresse et un port avec bind(), 
+tu dois appeler listen() pour indiquer que cette socket est prête à recevoir des connexions entrantes.
+- Crée une file d'attente pour les connexions entrantes :
+Les connexions entrantes sont mises en file d'attente 
+jusqu'à ce qu'elles soient acceptées avec accept().
+
+**valeur de return :**
+Succès : Retourne 0.
+Échec : Retourne -1 et définit errno avec
+une valeur correspondant à l'erreur.
+
+-------------------------------------------------------------------------------------------------
+
+setsockopt [❌]
+
+**Fonctions a comprendre :**
+
+- htonl [ ❌]
+-  ntohs [ ❌] 
+- ntohl [❌ ]
+- inet [ ❌]
+- addr [❌ ]
+- inet_ntoa [ ❌]
+- send [❌ ]
+- recv[ ❌]
+- lseek [❌ ]
+- fstat [❌ ]
+- fcntl [❌ ]
+- poll [ ❌]
+- close [❌ ]
+- getsockname [❌]
+- getprotobyname [❌]
+- gethostbyname [❌]
+- getaddrinfo [❌]
+- freeaddrinfo [❌]
+- connect [❌]
+- accept [❌]
+
+ ------------------------------------------------------------------------------------------------
+
+**Commands ::**
+
+
+◦ KICK - Ejecter un client du channel [❌]
+◦ INVITE - Inviter un client au channel [❌]
+◦ TOPIC - Modifier ou afficher le thème du channel [❌]
+◦ MODE - Changer le mode du channel : [❌]
+— i : Définir/supprimer le canal sur invitation uniquement. [❌]
+— t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
+rateurs de canaux [❌]
+— k : Définir/supprimer la clé du canal (mot de passe) [❌ ]
+— o : Donner/retirer le privilège de l’opérateur de canal [ ❌]
+— l : Définir/supprimer la limite d’utilisateurs pour le canal [ ❌]
+
 
 # Sources : 
 
