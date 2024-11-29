@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 10:39:51 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/29 11:15:04 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <netinet/in.h>
 #include <sys/socket.h>
+
 
 /*
 Le but de cette fonction est de supprimer un client de la liste des clients connectés au serveur.
@@ -95,20 +96,6 @@ void Server::closeFds()
 }
 
 /*
-
-Crée la socket avec socket(). ✅
-Vérifie les erreurs (par exemple : si socket() échoue). ✅
-Configure l’adresse et le port dans une structure sockaddr_in. ✅
-Associe la socket avec bind(). ✅
-Prépare la socket pour les connexions avec listen(). ✅
-setsockopt. ✅
-fcntl. ✅
-
-*/
-
-
-
-/*
 Le but de cette fonction est de créer une socket serveur qui :
 
    - Ecoute sur un port donné.
@@ -116,9 +103,11 @@ Le but de cette fonction est de créer une socket serveur qui :
    - Utilise un prodotocole reseau fiable, comme TCP 
 
 */
+
 void Server::createServerSocket()
 {
 	struct sockaddr_in serverAddr; // Cette structure est déjà déclarée dans #include <netinet/in.h>
+	struct pollfd newPoll; // Cette structure est déjà déclarée dans #include <poll.h>
 	// 1. Creation de la socket 
 	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocketFd == -1)
@@ -142,4 +131,9 @@ void Server::createServerSocket()
 	if (listen(_serverSocketFd, 10) == -1)
 		throw(std::runtime_error("listen() faild"));
 	std::cout << "Server is now listening for connections..." << std::endl;
+	// 7. Configuration de la socket serveur pour qu'apres on peut utiliser poll() 
+	newPoll.fd = _serverSocketFd; // Ajoute la sockeur server
+	newPoll.events = POLLIN; // Surveiller les événements de lecture
+	newPoll.revents = 0; // Initialiser à 0 (sera rempli par poll())
+	_pollFds.push_back(newPoll); // Ajouter à la liste des descripteurs surveillés
 }

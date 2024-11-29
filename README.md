@@ -300,23 +300,26 @@ fcntl effectue une opération spécifiée par cmd sur un descripteur de fichier 
 Succès : Retourne une valeur dépendant de la commande.
 Échec : Retourne -1 et définit errno.
 
-----------------------------------------------------------------------------------------------
+------------------------------------------------------------
+
+- poll [❌]
+
+poll() te permet de surveiller plusieurs sockets en même temps et de détecter celles qui sont prêtes à effectuer des opérations (lecture, écriture, erreurs, etc.).
 
 **Fonctions a comprendre :**
 
-- htonl [ ❌]
--  ntohs [ ❌] 
-- ntohl [❌ ]
-- inet [ ❌]
-- addr [❌ ]
-- inet_ntoa [ ❌]
-- send [❌ ]
+- htonl [❌]
+- ntohs [❌] 
+- ntohl [❌]
+- inet [❌]
+- addr [❌]
+- inet_ntoa [❌]
+- send [❌]
 - recv[ ❌]
-- lseek [❌ ]
-- fstat [❌ ]
-- fcntl [❌ ]
-- poll [ ❌]
-- close [❌ ]
+- lseek [❌]
+- fstat [❌]
+- fcntl [❌]
+- close [❌]
 - getsockname [❌]
 - getprotobyname [❌]
 - gethostbyname [❌]
