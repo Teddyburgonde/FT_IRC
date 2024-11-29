@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/28 20:49:28 by teddybandam      ###   ########.fr       */
+/*   Updated: 2024/11/29 09:55:19 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,15 +109,13 @@ Vérifie les erreurs (par exemple : si socket() échoue). ✅
 Configure l’adresse et le port dans une structure sockaddr_in. ✅
 Associe la socket avec bind(). ✅
 Prépare la socket pour les connexions avec listen(). ✅
-setsockopt. ❌
+setsockopt. ✅
 fcntl. ❌
 
 */
 
 
 /*
-if(setsockopt(SerSocketFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1) //-> set the socket option (SO_REUSEADDR) to reuse the address
-	throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
 if (fcntl(SerSocketFd, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
 	throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
 */
@@ -129,28 +127,21 @@ void Server::createServerSocket()
 	// 1. Creation de la socket 
 	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocketFd == -1)
-	{
-		std::cerr << "The socket could not be created." << std::endl;
-		exit(EXIT_FAILURE);
-	}
+		throw(std::runtime_error("faild to create socket"));
 	std::cout << "The socket is created with fd: " << _serverSocketFd << std::endl;
-	// 2 Configuration de la structure sockaddr_in
+	// 2. Configurer des options spécifiques pour une socket
+	int en = 1; // en = enable.
+	if (setsockopt(_serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
+		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
+	// 3. Configuration de la structure sockaddr_in
 	serverAddr.sin_family = AF_INET; // La famille d'adresse 
 	serverAddr.sin_port = htons(this->_port); // Le port utilisé
 	serverAddr.sin_addr.s_addr = INADDR_ANY; // Accepte les connexions depuis toutes les interfaces réseau.
-	// 3. Associe la socket à l'adresse et au port définis dans serverAddr
+	// 4. Associe la socket à l'adresse et au port définis dans serverAddr
 	if (bind(_serverSocketFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
-	{
-		// remplacer par throw 
-		perror("Bind failed");
-		exit(EXIT_FAILURE);
-	}
-	// 4. Mettre le server en mode ecoute 
+		throw(std::runtime_error("faild to bind socket"));
+	// 5. Mettre le server en mode ecoute 
 	if (listen(_serverSocketFd, 10) == -1)
-	{
-		// remplacer par throw 
-		perror("Bind failed");
-		exit(EXIT_FAILURE);
-	}
+		throw(std::runtime_error("listen() faild"));
 	std::cout << "Server is now listening for connections..." << std::endl;
 }
