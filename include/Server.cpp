@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 10:00:42 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/29 10:39:51 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,14 +93,6 @@ void Server::closeFds()
 		close(_serverSocketFd);
 	}	
 }
-/*
-Le but de cette fonction est de créer une socket serveur qui :
-
-   - Ecoute sur un port donné.
-   - Accepte les connexions entrantes des clients;
-   - Utilise un prodotocole reseau fiable, comme TCP 
-
-*/
 
 /*
 
@@ -110,17 +102,20 @@ Configure l’adresse et le port dans une structure sockaddr_in. ✅
 Associe la socket avec bind(). ✅
 Prépare la socket pour les connexions avec listen(). ✅
 setsockopt. ✅
-fcntl. ❌
+fcntl. ✅
 
 */
+
 
 
 /*
-if (fcntl(SerSocketFd, F_SETFL, O_NONBLOCK) == -1) //-> set the socket option (O_NONBLOCK) for non-blocking socket
-	throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
+Le but de cette fonction est de créer une socket serveur qui :
+
+   - Ecoute sur un port donné.
+   - Accepte les connexions entrantes des clients;
+   - Utilise un prodotocole reseau fiable, comme TCP 
+
 */
-
-
 void Server::createServerSocket()
 {
 	struct sockaddr_in serverAddr; // Cette structure est déjà déclarée dans #include <netinet/in.h>
@@ -134,8 +129,8 @@ void Server::createServerSocket()
 	if (setsockopt(_serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
 		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
 	// 3. Configuration les sockets en mode non bloquant pour gerer plusieurs connexions clients simultanées.
-	
-	
+	if (fcntl(_serverSocketFd,  F_SETFL, O_NONBLOCK) == -1)
+		throw(std::runtime_error("faild to set option (O_NONBLOCK) on socket"));
 	// 4. Configuration de la structure sockaddr_in
 	serverAddr.sin_family = AF_INET; // La famille d'adresse 
 	serverAddr.sin_port = htons(this->_port); // Le port utilisé
