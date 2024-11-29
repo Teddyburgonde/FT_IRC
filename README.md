@@ -1,6 +1,6 @@
 # FT_IRC
 
-3/25
+5/25
 
 -------------------------------------------------
 Définitions :
@@ -42,7 +42,7 @@ En d'autre terme chaque client se sert de la socket pour se connecter au serveur
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-**Explication des fonctions :**
+# Explication des fonctions :
 
 - signal [✅ ] 
 
@@ -177,7 +177,7 @@ avec une valeur correspondant à l'erreur (par exemple, port déjà utilisé).
 
 -------------------------------------------------------------------------------------------------
 
-- listen [✅ ]
+- listen [✅]
 
 **Prototype :**
 
@@ -210,7 +210,97 @@ une valeur correspondant à l'erreur.
 
 -------------------------------------------------------------------------------------------------
 
-setsockopt [❌]
+setsockopt [✅]
+
+**Prototype :**
+
+```c
+int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
+```
+
+**Paramètres :**
+
+sockfd :
+	Le descripteur de la socket sur laquelle tu veux appliquer l’option.
+	Ce descripteur est retourné par socket().
+
+level :
+	Définit le niveau auquel l’option s’applique.
+	Les valeurs courantes sont :
+		SOL_SOCKET : Niveau de la socket (pour des options générales, comme réutiliser une adresse).
+		IPPROTO_TCP : Niveau TCP (pour des options spécifiques à TCP).
+		IPPROTO_IP : Niveau IP (pour des options spécifiques au protocole IP).
+
+    optname :
+	Spécifie l’option que tu veux définir. Par exemple :
+    	SO_REUSEADDR : Permet de réutiliser une adresse locale déjà utilisée.
+    	SO_KEEPALIVE : Active le maintien de la connexion (keep-alive).
+        TCP_NODELAY : Désactive l’algorithme de Nagle pour TCP.
+
+    optval :
+    	Pointeur vers la valeur que tu veux définir pour l’option.
+    	Par exemple, pour activer une option comme SO_REUSEADDR, tu passes un entier avec la valeur 1.
+
+	optlen :
+    	La taille de la donnée pointée par optval (généralement sizeof(int) pour les options simples).
+
+**Qu’est-ce que fait setsockopt ?**
+
+La fonction setsockopt permet de configurer des options spécifiques d’une socket. Ces options affectent le comportement de la socket, comme :
+
+	La réutilisation d’une adresse IP/port.
+	La gestion des délais pour les envois de données.
+	Les options liées au niveau réseau ou au protocole utilisé.
+
+**valeur de return :**
+
+0 : Succès.
+-1 : Échec, avec errno défini pour indiquer l’erreur.
+
+-------------------------------------------------------------------------------------------------
+
+- fcntl [✅]
+
+**Prototype :**
+
+```c
+#include <fcntl.h>
+
+int fcntl(int fd, int cmd, ... /* arg */ );
+```
+
+**Paramètres :**
+
+fd :
+	Le descripteur de fichier sur lequel effectuer l’opération.
+    Cela peut être une socket (comme _serverSocketFd), un fichier ouvert, ou un pipe.
+    
+cmd :
+    Commande spécifique pour définir ou interroger une option.
+    Les commandes les plus courantes sont :
+        F_GETFL : Obtenir les options du descripteur.
+        F_SETFL : Définir les options du descripteur.
+        F_GETFD : Obtenir les flags de contrôle.
+        F_SETFD : Définir les flags de contrôle.
+
+arg (facultatif) :
+    Argument supplémentaire requis pour certaines commandes, comme F_SETFL.
+    Par exemple, si tu veux rendre une socket non bloquante, tu passes O_NONBLOCK comme argument.
+
+**Que fait fcntl ?**
+
+fcntl effectue une opération spécifiée par cmd sur un descripteur de fichier donné (fd). Cette opération peut inclure :
+
+    Changer les options du descripteur.
+    Obtenir des informations sur le descripteur.
+    Configurer le comportement d'une socket ou d'un fichier.
+
+**Return value**
+
+Succès : Retourne une valeur dépendant de la commande.
+Échec : Retourne -1 et définit errno.
+
+----------------------------------------------------------------------------------------------
 
 **Fonctions a comprendre :**
 
