@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 11:15:04 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/29 11:21:08 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void Server::clearClients(int fd)
 }
 
 /*
-
+Le but de cette fonction c'est de dire qu'on a reçu un signal 
 */
 bool Server::Signal = false; // On initialise la variable Signal a false ici car c'est une variable statique
 void Server::signalHandler(int signal)
@@ -103,7 +103,6 @@ Le but de cette fonction est de créer une socket serveur qui :
    - Utilise un prodotocole reseau fiable, comme TCP 
 
 */
-
 void Server::createServerSocket()
 {
 	struct sockaddr_in serverAddr; // Cette structure est déjà déclarée dans #include <netinet/in.h>
@@ -136,4 +135,11 @@ void Server::createServerSocket()
 	newPoll.events = POLLIN; // Surveiller les événements de lecture
 	newPoll.revents = 0; // Initialiser à 0 (sera rempli par poll())
 	_pollFds.push_back(newPoll); // Ajouter à la liste des descripteurs surveillés
+}
+
+
+// Faire la fonction server init 
+void Server::serverInit()
+{
+	
 }

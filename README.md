@@ -318,7 +318,6 @@ poll() te permet de surveiller plusieurs sockets en même temps et de détecter 
 - recv[ ❌]
 - lseek [❌]
 - fstat [❌]
-- fcntl [❌]
 - close [❌]
 - getsockname [❌]
 - getprotobyname [❌]
