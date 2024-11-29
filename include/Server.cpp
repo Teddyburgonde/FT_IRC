@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 09:55:19 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/29 10:00:42 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,14 +133,17 @@ void Server::createServerSocket()
 	int en = 1; // en = enable.
 	if (setsockopt(_serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)
 		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
-	// 3. Configuration de la structure sockaddr_in
+	// 3. Configuration les sockets en mode non bloquant pour gerer plusieurs connexions clients simultanées.
+	
+	
+	// 4. Configuration de la structure sockaddr_in
 	serverAddr.sin_family = AF_INET; // La famille d'adresse 
 	serverAddr.sin_port = htons(this->_port); // Le port utilisé
 	serverAddr.sin_addr.s_addr = INADDR_ANY; // Accepte les connexions depuis toutes les interfaces réseau.
-	// 4. Associe la socket à l'adresse et au port définis dans serverAddr
+	// 5. Associe la socket à l'adresse et au port définis dans serverAddr
 	if (bind(_serverSocketFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1)
 		throw(std::runtime_error("faild to bind socket"));
-	// 5. Mettre le server en mode ecoute 
+	// 6. Mettre le server en mode ecoute 
 	if (listen(_serverSocketFd, 10) == -1)
 		throw(std::runtime_error("listen() faild"));
 	std::cout << "Server is now listening for connections..." << std::endl;

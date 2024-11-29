@@ -330,16 +330,16 @@ Succès : Retourne une valeur dépendant de la commande.
 **Commands ::**
 
 
-◦ KICK - Ejecter un client du channel [❌]
-◦ INVITE - Inviter un client au channel [❌]
-◦ TOPIC - Modifier ou afficher le thème du channel [❌]
-◦ MODE - Changer le mode du channel : [❌]
-— i : Définir/supprimer le canal sur invitation uniquement. [❌]
+◦ KICK - Ejecter un client du channel [❌] <br>
+◦ INVITE - Inviter un client au channel [❌] <br>
+◦ TOPIC - Modifier ou afficher le thème du channel [❌] <br>
+◦ MODE - Changer le mode du channel : [❌] <br>
+— i : Définir/supprimer le canal sur invitation uniquement. [❌] <br>
 — t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
-rateurs de canaux [❌]
-— k : Définir/supprimer la clé du canal (mot de passe) [❌ ]
-— o : Donner/retirer le privilège de l’opérateur de canal [ ❌]
-— l : Définir/supprimer la limite d’utilisateurs pour le canal [ ❌]
+rateurs de canaux [❌] <br>
+— k : Définir/supprimer la clé du canal (mot de passe) [❌ ] <br>
+— o : Donner/retirer le privilège de l’opérateur de canal [ ❌] <br>
+— l : Définir/supprimer la limite d’utilisateurs pour le canal [ ❌] <br>
 
 
 # Sources : 
