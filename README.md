@@ -28,7 +28,6 @@ entre utilisateurs sont aussi possibles.
 A la fin les deux clients (utilisateurs) voient le message sur Hexchat.
 ```
 <br>
-<br>
 
 # Socket :
 
