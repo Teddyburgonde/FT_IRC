@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/29 22:09:59 by teddybandam      ###   ########.fr       */
+/*   Updated: 2024/11/30 08:13:37 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,6 @@ void Server::createServerSocket()
 }
 
 
-
 // 1. Initialisation des structures nécessaires au serveur (comme _pollFds)
 // 2. Création et configuration de la socket serveur (via createServerSocket)
 // 3. Ajout de la socket serveur à _pollFds pour la surveiller avec poll()
@@ -154,3 +153,40 @@ void Server::serverInit()
 	std::cout << "Server <" << _serverSocketFd << "> Connected"  << std::endl;
 	std::cout << "Waiting to accept a connection...\n";
 }
+
+
+
+
+/*
+Ce qui manque pour un serveur complet
+
+Ton serveur est bien configuré pour écouter et 
+préparer les connexions, mais pour 
+le rendre pleinement fonctionnel, 
+tu dois ajouter une boucle principale et 
+gérer les interactions avec les clients :
+1. Boucle principale (run ou équivalent)
+
+    Implémente une boucle infinie pour surveiller 
+	les descripteurs dans _pollFds avec poll() :
+        Accepter les connexions entrantes.
+        Lire les messages des clients.
+        Supprimer les clients déconnectés.
+
+2. Gestion des connexions entrantes
+
+    Utilise accept() lorsque la socket serveur 
+	détecte une connexion entrante.
+    Ajoute la nouvelle socket client à _pollFds.
+
+3. Lecture des messages des clients
+
+    Lis les messages avec recv().
+    Traite ces messages selon le protocole IRC 
+	(par exemple, commandes NICK, JOIN, PRIVMSG).
+
+4. Déconnexion des clients
+
+    Si un client se déconnecte ou qu’une erreur survient, 
+	supprime sa socket de _pollFds.
+*/
