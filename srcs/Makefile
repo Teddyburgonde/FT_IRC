@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: teddybandama <teddybandama@student.42.f    +#+  +:+       +#+         #
+#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/11/26 21:32:55 by teddybandam      ###   ########.fr        #
+#    Updated: 2024/11/30 09:36:40 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,12 +20,13 @@ CPP = c++
 
 #=================== FLAGS ==================#
 
-CFLAGS = -Wall -Wextra -Werror -g -std=c++98
+CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 
 #================== SOURCES =================#
 
 SRCS = main.cpp \
-		server.cpp 
+	   Server.cpp \
+		Client.cpp \
 	
 
 #============== OBJECT FILES ================#

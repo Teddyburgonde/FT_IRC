@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 09:40:01 by tebandam         ###   ########.fr       */
+/*   Created: 2024/11/30 08:45:08 by tebandam          #+#    #+#             */
+/*   Updated: 2024/11/30 09:38:42 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-// ✅ ❌
-// 1. Compiler ❌
-// 2. tester le server  ❌
+#include "../include/Client.hpp"
 
-
-#include "../include/Server.hpp"
-#include "../include/Client.hpp" 
-
-int	main()
+Client::Client(int fd) :_fd(fd)
 {
-	Server server;
-
 	
 }
 
+int Client::getFd() const
+{
+	return this->_fd;
+}
 
-
+Client::~Client(){}
