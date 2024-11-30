@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/27 12:16:37 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 18:35:19 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,19 @@ a l'interieur du serveur.
 class Client
 {
 	private:
-		int	fd; // file descriptor du client
+		int	_fd; // file descriptor du client
 		std::string IpAddress;  // adresse ip du client 
+		std::string _nickname;
+		std::string _username;
 	
 	public:
-		Client();
+		Client(int fd);
 		~Client();
-		Client(const Client &copy); // ????
-		Client &operator=(const Client &copy); // ????
-
-	public :
-		int getFd() const; // getter pour le file descriptor
-		void setFd(int fd); // setter pour le file descriptor
-		void setIpAddress(std::string ip); // setter pour l'adresse ip
+		int getFd() const;
+		std::string	getNickname();
+		std::string	getUsername();
+		void	setNickname(std::string newNickname);
+		void	setUsername(std::string UserNickname);
 };
 
 #endif
