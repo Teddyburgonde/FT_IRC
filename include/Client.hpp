@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/28 12:02:30 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 09:39:03 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,13 @@ a l'interieur du serveur.
 class Client
 {
 	private:
-		int	fd; // file descriptor du client
+		int	_fd; // file descriptor du client
 		std::string IpAddress;  // adresse ip du client 
 	
 	public:
-		Client();
+		Client(int fd);
 		~Client();
-		Client(const Client &copy); // ????
-		Client &operator=(const Client &copy); // ????
-
-	public :
-		int getFd() const; // getter pour le file descriptor
-		void setFd(int fd); // setter pour le file descriptor
-		void setIpAddress(std::string ip); // setter pour l'adresse ip
+		int getFd() const;
 };
 
 #endif

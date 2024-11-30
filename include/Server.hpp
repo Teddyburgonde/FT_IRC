@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/11/28 12:02:39 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 09:11:25 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ Il y a aussi un vecteur de clients qui sont connectes au serveur.
 class Server
 {
 	private:
+		int	_fd; // file descriptor du client
 		int _port;  // port du serveur
 		int _serverSocketFd; // file descriptor du serveur socket
 		static bool Signal; // variable pour le signal
@@ -41,6 +42,10 @@ class Server
 		static void signalHandler(int signal); // handler pour le signal
 		void closeFds(); // fermeture des file descriptors
 		void clearClients(int fd); // effacer les clients
+	public:
+		int getFd() const; // getter pour le file descriptor
+		void setFd(int fd); // setter pour le file descriptor
+		void setIpAddress(std::string ip); // setter pour l'adresse ip
 };
 
 
