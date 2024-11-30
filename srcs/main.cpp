@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 11:23:54 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 17:11:37 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@ int	main()
 		signal(SIGINT, Server::signalHandler); //-> catch the signal (ctrl + c)
 		signal(SIGQUIT, Server::signalHandler); //-> catch the signal (ctrl + \)
 		std::cout << "Server is running. Waiting for connections..." << std::endl;
+		while(1)
+		{
+			
+		}
 	
 	}
 	catch (const std::exception& e)

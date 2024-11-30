@@ -302,9 +302,46 @@ Succès : Retourne une valeur dépendant de la commande.
 
 ------------------------------------------------------------
 
-- poll [❌]
+- poll [✅]
+
+**Prototype :**
+
+```c
+#include <poll.h>
+
+int poll(struct pollfd *fds, nfds_t nfds, int timeout);
+```
+
+**Paramètres :**
+struct pollfd *fds : 
+
+```c
+struct pollfd {
+    int fd;        // Descripteur de fichier (socket, fichier, etc.)
+    short events;  // Événements à surveiller (ex: POLLIN, POLLOUT)
+    short revents; // Événements survenus (écrit par poll)
+};
+```
+nfds_t nfds :
+	Le nombre d'éléments dans le tableau fds (le nombre de descripteurs à surveiller).
+
+int timeout
+    Temps d'attente maximal en millisecondes :
+        > 0 : Temps d'attente avant de retourner si aucun événement ne se produit.
+        0 : Retour immédiat (non-bloquant).
+        -1 : Attente indéfinie jusqu’à ce qu’un événement se produise.
+
+**Que fait poll ?**
 
 poll() te permet de surveiller plusieurs sockets en même temps et de détecter celles qui sont prêtes à effectuer des opérations (lecture, écriture, erreurs, etc.).
+
+**Return value**
+
+```c
+> 0 : Nombre de descripteurs prêts (au moins un événement s’est produit).
+0 : Timeout (aucun événement détecté avant la fin du délai).
+-1 : Une erreur s’est produite (ex. signal reçu, erreur système). Dans ce cas, errno contient plus d'informations.
+```
 
 **Fonctions a comprendre :**
 

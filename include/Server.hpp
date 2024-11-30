@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/11/30 11:22:13 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 18:26:39 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ class Server
 		int _serverSocketFd; // file descriptor du serveur socket
 		static bool Signal; // variable pour le signal
 		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
-		std::vector<struct pollfd> _pollFds; // tableau de pollfd, struct ???
+		std::vector<struct pollfd> _pollFds; // tableau où sera stocker tous les sockets à surveiller
 	public:
 		Server();
 		~Server();

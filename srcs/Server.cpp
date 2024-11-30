@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 09:12:55 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 19:00:14 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,9 @@ void Server::createServerSocket()
 	// 1. Creation de la socket 
 	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocketFd == -1)
+	{
 		throw(std::runtime_error("faild to create socket"));
+	}
 	std::cout << "The socket is created with fd: " << _serverSocketFd << std::endl;
 	// 2. Configurer des options spécifiques pour une socket
 	int en = 1; // en = enable.
@@ -170,6 +172,30 @@ void Server::serverInit()
 	
 	std::cout << "Server <" << _serverSocketFd << "> Connected"  << std::endl;
 	std::cout << "Waiting to accept a connection...\n";
+	// tant qu'on ne reçois pas un signal la boucle continue 
+	while (Server::Signal == false)
+	{
+		// _pollFds[0] c'est le premier element dans le vector. 
+		// _pollFds.size() signifie qu'il surveille tous les sockets dans le vecteur 
+		// timeout -1 c'est que poll attends indefiniment qu'un evenement se produise
+		// -1 signifie qu'il y a une erreur 
+		// on a toujours pas recu de signal , donc cela veut dire qu'il y a une erreur mais
+		// que cela ne provient pas du signal
+		if ((poll(&_pollFds[0], _pollFds.size(), -1) == -1) && Server::Signal == false)
+    		throw(std::runtime_error("poll() faild"));
+		// JE SUIS ICI 
+		for (size_t i = 0; i < fds.size(); i++) //-> check all file descriptors
+		{
+			if (fds[i].revents & POLLIN)//-> check if there is data to read
+			{
+				if (fds[i].fd == SerSocketFd)
+					AcceptNewClient(); //-> accept new client
+				else
+					ReceiveNewData(fds[i].fd); //-> receive new data from a registered client
+			}
+		}
+	}
+	closeFds();
 }
 
 
