@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/11/30 09:11:25 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/11/30 11:22:13 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 #include <poll.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <csignal>
+#include <sys/poll.h>
+#include <iostream>
 
 class Client;
 /*

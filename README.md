@@ -1,6 +1,6 @@
 # FT_IRC
 
-5/25
+6/25
 
 -------------------------------------------------
 Définitions :
@@ -329,7 +329,20 @@ poll() te permet de surveiller plusieurs sockets en même temps et de détecter 
 
  ------------------------------------------------------------------------------------------------
 
-**Commands ::**
+**Divers :**
+
+**Verifier si un port est deja utilise : **
+```c
+lsof -i :4444
+```
+
+le kill 
+```c
+kill -9 <PID>
+```
+
+
+**Commands :**
 
 
 ◦ KICK - Ejecter un client du channel [❌] <br>
@@ -387,5 +400,10 @@ ecriture pour les clients irc
 Medium (tres bonne sources pour setup le projet d'apres moi) <br>
 https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9
 
+Pour comprendre le projet et le parsing <br>
 reactiveso(guide irc) <br>
 https://reactive.so/post/42-a-comprehensive-guide-to-ft_irc/
+
+Installer Hexchat en video <br>
+https://www.youtube.com/watch?v=G9_vvWTb8sI
+
