@@ -343,6 +343,40 @@ poll() te permet de surveiller plusieurs sockets en même temps et de détecter 
 -1 : Une erreur s’est produite (ex. signal reçu, erreur système). Dans ce cas, errno contient plus d'informations.
 ```
 
+- accept [✅]
+
+**Prototype :**
+
+```c
+int accept(int socket_fd, struct sockaddr *address, socklen_t *address_len);
+```
+
+**Paramètres :**
+
+socket_fd :
+    Le FD de la socket serveur (par exemple, _serverSocketFd).
+    Cette socket doit avoir été mise en mode écoute avec listen().
+
+address :
+    Pointeur vers une structure sockaddr (par exemple, sockaddr_in) qui sera remplie avec les informations du client connecté (IP, port, etc.).
+
+address_len :
+    Pointeur vers un entier contenant la taille de la structure address.
+    Après l’appel, ce paramètre peut être mis à jour avec la taille réelle des données écrites dans address.
+
+**Que fait accept ?**
+
+Elle permet de gérer une connexion entrante en créant 
+une nouvelle socket qui sera utilisée uniquemenent 
+communiquer avec le client connecté.
+
+**Return value**
+
+```c
+Si accept() réussit, il renvoie un file descriptor (FD) pour la nouvelle socket client.
+Si accept() échoue, il renvoie -1 et remplit la variable globale errno avec le code d’erreur.
+```
+
 **Fonctions a comprendre :**
 
 - htonl [❌]

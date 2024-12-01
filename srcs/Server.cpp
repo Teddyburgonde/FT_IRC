@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/01 11:39:52 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/01 12:36:56 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void Server::closeFds()
 	}	
 }
 
+
 /*
 Le but de cette fonction est de créer une socket serveur qui :
 
@@ -157,14 +158,25 @@ void Server::createServerSocket()
 	_pollFds.push_back(newPoll); // Ajouter à la liste des descripteurs surveillés
 }
 
+/*
+Gere les nouvelles connextion entrante sur le serveur.
+1. Preparer les structures necessaires
+2. Appelter accept 
+*/
 
-// 1. Initialisation des structures nécessaires au serveur (comme _pollFds)
-// 2. Création et configuration de la socket serveur (via createServerSocket)
-// 3. Ajout de la socket serveur à _pollFds pour la surveiller avec poll()
-// 4. Configuration des signaux (facultatif)
-// 5. Affichage d’un message indiquant que le serveur est prêt
+void Server::acceptNewClient()
+{
+	struct sockaddr_in clientAddr; // Structure pour les informations du client 
+	socklen_t clientAddrLen = sizeof(clientAddr); // Taille de la structure
+	
+}
 
-// Faire la fonction server init 
+
+
+
+/*
+Initialise le server 
+*/
 void Server::serverInit()
 {
 	this->_port = 4444; // Port du serveur
@@ -189,15 +201,14 @@ void Server::serverInit()
 			{
 				// c'est _serverSocketFd qui ecoute les evenements 
 				if (_pollFds[i].fd == _serverSocketFd) // si le fd client coresponds a la socket server (Un client essai de se connecter)
-					AcceptNewClient(); // On accepte le client 
+					acceptNewClient(); // On accepte le client 
 				else // Cela signifie qu'un client qui est deja connecter envoie des données au server. 
-					ReceiveNewData(_pollFds[i].fd); //RceiveNewData permet de lire les donner envoyer 
+					receiveNewData(_pollFds[i].fd); //RceiveNewData permet de lire les donner envoyer 
 			}
 		}
 	}
 	closeFds(); // ferme tous les fd ouvert
 }
-
 
 
 
