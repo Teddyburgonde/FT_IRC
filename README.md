@@ -396,7 +396,6 @@ Si accept() échoue, il renvoie -1 et remplit la variable globale errno avec le 
 - getaddrinfo [❌]
 - freeaddrinfo [❌]
 - connect [❌]
-- accept [❌]
 
  ------------------------------------------------------------------------------------------------
 
