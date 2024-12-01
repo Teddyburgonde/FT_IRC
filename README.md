@@ -377,6 +377,48 @@ Si accept() réussit, il renvoie un file descriptor (FD) pour la nouvelle socket
 Si accept() échoue, il renvoie -1 et remplit la variable globale errno avec le code d’erreur.
 ```
 
+- recv[✅]
+
+**Prototype :**
+
+```c
+ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+```
+
+**Paramètres :**
+
+sockfd (type : int) :
+    C'est le file descriptor (FD) de la socket à partir de laquelle tu veux recevoir les données.
+    Ce FD est obtenu avec des fonctions comme accept (pour les serveurs)ou connect (pour les clients).
+
+buf (type : void*) :
+    Un pointeur vers un buffer dans lequel les données reçues seront stockées.
+    C'est généralement un tableau de type char.
+
+len (type : size_t) :
+    La taille maximale des données que tu veux recevoir (en octets).
+    Typiquement, c'est la taille de ton buffer moins 1 si tu veux laisser de la place pour \0 pour une chaîne de caractères.
+
+flags (type : int) :
+    Spécifie des options pour la réception. Tu peux souvent mettre 0 pour un comportement standard.
+    Quelques exemples de flags :
+        MSG_DONTWAIT : Rend l'appel non bloquant.
+        MSG_PEEK : Lit les données sans les retirer du buffer.
+        MSG_WAITALL : Attend que toutes les données demandées soient reçues.
+
+**Que fait recv ?**
+
+Elle permet de recevoir des données à partir d'une socket.
+
+**Return value**
+
+Nombre d'octets reçus (type : ssize_t) :
+    Si tout se passe bien, recv retourne le nombre d'octets reçus et stockés dans le buffer.
+0 :
+    Si le client a fermé proprement la connexion.
+-1 :
+    Une erreur est survenue ; vérifie errno pour plus d'informations.
+
 **Fonctions a comprendre :**
 
 - htonl [❌]

@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/01 16:18:21 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/01 17:50:36 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,13 +192,34 @@ void Server::acceptNewClient()
 }
 
 /*
+void analyzeData()
+{
+	A completer
+}
+*/
+
+
+/*
 Cette fonction permet de recevoir les données 
 envoyées par un client connecté.
 */
 void	Server::receiveNewData(int fd)
 {
 	char buffer[1024] = {0};  // Pour stocker les données et on l'a initialiser a 0
-	
+	ssize_t bytes = recv(fd, buffer, sizeof(buffer) - 1 , 0);
+	if (bytes <= 0) // client déconnecté ou qu’une erreur est survenue.
+	{
+		std::cout << "Client <" << fd << "> Disconnected" << std::endl;
+		clearClients(fd);
+		close(fd);
+	}
+	else 
+	{
+		buffer[bytes] = '\0';
+		// Afficher les datas 
+		std::cout << "Client <" << fd << "> sent:" << buffer << std::endl;
+		// analyzeData () ???? 
+	}
 }
 
 /*
