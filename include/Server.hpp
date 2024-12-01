@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/01 12:18:01 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/01 16:15:55 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <csignal>
 #include <sys/poll.h>
 #include <iostream>
+#include <string.h>
 
 class Client;
 /*
@@ -41,15 +42,13 @@ class Server
 		~Server();
 		void serverInit(); // initialisation du serveur
 		void createServerSocket(); // creation du serveur socket
-		void receiveMessage(); // reception des messages
 		static void signalHandler(int signal); // handler pour le signal
 		void closeFds(); // fermeture des file descriptors
 		void clearClients(int fd); // effacer les clients
 		void acceptNewClient(); // Accepter les nouveaux clients
+		void receiveNewData(int fd); // Reception de la data 
 	public:
 		int getFd() const; // getter pour le file descriptor
-		void setFd(int fd); // setter pour le file descriptor
-		void setIpAddress(std::string ip); // setter pour l'adresse ip
 };
 
 #endif
