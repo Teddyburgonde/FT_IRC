@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 09:39:03 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/01 11:29:36 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,22 @@ class Client
 {
 	private:
 		int	_fd; // file descriptor du client
-		std::string IpAddress;  // adresse ip du client 
+		std::string IpAddress;  // adresse ip du client
+		std::string _nickname;
+		std::string _username;
 	
 	public:
 		Client(int fd);
 		~Client();
 		int getFd() const;
+	
+	public:
+		/* Getters */
+		std::string    getNickname();
+		std::string    getUsername();
+		/* Setters */
+		void    setNickname(std::string newNickname);
+		void    setUsername(std::string newUsername);
 };
 
 #endif

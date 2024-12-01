@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 19:00:14 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/01 11:39:52 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,19 +183,19 @@ void Server::serverInit()
 		// que cela ne provient pas du signal
 		if ((poll(&_pollFds[0], _pollFds.size(), -1) == -1) && Server::Signal == false)
     		throw(std::runtime_error("poll() faild"));
-		// JE SUIS ICI 
-		for (size_t i = 0; i < fds.size(); i++) //-> check all file descriptors
-		{
-			if (fds[i].revents & POLLIN)//-> check if there is data to read
+		for (size_t i = 0; i < _pollFds.size(); i++) // Parcours le vector là où est stocke tous les fd des sockets  
+		{			// & c'est operateur bits. Cela signifie que le bits correponds a POLLIN
+			if (_pollFds[i].revents & POLLIN) // revents c'est qu'il a detecter un evenement et POLLIN c'est de type data en attente de lecture
 			{
-				if (fds[i].fd == SerSocketFd)
-					AcceptNewClient(); //-> accept new client
-				else
-					ReceiveNewData(fds[i].fd); //-> receive new data from a registered client
+				// c'est _serverSocketFd qui ecoute les evenements 
+				if (_pollFds[i].fd == _serverSocketFd) // si le fd client coresponds a la socket server (Un client essai de se connecter)
+					AcceptNewClient(); // On accepte le client 
+				else // Cela signifie qu'un client qui est deja connecter envoie des données au server. 
+					ReceiveNewData(_pollFds[i].fd); //RceiveNewData permet de lire les donner envoyer 
 			}
 		}
 	}
-	closeFds();
+	closeFds(); // ferme tous les fd ouvert
 }
 
 
