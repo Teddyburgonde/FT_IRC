@@ -1,6 +1,6 @@
 # FT_IRC
 
-3/25
+6/25
 
 -------------------------------------------------
 Définitions :
@@ -28,7 +28,6 @@ entre utilisateurs sont aussi possibles.
 A la fin les deux clients (utilisateurs) voient le message sur Hexchat.
 ```
 <br>
-<br>
 
 # Socket :
 
@@ -40,6 +39,434 @@ Elle permet d'établir une communication bidirectionnelle pour que le serveur et
 le client puissent échanger des messages.
 En d'autre terme chaque client se sert de la socket pour se connecter au serveur IRC. 
 ```
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Explication des fonctions :
+
+- signal [✅ ] 
+
+**Définition :**
+
+Associe le signal SIGINT (Ctrl+C) à la méthode statique 
+Server::signalHandler.
+En d'autre terme , il gere le Ctrl C dans ce cas la. 
+
+**Exemple d'utilisation :** 
+signal(SIGINT, Server::signalHandler);
+
+------------------------------------------------------------------------------------------
+- sigaction [✅]
+
+**Définition :**
+
+Comme signal(),  elle permet de spécifier une fonction à exécuter lorsque le programme reçoit un signal.
+Avec sigaction, tu peux définir des options supplémentaires, comme :
+    Bloquer d'autres signaux pendant l'exécution du handler.
+    Remplacer ou restaurer un ancien gestionnaire de signal.
+    Différencier les signaux capturés.
+
+```c
+int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);
+```
+------------------------------------------------------------------------------------------------
+- socket [✅ ]
+
+**Prototype :** 
+
+```c
+int socket(int domain, int type, int protocol);
+```
+
+**Paramètres de socket() :** 
+
+**Domain :** 
+Indique le type d'adresse que la socket utilisera : 
+AF_INET : Adresse IPv4 (la plus courante pour un serveur réseau classique). :+1: 
+AF_INET6 : Adresse IPv6.
+AF_UNIX : Communication locale (entre processus sur la même machine).
+
+**Type :**
+Indique le protocole de communication utilisé : 
+SOCK_STREAM : Pour une communication orientée connexion.
+Utilise le protocole TCP (fiable, ordonné). :+1: 
+SOCK_DGRAM : Pour une communication sans connexion.
+Utilise le protocole UDP (moins fiable, rapide).
+SOCK_RAW : Pour manipuler directement les paquets réseau (nécessite des droits spécifiques).
+
+**Protocole :** 
+indique le protocole réseau utilisé. Géneralement, tu peux mettre 0 pour
+utiliser le protocole par défaut associé au type : 
+Pour SOCK_STREAM, cela utilise TCP. :+1: 
+Pour SOCK_DGRAM, cela utilise UDP.
+
+**Définition :**
+
+La fonction socket sert  a creer une socket.
+C'est la premiere étape pour établir une communication via un réseau.
+
+**return :** 
+
+Si la création de la socket est réussit elle retun un entier posititf (Le descripteur de fichier ou fd).
+En cas d'échec, elle return -1 et errno contient l'erreur.
+
+
+**Exemple :** 
+
+int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+if (sockfd == -1) {
+    perror("Erreur lors de la création de la socket");
+    exit(EXIT_FAILURE);
+}
+
+-------------------------------------------------------------------------------------------------
+
+- htons  [ ✅]
+
+**Prototype :** 
+
+```c
+#include <arpa/inet.h>
+uint16_t htons(uint16_t hostshort);
+```
+
+hostshort : Un entier de 16 bits représentant un nombre en ordre d'octets local (host byte order).
+
+**return :** 
+La valeur convertie en ordre d'octets réseau (network byte order).
+
+**Que fait la fonction :**
+htons() convertit un entier de 16 bits (comme un numéro de port) au format utilisé sur le réseau, afin qu'il soit compris par toutes les machines, quel que soit leur système.
+
+-------------------------------------------------------------------------------------------------
+
+- bind [ ✅ ]
+
+**Prototype :**
+
+```c
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+```
+
+**Paramètres de bind() :**
+
+sockfd :
+	Le descripteur de fichier de la socket (créé par socket()).
+addr :
+	Un pointeur vers une structure contenant l’adresse et le port à associer.
+	Généralement, c’est une structure sockaddr_in convertie en type générique sockaddr avec un cast.
+addrlen :
+	La taille de la structure pointée par addr (en octets).
+	Pour une structure sockaddr_in, utilise sizeof(struct sockaddr_in).
+
+**Que fais bind() ?**
+
+1. Associe une socket à une adresse réseau (IP et port) :
+    - La socket, créée avec socket(), est une "interface vierge".
+    - bind() lui attribue une adresse réseau spécifique 
+	(définie dans une structure comme sockaddr_in).
+2. Prépare la socket pour écouter sur un port spécifique :
+    - Sans bind(), une socket ne peut pas recevoir de connexions 
+	ou de données pour un port donné.
+
+**Return value :** 
+
+Succès : Retourne 0.
+Échec : Retourne -1 et définit errno 
+avec une valeur correspondant à l'erreur (par exemple, port déjà utilisé).
+
+-------------------------------------------------------------------------------------------------
+
+- listen [✅]
+
+**Prototype :**
+
+```c
+int listen(int sockfd, int backlog);
+```
+
+**Paramètres de listen()**
+
+sockfd :
+	Le descripteur de fichier de la socket (retourné par socket()).
+	Ce doit être une socket déjà configurée avec bind().
+backlog :
+	Nombre maximum de connexions en attente dans la file d'attente.
+	Si la file est pleine, les nouvelles connexions peuvent être rejetées ou ignorées.
+
+**Que fait listen() ?**
+
+Prépare une socket pour accepter les connexions :
+- Après avoir associé la socket à une adresse et un port avec bind(), 
+tu dois appeler listen() pour indiquer que cette socket est prête à recevoir des connexions entrantes.
+- Crée une file d'attente pour les connexions entrantes :
+Les connexions entrantes sont mises en file d'attente 
+jusqu'à ce qu'elles soient acceptées avec accept().
+
+**valeur de return :**
+Succès : Retourne 0.
+Échec : Retourne -1 et définit errno avec
+une valeur correspondant à l'erreur.
+
+-------------------------------------------------------------------------------------------------
+
+setsockopt [✅]
+
+**Prototype :**
+
+```c
+int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
+```
+
+**Paramètres :**
+
+sockfd :
+	Le descripteur de la socket sur laquelle tu veux appliquer l’option.
+	Ce descripteur est retourné par socket().
+
+level :
+	Définit le niveau auquel l’option s’applique.
+	Les valeurs courantes sont :
+		SOL_SOCKET : Niveau de la socket (pour des options générales, comme réutiliser une adresse).
+		IPPROTO_TCP : Niveau TCP (pour des options spécifiques à TCP).
+		IPPROTO_IP : Niveau IP (pour des options spécifiques au protocole IP).
+
+    optname :
+	Spécifie l’option que tu veux définir. Par exemple :
+    	SO_REUSEADDR : Permet de réutiliser une adresse locale déjà utilisée.
+    	SO_KEEPALIVE : Active le maintien de la connexion (keep-alive).
+        TCP_NODELAY : Désactive l’algorithme de Nagle pour TCP.
+
+    optval :
+    	Pointeur vers la valeur que tu veux définir pour l’option.
+    	Par exemple, pour activer une option comme SO_REUSEADDR, tu passes un entier avec la valeur 1.
+
+	optlen :
+    	La taille de la donnée pointée par optval (généralement sizeof(int) pour les options simples).
+
+**Qu’est-ce que fait setsockopt ?**
+
+La fonction setsockopt permet de configurer des options spécifiques d’une socket. Ces options affectent le comportement de la socket, comme :
+
+	La réutilisation d’une adresse IP/port.
+	La gestion des délais pour les envois de données.
+	Les options liées au niveau réseau ou au protocole utilisé.
+
+**valeur de return :**
+
+0 : Succès.
+-1 : Échec, avec errno défini pour indiquer l’erreur.
+
+-------------------------------------------------------------------------------------------------
+
+- fcntl [✅]
+
+**Prototype :**
+
+```c
+#include <fcntl.h>
+
+int fcntl(int fd, int cmd, ... /* arg */ );
+```
+
+**Paramètres :**
+
+fd :
+	Le descripteur de fichier sur lequel effectuer l’opération.
+    Cela peut être une socket (comme _serverSocketFd), un fichier ouvert, ou un pipe.
+    
+cmd :
+    Commande spécifique pour définir ou interroger une option.
+    Les commandes les plus courantes sont :
+        F_GETFL : Obtenir les options du descripteur.
+        F_SETFL : Définir les options du descripteur.
+        F_GETFD : Obtenir les flags de contrôle.
+        F_SETFD : Définir les flags de contrôle.
+
+arg (facultatif) :
+    Argument supplémentaire requis pour certaines commandes, comme F_SETFL.
+    Par exemple, si tu veux rendre une socket non bloquante, tu passes O_NONBLOCK comme argument.
+
+**Que fait fcntl ?**
+
+fcntl effectue une opération spécifiée par cmd sur un descripteur de fichier donné (fd). Cette opération peut inclure :
+
+    Changer les options du descripteur.
+    Obtenir des informations sur le descripteur.
+    Configurer le comportement d'une socket ou d'un fichier.
+
+**Return value**
+
+Succès : Retourne une valeur dépendant de la commande.
+Échec : Retourne -1 et définit errno.
+
+------------------------------------------------------------
+
+- poll [✅]
+
+**Prototype :**
+
+```c
+#include <poll.h>
+
+int poll(struct pollfd *fds, nfds_t nfds, int timeout);
+```
+
+**Paramètres :**
+struct pollfd *fds : 
+
+```c
+struct pollfd {
+    int fd;        // Descripteur de fichier (socket, fichier, etc.)
+    short events;  // Événements à surveiller (ex: POLLIN, POLLOUT)
+    short revents; // Événements survenus (écrit par poll)
+};
+```
+nfds_t nfds :
+	Le nombre d'éléments dans le tableau fds (le nombre de descripteurs à surveiller).
+
+int timeout
+    Temps d'attente maximal en millisecondes :
+        > 0 : Temps d'attente avant de retourner si aucun événement ne se produit.
+        0 : Retour immédiat (non-bloquant).
+        -1 : Attente indéfinie jusqu’à ce qu’un événement se produise.
+
+**Que fait poll ?**
+
+poll() te permet de surveiller plusieurs sockets en même temps et de détecter celles qui sont prêtes à effectuer des opérations (lecture, écriture, erreurs, etc.).
+
+**Return value**
+
+```c
+> 0 : Nombre de descripteurs prêts (au moins un événement s’est produit).
+0 : Timeout (aucun événement détecté avant la fin du délai).
+-1 : Une erreur s’est produite (ex. signal reçu, erreur système). Dans ce cas, errno contient plus d'informations.
+```
+
+- accept [✅]
+
+**Prototype :**
+
+```c
+int accept(int socket_fd, struct sockaddr *address, socklen_t *address_len);
+```
+
+**Paramètres :**
+
+socket_fd :
+    Le FD de la socket serveur (par exemple, _serverSocketFd).
+    Cette socket doit avoir été mise en mode écoute avec listen().
+
+address :
+    Pointeur vers une structure sockaddr (par exemple, sockaddr_in) qui sera remplie avec les informations du client connecté (IP, port, etc.).
+
+address_len :
+    Pointeur vers un entier contenant la taille de la structure address.
+    Après l’appel, ce paramètre peut être mis à jour avec la taille réelle des données écrites dans address.
+
+**Que fait accept ?**
+
+Elle permet de gérer une connexion entrante en créant 
+une nouvelle socket qui sera utilisée uniquemenent 
+communiquer avec le client connecté.
+
+**Return value**
+
+```c
+Si accept() réussit, il renvoie un file descriptor (FD) pour la nouvelle socket client.
+Si accept() échoue, il renvoie -1 et remplit la variable globale errno avec le code d’erreur.
+```
+
+- recv[✅]
+
+**Prototype :**
+
+```c
+ssize_t recv(int sockfd, void *buf, size_t len, int flags);
+```
+
+**Paramètres :**
+
+sockfd (type : int) :
+    C'est le file descriptor (FD) de la socket à partir de laquelle tu veux recevoir les données.
+    Ce FD est obtenu avec des fonctions comme accept (pour les serveurs)ou connect (pour les clients).
+
+buf (type : void*) :
+    Un pointeur vers un buffer dans lequel les données reçues seront stockées.
+    C'est généralement un tableau de type char.
+
+len (type : size_t) :
+    La taille maximale des données que tu veux recevoir (en octets).
+    Typiquement, c'est la taille de ton buffer moins 1 si tu veux laisser de la place pour \0 pour une chaîne de caractères.
+
+flags (type : int) :
+    Spécifie des options pour la réception. Tu peux souvent mettre 0 pour un comportement standard.
+    Quelques exemples de flags :
+        MSG_DONTWAIT : Rend l'appel non bloquant.
+        MSG_PEEK : Lit les données sans les retirer du buffer.
+        MSG_WAITALL : Attend que toutes les données demandées soient reçues.
+
+**Que fait recv ?**
+
+Elle permet de recevoir des données à partir d'une socket.
+
+**Return value**
+
+Nombre d'octets reçus (type : ssize_t) :
+    Si tout se passe bien, recv retourne le nombre d'octets reçus et stockés dans le buffer.
+0 :
+    Si le client a fermé proprement la connexion.
+-1 :
+    Une erreur est survenue ; vérifie errno pour plus d'informations.
+
+**Fonctions a comprendre :**
+
+- htonl [❌]
+- ntohs [❌] 
+- ntohl [❌]
+- inet [❌]
+- addr [❌]
+- inet_ntoa [❌]
+- send [❌]
+- recv[ ❌]
+- lseek [❌]
+- fstat [❌]
+- close [❌]
+- getsockname [❌]
+- getprotobyname [❌]
+- gethostbyname [❌]
+- getaddrinfo [❌]
+- freeaddrinfo [❌]
+- connect [❌]
+
+ ------------------------------------------------------------------------------------------------
+
+**Divers :**
+
+**Verifier si un port est deja utilise : **
+```c
+lsof -i :4444
+```
+
+le kill 
+```c
+kill -9 <PID>
+```
+
+
+**Commands :**
+
+
+◦ KICK - Ejecter un client du channel [❌] <br>
+◦ INVITE - Inviter un client au channel [❌] <br>
+◦ TOPIC - Modifier ou afficher le thème du channel [❌] <br>
+◦ MODE - Changer le mode du channel : [❌] <br>
+— i : Définir/supprimer le canal sur invitation uniquement. [❌] <br>
+— t : Définir/supprimer les restrictions de la commande TOPIC pour les opé-
+rateurs de canaux [❌] <br>
+— k : Définir/supprimer la clé du canal (mot de passe) [❌ ] <br>
+— o : Donner/retirer le privilège de l’opérateur de canal [ ❌] <br>
+— l : Définir/supprimer la limite d’utilisateurs pour le canal [ ❌] <br>
 
 
 # Sources : 
@@ -85,5 +512,10 @@ ecriture pour les clients irc
 Medium (tres bonne sources pour setup le projet d'apres moi) <br>
 https://medium.com/@afatir.ahmedfatir/small-irc-server-ft-irc-42-network-7cee848de6f9
 
+Pour comprendre le projet et le parsing <br>
 reactiveso(guide irc) <br>
 https://reactive.so/post/42-a-comprehensive-guide-to-ft_irc/
+
+Installer Hexchat en video <br>
+https://www.youtube.com/watch?v=G9_vvWTb8sI
+

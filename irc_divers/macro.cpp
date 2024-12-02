@@ -1,29 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/02 17:47:48 by gmersch          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#ifndef SERVER_HPP
-#define SERVER_HPP
-
-#include <iostream>
-#include <vector>
-#include <poll.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <csignal>
-#include <sys/poll.h>
-#include <iostream>
-#include <string.h>
-
-
 #define RPL_JOIN(nick, channel)                        (":" + nick + " JOIN " + channel + "\r\n")
 #define RPL_PART(client, channel)                    (":" + client + " PART " + channel + "\r\n")
 #define RPL_MODE(client, channel, mode, name)        (":" + client + " MODE " + channel + " " + mode + " " + name + "\r\n")
@@ -47,7 +21,7 @@
 #define ERR_NONICKNAMEGIVEN(client, nick)            (": 431 " + client + " " + nick + " :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(client, nickname)        (": 432 " + client + " " + nickname + " :Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(client, nick)                (": 433 * " + client + " " + nick + " :Nickname is already in use\r\n")
-#define ERR_NORECIPIENT(client, command) 				(": 411 " + client + " " + command + " :No recipient given\r\n")
+
 
 #define ERR_USERNOTINCHANNEL(client, nick, channel)    (": 441 " + client + " " + nick + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(client, channel)            (": 442 " + client + " " + channel + " :Not on that channel\r\n")
@@ -61,47 +35,3 @@
 #define ERR_BADCHANNELKEY(client, channel)            (": 475 " + client + " " + channel + " :Cannot join channel (+k)\r\n")
 #define ERR_NOCHANMODES(channel)                    (": 477 " + channel + " :Channel doesn't support modes\r\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel)        (": 482 " + client + " " + channel + " :You're not channel operator\r\n")
-
-
-
-
-
-
-
-
-
-class Client;
-
-class Chanel;
-/*
-Dans la class Server, il y a toute les informations  sur le serveur.
-Il y a aussi un vecteur de clients qui sont connectes au serveur.
-*/
-class Server
-{
-	private:
-		int	_fd; // file descriptor du client
-		int _port;  // port du serveur
-		int _serverSocketFd; // file descriptor du serveur socket
-		static bool Signal; // variable pour le signal
-		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
-		std::vector<struct pollfd> _pollFds; // tableau où sera stocker tous les sockets à surveiller
-		std::vector<Chanel> _chanel;
-	public:
-		Server();
-		~Server();
-		void serverInit(); // initialisation du serveur
-		void createServerSocket(); // creation du serveur socket
-		static void signalHandler(int signal); // handler pour le signal
-		void closeFds(); // fermeture des file descriptors
-		void clearClients(int fd); // effacer les clients
-		void acceptNewClient(); // Accepter les nouveaux clients
-		void receiveNewData(int fd); // Reception de la data 
-		void analyzeData(int fd, const char* buffer);// analyse la data
-	public:
-		int getFd() const; // getter pour le file descriptor
-};
-
-void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel);
-
-#endif

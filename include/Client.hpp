@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 18:35:19 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/02 09:09:32 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include <iostream>
 #include <vector>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <fcntl.h>
@@ -34,18 +32,28 @@ class Client
 {
 	private:
 		int	_fd; // file descriptor du client
-		std::string IpAddress;  // adresse ip du client 
+		std::string IpAddress;  // adresse ip du client
 		std::string _nickname;
 		std::string _username;
 	
 	public:
-		Client(int fd);
+		Client();
+		Client(int fd, const std::string &ip);
 		~Client();
+	
+	public:
+		/* Getters */
 		int getFd() const;
-		std::string	getNickname();
-		std::string	getUsername();
-		void	setNickname(std::string newNickname);
-		void	setUsername(std::string UserNickname);
+		std::string    getNickname();
+		std::string    getUsername();
+		
+		/* Setters */
+		void    setNickname(std::string newNickname);
+		void    setUsername(std::string newUsername);
+		void    setFd(int fd); // setter pour le file descriptor
+		void    setIpAddress(const std::string &ip); // setter pour l'adresse ip
 };
 
 #endif
+
+
