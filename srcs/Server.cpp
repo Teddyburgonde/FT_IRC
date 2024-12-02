@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/02 12:25:13 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/02 14:08:07 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,28 @@ void Server::analyzeData(int fd, const char* buffer)
 			send(fd, response.c_str(), response.size(), 0);
 			return ;
 		}
-	}
+		for(unsigned long i = 0; i < _clients.size(); i++)
+		{
+			// si le pseudo est déjà  pris
+			if (oldNick == _clients[i].getNickname())
+			{
+				std::string response = ERR_NICKNAMEINUSE(std::string("Server"), oldNick);
+				send(fd, response.c_str(), response.size(), 0);
+				return ;	
+			}
+			if (_clients[i].getFd() == fd)
+			{
+				_clients[i].setNickname(oldNick);
+				 std::cout << "Welcome in the server" << std::endl;
+				std::cout << "Client FD: " << _clients[i].getFd()
+                  << " Nickname: " << _clients[i].getNickname() << std::endl;
+				std::string response = RPL_WELCOME(oldNick);
+				send(fd, response.c_str(), response.size(), 0);
+				break ;
+			}
+		}
+		
+    }
 }
 
 
