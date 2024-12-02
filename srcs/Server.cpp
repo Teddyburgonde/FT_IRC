@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/01 17:50:36 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/02 12:25:13 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,12 +191,27 @@ void Server::acceptNewClient()
 	<< " Port: " << ntohs(clientAddr.sin_port) << std::endl;
 }
 
-/*
-void analyzeData()
+
+
+void Server::analyzeData(int fd, const char* buffer)
 {
-	A completer
+	std::string oldNick;
+	if (strncmp(buffer, "NICK ", 5) == 0)
+	{
+		oldNick = buffer + 5;
+		// remove met les caracteres a supprimer a la fin 
+		// erase coupe la chaine juste avant les caracteres indesirables.
+		oldNick.erase(std::remove(oldNick.begin(), oldNick.end(), '\r'), oldNick.end());
+		oldNick.erase(std::remove(oldNick.begin(), oldNick.end(), '\n'), oldNick.end());
+		if (oldNick.empty())
+		{
+			std::string response = ERR_NONICKNAMEGIVEN(std::string("Server"), std::string(""));
+			// send envoie la reponse au client associé au fd
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+	}
 }
-*/
 
 
 /*
@@ -218,7 +233,7 @@ void	Server::receiveNewData(int fd)
 		buffer[bytes] = '\0';
 		// Afficher les datas 
 		std::cout << "Client <" << fd << "> sent:" << buffer << std::endl;
-		// analyzeData () ???? 
+		analyzeData(fd, buffer);
 	}
 }
 
