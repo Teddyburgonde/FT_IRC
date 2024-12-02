@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/02 12:06:54 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/02 15:14:35 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 #define ERR_NONICKNAMEGIVEN(client, nick)            (": 431 " + client + " " + nick + " :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(client, nickname)        (": 432 " + client + " " + nickname + " :Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(client, nick)                (": 433 * " + client + " " + nick + " :Nickname is already in use\r\n")
-
+#define ERR_NORECIPIENT(client, command) 				(": 411 " + client + " " + command + " :No recipient given\r\n")
 
 #define ERR_USERNOTINCHANNEL(client, nick, channel)    (": 441 " + client + " " + nick + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(client, channel)            (": 442 " + client + " " + channel + " :Not on that channel\r\n")

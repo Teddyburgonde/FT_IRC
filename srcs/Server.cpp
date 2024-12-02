@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/02 14:08:07 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/02 16:08:22 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,8 +230,57 @@ void Server::analyzeData(int fd, const char* buffer)
 				break ;
 			}
 		}
-		
     }
+	if (strncmp(buffer, "PRIVMSG ", 8) == 0)
+	{
+		const char* start = buffer + 8; // Début après "PRIVMSG "
+		
+		// Trouver le destinataire
+		const char* space = strchr(start, ' '); // Cherche le premier espace
+    	
+		// Pas de destinataire trouver trouvée
+		if (space == NULL) 
+        	return;
+		// fais la meme chose que substr
+		// ici notre constructeur std::string::string(const char* s, size_t n); 
+		// permet de creer une chaine grace a notre pointer
+		std::string recipient(start, space - start);
+		if (recipient.empty())
+		{
+			std::string response = ERR_NORECIPIENT(std::string("Server"), std::string(""));
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+		const char *colon = strchr(space, ':');
+		if (colon == NULL)
+		{
+			std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+		// Extraire le message
+		std::string message(colon + 1); // Tout après ":" est le message
+		bool recipientFound = false;
+		for(unsigned long i = 0; i < _clients.size(); i++)
+		{
+			// le message est destiné à un utilisateur précis
+			if (_clients[i].getNickname() == recipient)
+			{
+				send(_clients[i].getFd(), message.c_str(), message.size(), 0);
+        		recipientFound = true;
+        		break;
+			}
+			// else if // message envoyer a un chanel  
+			// {
+			
+			// }
+			if (!recipientFound)
+			{
+				std::string response = ERR_NOSUCHNICK(std::string ("Server"), recipient);
+				send(fd, response.c_str(), response.size(), 0);
+			}
+		}
+	}
 }
 
 
@@ -252,8 +301,8 @@ void	Server::receiveNewData(int fd)
 	else 
 	{
 		buffer[bytes] = '\0';
-		// Afficher les datas 
-		std::cout << "Client <" << fd << "> sent:" << buffer << std::endl;
+		// Afficher les datas sur le server
+		// std::cout << "Client <" << fd << "> sent:" << buffer << std::endl;
 		analyzeData(fd, buffer);
 	}
 }
