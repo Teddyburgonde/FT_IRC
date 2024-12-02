@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/01 15:28:26 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/02 09:09:32 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class Client
 		std::string _username;
 	
 	public:
+		Client();
 		Client(int fd, const std::string &ip);
 		~Client();
 	
@@ -54,3 +55,5 @@ class Client
 };
 
 #endif
+
+

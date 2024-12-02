@@ -6,12 +6,15 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:45:08 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/01 15:28:34 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/02 10:16:47 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../include/Client.hpp"
+
+Client::Client(){}
+
 
 Client::Client(int fd, const std::string &ip) :_fd(fd), IpAddress(ip)
 {
