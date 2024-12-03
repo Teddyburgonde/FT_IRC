@@ -67,6 +67,7 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 
 	while (it != this->_user.end()) //tant que ont a pas envoyé à touts les user du chan
 	{
+		std::cout << "user in chan: " << *it << std::endl;
 		if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
 			send(*it, msg.c_str()/*faut env des char, obligé de c_str*/, msg.size(), 0); //on envoie le message au socket des users.
 		//send est comme write : on envoie dans quel fd on veux ecrire, on envoye le message et la taille du message comme write
@@ -80,5 +81,10 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 std::string	Chanel::getName()
 {
 	return (this->_name);
+}
+
+void	Chanel::setName(std::string chanName)
+{
+	this->_name = chanName;
 }
 

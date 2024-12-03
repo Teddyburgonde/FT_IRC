@@ -32,8 +32,7 @@ class Chanel
 		void	sendMessageToChanel(int userSender, std::string &msg);
 
 		std::string	getName();
-		
-
+		void	setName(std::string chanName);
 };
 
 void	handleJoin(int fd, char buffer[1024], std::vector<Chanel> &_chanel);

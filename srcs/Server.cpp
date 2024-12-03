@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/02 17:43:39 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/03 09:45:19 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,9 @@ void Server::acceptNewClient()
 
 void Server::analyzeData(int fd, const char* buffer)
 {
-	parsing(fd, (char*)buffer, this->_chanel);
+	
+	parsing(fd, (char*)buffer, this->_chanel); //LE PARSING A FAIRE
+	
 	std::string oldNick;
 	if (strncmp(buffer, "NICK ", 5) == 0)
 	{
