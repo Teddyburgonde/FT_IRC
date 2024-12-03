@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
+#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/02 17:35:16 by gmersch          ###   ########.fr        #
+#    Updated: 2024/12/03 15:19:26 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,8 @@ SRCS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
 		Chanel.cpp \
-		parsing.cpp
+		parsing.cpp \
+		Message.cpp \
 	
 
 #============== OBJECT FILES ================#

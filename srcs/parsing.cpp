@@ -6,7 +6,7 @@ void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel)
 {
 	//Les espaces après la commande cherché ?? Interressant tant que pas de parsing pour etre sur que la commande est pas JOINOITURE par exemple
 	// /join #general
-	std::cout << buffer << std::endl;
+	//std::cout << buffer << std::endl;
 	if (!strncmp(buffer, "JOIN ", 5)) //si c'est join la commande, a changer grace au futur parsing ?
 	{
 		std::cout << "made join " << std::endl; //debug, a retirer

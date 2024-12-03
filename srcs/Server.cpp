@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/03 09:45:19 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/03 15:57:07 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <cstring>
 #include <netinet/in.h>
 #include <sys/socket.h>
-
+#include "../include/Message.hpp"
 
 /*
 Le but de cette fonction est de supprimer un client de la liste des clients connectés au serveur.
@@ -192,11 +192,58 @@ void Server::acceptNewClient()
 	<< " Port: " << ntohs(clientAddr.sin_port) << std::endl;
 }
 
+int skipSpaces(const char *str) 
+{
+    int i;
+	i = 0;
+    while (str[i] && str[i] == ' ')
+		i++;
+	return (i);
+}
+
+Message parse_buffer(const char *buffer)
+{
+	Message msg;
+	int	i;
+	int	j;
+	
+	i = skipSpaces(buffer);
+	j = i;
+	while (buffer[j] != ' ' && buffer[j])
+		j++;
+	if (buffer[i] == '\0')
+		throw(std::runtime_error("buffer empty"));
+	msg.setCommand(std::string (buffer + i, buffer + j));
+	std::cout << "la commande : '" << msg.getCommand() << "'"<< std::endl;
+	// suite du parsing 
+
+	
+	if (strncmp(msg.getCommand().c_str(), "LOOL", 4) == 0)
+	{
+		std::cout << "C'est un bon point" << std::endl;
+	}
+	else
+		std::cout << "AIEIIEIEIEIEIIE" << std::endl;
+	
+	return msg;
+}
+
+
+
+// std::string findCommand()
+// {
+	
+// }
+
+
+
 
 
 void Server::analyzeData(int fd, const char* buffer)
 {
+	Message msg;
 	
+	msg = parse_buffer(buffer);
 	parsing(fd, (char*)buffer, this->_chanel); //LE PARSING A FAIRE
 	
 	std::string oldNick;
