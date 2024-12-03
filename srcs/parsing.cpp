@@ -2,7 +2,7 @@
 #include "../include/Server.hpp"
 #include "../include/Chanel.hpp"
 
-void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel)
+void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel) // a remane, contiendra tout les strncmp
 {
 	//Les espaces après la commande cherché ?? Interressant tant que pas de parsing pour etre sur que la commande est pas JOINOITURE par exemple
 	// /join #general
