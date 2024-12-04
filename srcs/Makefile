@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/03 15:19:26 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/04 10:37:40 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,11 @@ SRCS = main.cpp \
 		Chanel.cpp \
 		parsing.cpp \
 		Message.cpp \
+		utils.cpp \
+		close.cpp \
+		signals.cpp \
+		clear.cpp \
+		incomingConnections.cpp \
 	
 
 #============== OBJECT FILES ================#

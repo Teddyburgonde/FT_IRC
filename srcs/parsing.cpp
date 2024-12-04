@@ -1,6 +1,11 @@
 #include "../include/Client.hpp"
 #include "../include/Server.hpp"
 #include "../include/Chanel.hpp"
+#include "../include/Message.hpp"
+#include <algorithm>
+
+
+
 
 void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel) // a remane, contiendra tout les strncmp
 {
@@ -59,3 +64,159 @@ void	handleJoin(int fd, char buffer[1024], std::vector<Chanel> &_chanel)
 	}
 	std::cout << "HERE 2" << std::endl;
 }
+
+
+void Server::analyzeData(int fd, const char* buffer)
+{
+	Message msg;
+
+	msg = parse_buffer(buffer);
+	parsing(fd, (char*)buffer, this->_chanel); //ici sera tout les strncmp
+
+	std::string oldNick;
+	if (strncmp(buffer, "NICK ", 5) == 0)
+	{
+		oldNick = buffer + 5;
+		// remove met les caracteres a supprimer a la fin
+		// erase coupe la chaine juste avant les caracteres indesirables.
+		oldNick.erase(std::remove(oldNick.begin(), oldNick.end(), '\r'), oldNick.end());
+		oldNick.erase(std::remove(oldNick.begin(), oldNick.end(), '\n'), oldNick.end());
+		if (oldNick.empty())
+		{
+			std::string response = ERR_NONICKNAMEGIVEN(std::string("Server"), std::string(""));
+			// send envoie la reponse au client associé au fd
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+		for(unsigned long i = 0; i < _clients.size(); i++)
+		{
+			// si le pseudo est déjà  pris
+			if (oldNick == _clients[i].getNickname())
+			{
+				std::string response = ERR_NICKNAMEINUSE(std::string("Server"), oldNick);
+				send(fd, response.c_str(), response.size(), 0);
+				return ;
+			}
+			if (_clients[i].getFd() == fd)
+			{
+				_clients[i].setNickname(oldNick);
+				 std::cout << "Welcome in the server" << std::endl;
+				std::cout << "Client FD: " << _clients[i].getFd()
+                  << " Nickname: " << _clients[i].getNickname() << std::endl;
+				std::string response = RPL_WELCOME(oldNick);
+				send(fd, response.c_str(), response.size(), 0);
+				break ;
+			}
+		}
+    }
+	if (strncmp(buffer, "PRIVMSG ", 8) == 0)
+	{
+		const char* start = buffer + 8; // Début après "PRIVMSG "
+
+		// Trouver le destinataire
+		const char* space = strchr(start, ' '); // Cherche le premier espace
+
+		// Pas de destinataire trouver trouvée
+		if (space == NULL)
+        	return;
+		// fais la meme chose que substr
+		// ici notre constructeur std::string::string(const char* s, size_t n);
+		// permet de creer une chaine grace a notre pointer
+		std::string recipient(start, space - start);
+		if (recipient.empty())
+		{
+			std::string response = ERR_NORECIPIENT(std::string("Server"), std::string(""));
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+		const char *colon = strchr(space, ':');
+		if (colon == NULL)
+		{
+			std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+		// Extraire le message
+		std::string message(colon + 1); // Tout après ":" est le message
+		bool recipientFound = false;
+		for(unsigned long i = 0; i < _clients.size(); i++)
+		{
+			// le message est destiné à un utilisateur précis
+			if (_clients[i].getNickname() == recipient)
+			{
+				send(_clients[i].getFd(), message.c_str(), message.size(), 0);
+        		recipientFound = true;
+        		break;
+			}
+			// else if // message envoyer a un chanel
+			// {
+
+			// }
+			if (!recipientFound)
+			{
+				std::string response = ERR_NOSUCHNICK(std::string ("Server"), recipient);
+				send(fd, response.c_str(), response.size(), 0);
+			}
+		}
+	}
+}
+
+Message parse_buffer(const char *buffer)
+{
+	Message msg;
+	int	i;
+	int	j;
+
+	i = skipSpaces(buffer);
+	j = i;
+	while (buffer[j] != ' ' && buffer[j])
+		j++;
+	if (buffer[i] == '\0')
+		throw(std::runtime_error("buffer empty"));
+	msg.setCommand(std::string (buffer + i, buffer + j));
+	std::cout << "la commande : '" << msg.getCommand() << "'"<< std::endl;
+	// suite du parsing
+
+	//ce que tu peux faire si tu veux teddy quand je suis pas là demain matin:
+
+
+	//si on est pas a la fin de buffer (je parle de j vu que j est soit sur l'espace soit sur le \0)
+		//skip space
+	//sinon erreur car pas d'argument ? Je sais pas si ya des commande sans arg donc a prendre avec des pincettes
+	//si suite au skip space on est pas a la fin de buffer
+//	{
+
+		//si la où on est c'est un '#':
+//		{
+
+			//tout ce qui est directement apres le #, le recuperer et l'ajouter au vecteur '_nameChanel' de la class Message
+			//attention, si y'a une virgulep puis un # avec un autre nom, mettre les deux: expemple: #general,#jeux  on doit recup general et jeux sans les #
+			//(a verifier, tu peux demander a chat gpt, peut etre que fqut un espqce apres la virgule mmais je crois pas)
+//		}
+//	}
+	//sinon si c'est un '-' et que ya des truc apres, peut etre mettre ca dans option ??? PAs sur du tout faut demander, je sais vraiment pas.
+	//sinon si pas de # mais que ya des truc, mettre tout le reste en une string dans '_argument' de la class Message
+
+
+	//Voilà en gros ce que je vois pour le moment, hesite pas a te rensigné car je suis pas sur.
+	//Et apres je crois que c'est pas mal !
+
+
+	//test:
+	if (strncmp(msg.getCommand().c_str(), "LOOL", 4) == 0)
+	{
+		std::cout << "C'est un bon point" << std::endl;
+	}
+	else
+		std::cout << "AIEIIEIEIEIEIIE" << std::endl;
+
+	return msg;
+}
+
+
+
+// std::string findCommand()
+// {
+
+// }
+
