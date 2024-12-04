@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/03 15:56:40 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:31:11 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <vector>
+
 
 class Message
 {
@@ -43,5 +44,6 @@ class Message
 		std::string getOption() const;	
 };
 
+Message parse_buffer(const char *buffer);
 
 #endif 

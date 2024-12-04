@@ -182,6 +182,19 @@ Message parse_buffer(const char *buffer)
 
 	//si on est pas a la fin de buffer (je parle de j vu que j est soit sur l'espace soit sur le \0)
 		//skip space
+	if (buffer[j] == ' ')
+		j =	skipSpaces(buffer + j);
+	if (buffer[j] == '\0')
+	{
+		// Erreur : Pas d'argument donc il y a forcement une erreur 
+		throw(std::runtime_error("Not arguments"));
+	}
+	else 
+	{
+		// continuer le parsing des arguments 
+	}
+
+	
 	//sinon erreur car pas d'argument ? Je sais pas si ya des commande sans arg donc a prendre avec des pincettes
 	//si suite au skip space on est pas a la fin de buffer
 //	{
@@ -197,9 +210,6 @@ Message parse_buffer(const char *buffer)
 	//sinon si c'est un '-' et que ya des truc apres, peut etre mettre ca dans option ??? PAs sur du tout faut demander, je sais vraiment pas.
 	//sinon si pas de # mais que ya des truc, mettre tout le reste en une string dans '_argument' de la class Message
 
-
-	//Voilà en gros ce que je vois pour le moment, hesite pas a te rensigné car je suis pas sur.
-	//Et apres je crois que c'est pas mal !
 
 
 	//test:

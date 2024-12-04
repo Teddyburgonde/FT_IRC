@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/02 17:47:48 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/04 10:11:07 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@
 #define ERR_CHANOPRIVSNEEDED(client, channel)        (": 482 " + client + " " + channel + " :You're not channel operator\r\n")
 
 
+/* Utils */
+
+int	skipSpaces(const char *str);
 
 
 
