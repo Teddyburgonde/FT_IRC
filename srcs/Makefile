@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/11/30 09:36:40 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/05 09:08:21 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,14 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 SRCS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
+		Chanel.cpp \
+		parsing.cpp \
+		Message.cpp \
+		utils.cpp \
+		serverClose.cpp \
+		serverSignals.cpp \
+		serverClear.cpp \
+		serverIncomingConnections.cpp \
 	
 
 #============== OBJECT FILES ================#

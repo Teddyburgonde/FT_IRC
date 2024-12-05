@@ -6,13 +6,11 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/11/30 17:11:37 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 09:08:43 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-// 1. Compiler ✅
-// 2. tester le server  ✅
 
 #include "Server.hpp"
 #include "Client.hpp" 

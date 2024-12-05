@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/02 15:14:35 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:32:44 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@
 #define ERR_CHANOPRIVSNEEDED(client, channel)        (": 482 " + client + " " + channel + " :You're not channel operator\r\n")
 
 
+/* Utils */
+
+int	skipSpaces(const char *str);
 
 
 
@@ -71,6 +74,8 @@
 
 
 class Client;
+
+class Chanel;
 /*
 Dans la class Server, il y a toute les informations  sur le serveur.
 Il y a aussi un vecteur de clients qui sont connectes au serveur.
@@ -84,6 +89,7 @@ class Server
 		static bool Signal; // variable pour le signal
 		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
 		std::vector<struct pollfd> _pollFds; // tableau où sera stocker tous les sockets à surveiller
+		std::vector<Chanel> _chanel;
 	public:
 		Server();
 		~Server();
@@ -94,9 +100,11 @@ class Server
 		void clearClients(int fd); // effacer les clients
 		void acceptNewClient(); // Accepter les nouveaux clients
 		void receiveNewData(int fd); // Reception de la data 
-		void analyzeData(int fd, const char* buffer);// analyse la data
+		void analyzeData(int fd,  const std::vector<char> &buffer);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
+
+void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel);
 
 #endif
