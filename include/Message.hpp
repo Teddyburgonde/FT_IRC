@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 13:37:34 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 14:29:34 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,14 @@ class Message
 	
 	public :
 		/* Setters */
-		void setCommand(const std::string &command);
+		void setCommand(std::string command);
+		void setArgument(std::string command);
 
 		/* Getters */
 		std::string getCommand() const;
 		std::string getArgument() const;
 };
 
-// Message parse_buffer(const char *buffer);
+Message parse_buffer(std::vector <std::string> &buffer);
 
 #endif 
