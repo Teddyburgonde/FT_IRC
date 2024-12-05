@@ -11,7 +11,7 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	std::vector<std::string> stringBuffer;
 	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
 	parse_buffer(stringBuffer, msg);
-	std::cout << "Argument extrait2 : " << msg.getArgument() << std::endl;
+	//std::cout << "Argument extrait2 : " << msg.getArgument() << std::endl;
 	if (msg.getCommand().empty())
 	{
 		return ;
@@ -112,15 +112,15 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	}
 	if (!strncmp(buffer.data(), "JOIN ", 5)) //si c'est join la commande, a changer grace au futur parsing ?
 	{
-		std::cout << "made join " << std::endl; //debug, a retirer
-		handleJoin(fd, msg, _chanel);
+		//std::cout << "made join " << std::endl; //debug, a retirer
+		handleJoin(fd, msg, this->_chanel);
 	}
 	if (!strncmp(buffer.data(), "SEND #general", 13)) // a redefinir, marche seulement pour general
 	{
 		//besoins du parsing
 		std::string msg = std::string(buffer.data() + 13); //ici je recup le msg apres le SEND #general donc a changer
 		//dans l'idee faudrais juste envoye le truc après le # grace au parsing ? Au lieu de channel[0], je retrouve le nom du bon salon.
-		_chanel[0].sendMessageToChanel(fd, msg); //chanel[0] == que le premier salon. Faut coder le fais d'envoyé dans le salon ou il est le client
+		this->_chanel[0].sendMessageToChanel(fd, msg); //chanel[0] == que le premier salon. Faut coder le fais d'envoyé dans le salon ou il est le client
 		std::cout << "send a message to general" << std::endl;
 	}
 }
@@ -157,8 +157,8 @@ void parse_buffer(std::vector <std::string> &buffer, Message& msg)
         msg.setArgument(""); // Aucun argument
 	}
 
-	std::cout << "Commande extraite : " << msg.getCommand() << std::endl;
-    std::cout << "Argument extrait : " << msg.getArgument() << std::endl;
+	//std::cout << "Commande extraite : " << msg.getCommand() << std::endl;
+    //std::cout << "Argument extrait : " << msg.getArgument() << std::endl;
 
     return ;
 }

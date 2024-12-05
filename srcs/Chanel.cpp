@@ -88,3 +88,8 @@ void	Chanel::setName(std::string chanName)
 	this->_name = chanName;
 }
 
+std::vector<int>	Chanel::getUserInChannel()
+{
+	return (this->_user);
+}
+

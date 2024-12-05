@@ -34,6 +34,7 @@ class Chanel
 
 		std::string	getName();
 		void	setName(std::string chanName);
+		std::vector<int> getUserInChannel();
 };
 
 void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel);
