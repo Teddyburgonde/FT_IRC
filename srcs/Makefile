@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/04 10:37:40 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/05 09:08:21 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,10 +31,10 @@ SRCS = main.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \
-		close.cpp \
-		signals.cpp \
-		clear.cpp \
-		incomingConnections.cpp \
+		serverClose.cpp \
+		serverSignals.cpp \
+		serverClear.cpp \
+		serverIncomingConnections.cpp \
 	
 
 #============== OBJECT FILES ================#

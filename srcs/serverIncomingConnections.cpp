@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   incomingConnections.cpp                            :+:      :+:    :+:   */
+/*   serverIncomingConnections.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/04 10:35:42 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/04 10:38:11 by tebandam         ###   ########.fr       */
+/*   Created: 2024/12/05 09:03:05 by tebandam          #+#    #+#             */
+/*   Updated: 2024/12/05 09:03:09 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"

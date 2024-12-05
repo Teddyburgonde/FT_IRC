@@ -189,10 +189,8 @@ Message parse_buffer(const char *buffer)
 		// Erreur : Pas d'argument donc il y a forcement une erreur 
 		throw(std::runtime_error("Not arguments"));
 	}
-	else 
-	{
-		// continuer le parsing des arguments 
-	}
+	// continuer le parsing des arguments 
+
 
 	
 	//sinon erreur car pas d'argument ? Je sais pas si ya des commande sans arg donc a prendre avec des pincettes
