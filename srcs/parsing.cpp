@@ -167,69 +167,114 @@ void Server::analyzeData(int fd,  const std::vector<char> &buffer)
 	}
 }
 
-// Message parse_buffer(std::vector <std::string> &line)
-// {
+Message parse_buffer(std::vector <std::string> &line)
+{
 
-// 	// find commands 
-// 	// 
-// 	Message msg;
-// 	int	i;
-// 	int	j;
-
-// 	i = skipSpaces(buffer);
-// 	j = i;
-// 	while (buffer[j] != ' ' && buffer[j])
-// 		j++;
-// 	if (buffer[i] == '\0')
-// 		throw(std::runtime_error("buffer empty"));
-// 	msg.setCommand(std::string (buffer + i, buffer + j));
-// 	std::cout << "la commande : '" << msg.getCommand() << "'"<< std::endl;
-// 	// suite du parsing
-
-// 	//ce que tu peux faire si tu veux teddy quand je suis pas là demain matin:
+	/*
+			std::string _command;
+		std::string _argument;
 
 
-// 	//si on est pas a la fin de buffer (je parle de j vu que j est soit sur l'espace soit sur le \0)
-// 		//skip space
-// 	if (buffer[j] == ' ')
-// 		j =	skipSpaces(buffer + j);
-// 	if (buffer[j] == '\0')
-// 	{
-// 		// Erreur : Pas d'argument donc il y a forcement une erreur 
-// 		throw(std::runtime_error("Not arguments"));
-// 	}
-// 	// continuer le parsing des arguments 
-// 	std::cout << "La valeur buffer[j] :" << buffer[j] << std::endl;
-// 	if (buffer[j] == '#')
-// 	{
-// 		std::cout << "BRAVO !" << std::endl;
-// 	}
-// 	else 
-// 	{
-// 		std::cout << "On vas y arriver !" << std::endl;
-// 	}
-// 	//si la où on est c'est un '#':
-// //		{
-
-// 		//tout ce qui est directement apres le #, le recuperer et l'ajouter au vecteur '_nameChanel' de la class Message
-// 		//attention, si y'a une virgulep puis un # avec un autre nom, mettre les deux: expemple: #general,#jeux  on doit recup general et jeux sans les #
-// 		//(a verifier, tu peux demander a chat gpt, peut etre que fqut un espqce apres la virgule mmais je crois pas)
-// //		}
-// //	}
-// //sinon si c'est un '-' et que ya des truc apres, peut etre mettre ca dans option ??? PAs sur du tout faut demander, je sais vraiment pas.
-// //sinon si pas de # mais que ya des truc, mettre tout le reste en une string dans '_argument' de la class Message
+		asdkfjjklsd     adfkjsdjkl
+		                          i
+	
+	*/
 
 
-// 	//test:
-// 	if (strncmp(msg.getCommand().c_str(), "LOOL", 4) == 0)
-// 	{
-// 		std::cout << "C'est un bon point" << std::endl;
-// 	}
-// 	else
-// 		std::cout << "AIEIIEIEIEIEIIE" << std::endl;
 
-// 	return msg;
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// find commands 
+	// 
+	Message msg;
+	int	i;
+	int	j;
+
+	i = skipSpaces(buffer);
+	j = i;
+	while (buffer[j] != ' ' && buffer[j])
+		j++;
+	if (buffer[i] == '\0')
+		throw(std::runtime_error("buffer empty"));
+	msg.setCommand(std::string (buffer + i, buffer + j));
+	std::cout << "la commande : '" << msg.getCommand() << "'"<< std::endl;
+	// suite du parsing
+
+	//ce que tu peux faire si tu veux teddy quand je suis pas là demain matin:
+
+
+	//si on est pas a la fin de buffer (je parle de j vu que j est soit sur l'espace soit sur le \0)
+		//skip space
+	if (buffer[j] == ' ')
+		j =	skipSpaces(buffer + j);
+	if (buffer[j] == '\0')
+	{
+		// Erreur : Pas d'argument donc il y a forcement une erreur 
+		throw(std::runtime_error("Not arguments"));
+	}
+	// continuer le parsing des arguments 
+	std::cout << "La valeur buffer[j] :" << buffer[j] << std::endl;
+	if (buffer[j] == '#')
+	{
+		std::cout << "BRAVO !" << std::endl;
+	}
+	else 
+	{
+		std::cout << "On vas y arriver !" << std::endl;
+	}
+	//si la où on est c'est un '#':
+//		{
+
+		//tout ce qui est directement apres le #, le recuperer et l'ajouter au vecteur '_nameChanel' de la class Message
+		//attention, si y'a une virgulep puis un # avec un autre nom, mettre les deux: expemple: #general,#jeux  on doit recup general et jeux sans les #
+		//(a verifier, tu peux demander a chat gpt, peut etre que fqut un espqce apres la virgule mmais je crois pas)
+//		}
+//	}
+//sinon si c'est un '-' et que ya des truc apres, peut etre mettre ca dans option ??? PAs sur du tout faut demander, je sais vraiment pas.
+//sinon si pas de # mais que ya des truc, mettre tout le reste en une string dans '_argument' de la class Message
+
+
+	//test:
+	if (strncmp(msg.getCommand().c_str(), "LOOL", 4) == 0)
+	{
+		std::cout << "C'est un bon point" << std::endl;
+	}
+	else
+		std::cout << "AIEIIEIEIEIEIIE" << std::endl;
+
+	return msg;
+}
 
 
 
