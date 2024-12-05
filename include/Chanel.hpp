@@ -13,6 +13,7 @@
 #include "Client.hpp"
 #include "Server.hpp" //??
 
+class Message;
 class Chanel
 {
 	private:
@@ -35,6 +36,6 @@ class Chanel
 		void	setName(std::string chanName);
 };
 
-void	handleJoin(int fd, char buffer[1024], std::vector<Chanel> &_chanel);
+void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel);
 
 #endif

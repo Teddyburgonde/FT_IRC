@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/05 09:08:21 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/05 15:47:39 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,8 @@ SRCS = main.cpp \
 		serverSignals.cpp \
 		serverClear.cpp \
 		serverIncomingConnections.cpp \
+		cmd/join.cpp \
+		
 	
 
 #============== OBJECT FILES ================#

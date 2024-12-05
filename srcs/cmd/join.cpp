@@ -1,7 +1,19 @@
-#include "include/Client.hpp"
-#include "include/Server.hpp"
-#include "include/Message.hpp"
-#include "include/Chanel.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   join.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
+/*   Updated: 2024/12/05 16:24:40 by tebandam         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../include/Client.hpp"
+#include "../../include/Server.hpp"
+#include "../../include/Message.hpp"
+#include "../../include/Chanel.hpp"
 
 //La fonction ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
 std::vector<std::string> create_chanName(const char *argument)
@@ -9,17 +21,18 @@ std::vector<std::string> create_chanName(const char *argument)
 	int i = 0;
 	int	f = 0;
 	std::vector<std::string>	chanName;
-
 	//le while ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
 	//si je fais ##general ca va faire de la merde ??
 	while (argument[i] && argument[i] != ' ') //on stop quand espace ou fin de ligne //ATTENTION, PROBABLEMENT \r ou \t je sais plus
 	{
+		std::cout << " Je rentre ici" << std::endl;
 		if ((i == 0 && argument[0] == '#') || (i > 0 && argument[i - 1] == ',' && argument[i] == '#')) //si le premier carractere est un #, ou sinon faut que le #soit juste apres une ','.
 		{
 			f = i;
 			while (argument[f] && argument[f] != ',' && argument[f] != ' ') //on set f au bout de la chaine qu'on veut recup
 				f++;
 			chanName.push_back(std::string(argument + i, argument + f)); //on recupere une chaine qui debute à i et qui fini à f et on l'ajoute au vecteur chanName;
+			std::cout << " La valeur de chanName :" << chanName[0] << std::endl;
 		}
 		else if (i == 0)
 		{
@@ -37,7 +50,11 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
 {
 	std::vector<Chanel>::iterator 		it = _chanel.begin();
 	std::vector<std::string>::const_iterator	it_chanName;
-	const char 							*argument = (msg.getArgument()).c_str(); //arguement  est egale a la string stocker dans la class msg._argument
+	
+	std::string argumentStr = msg.getArgument();
+	std::cout << "Valeur de argumentStr: " << argumentStr << std::endl;
+	std::cout << "Valeur de msg.getArgument: " << msg.getArgument() << std::endl;
+	const char	*argument = argumentStr.c_str(); //arguement  est egale a la string stocker dans la class msg._argument
 	const std::vector<std::string> 			&chanName = create_chanName(argument);
 
 	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
