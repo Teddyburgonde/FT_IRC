@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:03:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 11:35:02 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 15:59:38 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ void	Server::receiveNewData(int fd)
 		buffer[bytes] = '\0';
 		// Afficher les datas sur le server
 		// std::cout << "Client <" << fd << "> sent:" << buffer << std::endl;
-		std::vector<char> bufferVector(buffer, buffer + bytes);
+		std::string bufferVector(buffer, buffer + bytes);
 		analyzeData(fd, bufferVector);
 	}
 }
+// void Server::analyzeData(int fd,  const std::string &buffer);

@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 14:29:34 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 16:44:37 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,6 @@ class Message
 		std::string getArgument() const;
 };
 
-Message parse_buffer(std::vector <std::string> &buffer);
+void parse_buffer(std::vector <std::string> &buffer, Message& msg);
 
 #endif 
