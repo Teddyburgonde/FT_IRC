@@ -25,43 +25,43 @@ void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel) // a reman
 	}
 }
 
-void	handleJoin(int fd, char buffer[1024], std::vector<Chanel> &_chanel)
-{
-	int i = 0;
-	int f = 0;
-	std::vector<Chanel>::iterator it = _chanel.begin();
-	std::string chanName;
+// void	handleJoin(int fd, char buffer[1024], std::vector<Chanel> &_chanel)
+// {
+// 	int i = 0;
+// 	int f = 0;
+// 	std::vector<Chanel>::iterator it = _chanel.begin();
+// 	std::string chanName;
 
-	while (buffer[i] != '#') //Grace au parsing, le code ici sera beaucoup moins long
-		i++;
-	f = i;
-	while (buffer[f] && buffer[f] != ',') //pour le parsing
-		f++;
-	//stocket dans une variable le bon truc de buffer
-	chanName = std::string(buffer + i, buffer + f);
-	it = _chanel.begin();
-	while (it != _chanel.end()) //on cherche si le chanel existe deja:
-	{
-		if ((*it).getName() == chanName) //si le nom du chan est le meme qu'un chan existant
-			break; //on break pour garder l'iterator sur le bon chan
-		it++;
-	}
-	std::cout << "HERE 1" << std::endl;
-	if (it == _chanel.end() && it == _chanel.begin()) //si chan existe pas
-	{
-		std::cout << "create chan " << chanName << std::endl;
-		Chanel newChan;
-		newChan.setName(chanName);
-		newChan.addUser(fd, true); //rejoin en ope psk c'est lui qui l'a cree
-		_chanel.push_back(newChan);
-	}
-	else
-	{
-		(*it).addUser(fd, false);
-		std::cout << "User: " << fd << "added to " << (*it).getName() << std::endl; //debug aussi, a retirer
-	}
-	std::cout << "HERE 2" << std::endl;
-}
+// 	while (buffer[i] != '#') //Grace au parsing, le code ici sera beaucoup moins long
+// 		i++;
+// 	f = i;
+// 	while (buffer[f] && buffer[f] != ',') //pour le parsing
+// 		f++;
+// 	//stocket dans une variable le bon truc de buffer
+// 	chanName = std::string(buffer + i, buffer + f);
+// 	it = _chanel.begin();
+// 	while (it != _chanel.end()) //on cherche si le chanel existe deja:
+// 	{
+// 		if ((*it).getName() == chanName) //si le nom du chan est le meme qu'un chan existant
+// 			break; //on break pour garder l'iterator sur le bon chan
+// 		it++;
+// 	}
+// 	std::cout << "HERE 1" << std::endl;
+// 	if (it == _chanel.end() && it == _chanel.begin()) //si chan existe pas
+// 	{
+// 		std::cout << "create chan " << chanName << std::endl;
+// 		Chanel newChan;
+// 		newChan.setName(chanName);
+// 		newChan.addUser(fd, true); //rejoin en ope psk c'est lui qui l'a cree
+// 		_chanel.push_back(newChan);
+// 	}
+// 	else
+// 	{
+// 		(*it).addUser(fd, false);
+// 		std::cout << "User: " << fd << "added to " << (*it).getName() << std::endl; //debug aussi, a retirer
+// 	}
+// 	std::cout << "HERE 2" << std::endl;
+// }
 
 
 void Server::analyzeData(int fd,  const std::vector<char> &buffer)
