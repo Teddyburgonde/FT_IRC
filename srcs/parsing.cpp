@@ -5,8 +5,6 @@
 #include <algorithm>
 
 
-
-
 void	parsing(int fd, char buffer[1024], std::vector<Chanel> &_chanel) // a remane, contiendra tout les strncmp
 {
 	//Les espaces après la commande cherché ?? Interressant tant que pas de parsing pour etre sur que la commande est pas JOINOITURE par exemple
@@ -66,17 +64,17 @@ void	handleJoin(int fd, char buffer[1024], std::vector<Chanel> &_chanel)
 }
 
 
-void Server::analyzeData(int fd, const char* buffer)
+void Server::analyzeData(int fd,  const std::vector<char> &buffer)
 {
 	Message msg;
 
-	msg = parse_buffer(buffer);
-	parsing(fd, (char*)buffer, this->_chanel); //ici sera tout les strncmp
+	//msg = parse_buffer(buffer);
+	//parsing(fd, (char*)buffer, this->_chanel); //ici sera tout les strncmp
 
 	std::string oldNick;
-	if (strncmp(buffer, "NICK ", 5) == 0)
+	if (strncmp(buffer.data(), "NICK ", 5) == 0)
 	{
-		oldNick = buffer + 5;
+		oldNick = std::string(buffer.begin() + 5, buffer.end());
 		// remove met les caracteres a supprimer a la fin
 		// erase coupe la chaine juste avant les caracteres indesirables.
 		oldNick.erase(std::remove(oldNick.begin(), oldNick.end(), '\r'), oldNick.end());
@@ -109,117 +107,129 @@ void Server::analyzeData(int fd, const char* buffer)
 			}
 		}
     }
-	if (strncmp(buffer, "PRIVMSG ", 8) == 0)
+	std::string start;
+	size_t spacePos;
+	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 	{
-		const char* start = buffer + 8; // Début après "PRIVMSG "
+
+		std::string command(buffer.begin(), buffer.end());
 
 		// Trouver le destinataire
-		const char* space = strchr(start, ' '); // Cherche le premier espace
-
-		// Pas de destinataire trouver trouvée
-		if (space == NULL)
+		spacePos = command.find(' ', 8);
+		if (spacePos == std::string::npos)
+		{
+			std::string response = ERR_NORECIPIENT(std::string ("Server"), "");
+        	send(fd, response.c_str(), response.size(), 0);
+        	return ;
+		}
+		
+		std::string recipient = command.substr(8, spacePos - 8); // Extrait le destinataire
+    	if (recipient.empty())
+		{
+        	std::string response = ERR_NORECIPIENT(std::string("Server"), "");
+        	send(fd, response.c_str(), response.size(), 0);
         	return;
-		// fais la meme chose que substr
-		// ici notre constructeur std::string::string(const char* s, size_t n);
-		// permet de creer une chaine grace a notre pointer
-		std::string recipient(start, space - start);
-		if (recipient.empty())
-		{
-			std::string response = ERR_NORECIPIENT(std::string("Server"), std::string(""));
-			send(fd, response.c_str(), response.size(), 0);
-			return ;
-		}
-		const char *colon = strchr(space, ':');
-		if (colon == NULL)
-		{
-			std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
-			send(fd, response.c_str(), response.size(), 0);
-			return ;
-		}
-		// Extraire le message
-		std::string message(colon + 1); // Tout après ":" est le message
-		bool recipientFound = false;
-		for(unsigned long i = 0; i < _clients.size(); i++)
-		{
-			// le message est destiné à un utilisateur précis
-			if (_clients[i].getNickname() == recipient)
-			{
-				send(_clients[i].getFd(), message.c_str(), message.size(), 0);
-        		recipientFound = true;
-        		break;
-			}
-			// else if // message envoyer a un chanel
-			// {
+    	}
 
-			// }
-			if (!recipientFound)
+		 // Trouver le message après ":"
+    	size_t colonPos = command.find(':', spacePos);
+    	if (colonPos == std::string::npos) 
+		{
+        	std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
+        	send(fd, response.c_str(), response.size(), 0);
+        	return;
+    	}
+
+    	std::string message = command.substr(colonPos + 1); // Tout après ":" est le message
+    	if (message.empty()) 
+		{
+        	std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
+        	send(fd, response.c_str(), response.size(), 0);
+        	return;
+    	}
+
+    	// Envoyer le message au destinataire
+    	bool recipientFound = false;
+    	for (size_t i = 0; i < _clients.size(); i++) 
+		{
+        	if (_clients[i].getNickname() == recipient) 
 			{
-				std::string response = ERR_NOSUCHNICK(std::string ("Server"), recipient);
-				send(fd, response.c_str(), response.size(), 0);
-			}
-		}
+            	send(_clients[i].getFd(), message.c_str(), message.size(), 0);
+            	recipientFound = true;
+            	break;
+        	}
+    	}
+    	if (!recipientFound) 
+		{
+        	std::string response = ERR_NOSUCHNICK(std::string("Server"), recipient);
+        	send(fd, response.c_str(), response.size(), 0);
+   		}
 	}
 }
 
-Message parse_buffer(const char *buffer)
-{
-	Message msg;
-	int	i;
-	int	j;
+// Message parse_buffer(std::vector <std::string> &line)
+// {
 
-	i = skipSpaces(buffer);
-	j = i;
-	while (buffer[j] != ' ' && buffer[j])
-		j++;
-	if (buffer[i] == '\0')
-		throw(std::runtime_error("buffer empty"));
-	msg.setCommand(std::string (buffer + i, buffer + j));
-	std::cout << "la commande : '" << msg.getCommand() << "'"<< std::endl;
-	// suite du parsing
+// 	// find commands 
+// 	// 
+// 	Message msg;
+// 	int	i;
+// 	int	j;
 
-	//ce que tu peux faire si tu veux teddy quand je suis pas là demain matin:
+// 	i = skipSpaces(buffer);
+// 	j = i;
+// 	while (buffer[j] != ' ' && buffer[j])
+// 		j++;
+// 	if (buffer[i] == '\0')
+// 		throw(std::runtime_error("buffer empty"));
+// 	msg.setCommand(std::string (buffer + i, buffer + j));
+// 	std::cout << "la commande : '" << msg.getCommand() << "'"<< std::endl;
+// 	// suite du parsing
 
-
-	//si on est pas a la fin de buffer (je parle de j vu que j est soit sur l'espace soit sur le \0)
-		//skip space
-	if (buffer[j] == ' ')
-		j =	skipSpaces(buffer + j);
-	if (buffer[j] == '\0')
-	{
-		// Erreur : Pas d'argument donc il y a forcement une erreur 
-		throw(std::runtime_error("Not arguments"));
-	}
-	// continuer le parsing des arguments 
+// 	//ce que tu peux faire si tu veux teddy quand je suis pas là demain matin:
 
 
-	
-	//sinon erreur car pas d'argument ? Je sais pas si ya des commande sans arg donc a prendre avec des pincettes
-	//si suite au skip space on est pas a la fin de buffer
-//	{
+// 	//si on est pas a la fin de buffer (je parle de j vu que j est soit sur l'espace soit sur le \0)
+// 		//skip space
+// 	if (buffer[j] == ' ')
+// 		j =	skipSpaces(buffer + j);
+// 	if (buffer[j] == '\0')
+// 	{
+// 		// Erreur : Pas d'argument donc il y a forcement une erreur 
+// 		throw(std::runtime_error("Not arguments"));
+// 	}
+// 	// continuer le parsing des arguments 
+// 	std::cout << "La valeur buffer[j] :" << buffer[j] << std::endl;
+// 	if (buffer[j] == '#')
+// 	{
+// 		std::cout << "BRAVO !" << std::endl;
+// 	}
+// 	else 
+// 	{
+// 		std::cout << "On vas y arriver !" << std::endl;
+// 	}
+// 	//si la où on est c'est un '#':
+// //		{
 
-		//si la où on est c'est un '#':
-//		{
-
-			//tout ce qui est directement apres le #, le recuperer et l'ajouter au vecteur '_nameChanel' de la class Message
-			//attention, si y'a une virgulep puis un # avec un autre nom, mettre les deux: expemple: #general,#jeux  on doit recup general et jeux sans les #
-			//(a verifier, tu peux demander a chat gpt, peut etre que fqut un espqce apres la virgule mmais je crois pas)
-//		}
-//	}
-	//sinon si c'est un '-' et que ya des truc apres, peut etre mettre ca dans option ??? PAs sur du tout faut demander, je sais vraiment pas.
-	//sinon si pas de # mais que ya des truc, mettre tout le reste en une string dans '_argument' de la class Message
+// 		//tout ce qui est directement apres le #, le recuperer et l'ajouter au vecteur '_nameChanel' de la class Message
+// 		//attention, si y'a une virgulep puis un # avec un autre nom, mettre les deux: expemple: #general,#jeux  on doit recup general et jeux sans les #
+// 		//(a verifier, tu peux demander a chat gpt, peut etre que fqut un espqce apres la virgule mmais je crois pas)
+// //		}
+// //	}
+// //sinon si c'est un '-' et que ya des truc apres, peut etre mettre ca dans option ??? PAs sur du tout faut demander, je sais vraiment pas.
+// //sinon si pas de # mais que ya des truc, mettre tout le reste en une string dans '_argument' de la class Message
 
 
+// 	//test:
+// 	if (strncmp(msg.getCommand().c_str(), "LOOL", 4) == 0)
+// 	{
+// 		std::cout << "C'est un bon point" << std::endl;
+// 	}
+// 	else
+// 		std::cout << "AIEIIEIEIEIEIIE" << std::endl;
 
-	//test:
-	if (strncmp(msg.getCommand().c_str(), "LOOL", 4) == 0)
-	{
-		std::cout << "C'est un bon point" << std::endl;
-	}
-	else
-		std::cout << "AIEIIEIEIEIEIIE" << std::endl;
-
-	return msg;
-}
+// 	return msg;
+// }
 
 
 

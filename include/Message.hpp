@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/04 10:31:11 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 10:08:15 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ class Message
 	
 	public :
 		/* Setters */
-		void setNameChanel(std::string nameChanel);
-		void setCommand(std::string command);
-		void setOption(std::string option);
+		// void setNameChanel(const std::vector <std::string> &nameChanel);
+		// void setCommand(const std::string &command);
+		// void setOption(const std::string &option);
 
 		/* Getters */
 		std::string getNameChanel() const;
@@ -44,6 +44,6 @@ class Message
 		std::string getOption() const;	
 };
 
-Message parse_buffer(const char *buffer);
+// Message parse_buffer(const char *buffer);
 
 #endif 

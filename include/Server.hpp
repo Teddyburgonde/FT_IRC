@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/04 10:11:07 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:32:44 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ class Server
 		void clearClients(int fd); // effacer les clients
 		void acceptNewClient(); // Accepter les nouveaux clients
 		void receiveNewData(int fd); // Reception de la data 
-		void analyzeData(int fd, const char* buffer);// analyse la data
+		void analyzeData(int fd,  const std::vector<char> &buffer);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
