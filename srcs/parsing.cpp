@@ -81,9 +81,60 @@ void Server::handlePrivMsg(int fd, const std::string& command)
    		}
 }
 
+
+/*
+KICK <channel> <target> [<comment>]
+L'expediteur doit etre dans le canal
+L'utilisateur a expulser doit egalement etre dans le canal.
+L'expéditeur doit avoir les privilèges requis pour expulser un utilisateur (opérateur du canal).
+
+
+:<expéditeur> KICK <channel> <target> :<comment>
+
+ERR_NOSUCHCHANNEL : Le canal n'existe pas. (Je l'ai).
+ERR_NOTONCHANNEL : L'expéditeur n'est pas sur le canal. (je l'ai).
+ERR_USERNOTINCHANNEL : L'utilisateur à expulser n'est pas sur le canal. (je l'ai) 
+ERR_CHANOPRIVSNEEDED : L'expéditeur n'a pas les droits pour expulser. (je l'ai)
+
+*/
+
+void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
+{
+	size_t spacePos = msg.getArgument().find(' ');
+	if (spacePos == std::string::npos)
+	{
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+		send(fd, response.c_str(), response.size(), 0);
+		return;
+	}
+	std::string channel = msg.getArgument().substr(0, spacePos);
+	if (channel.empty()) 
+	{
+        // Vérifier si le nom du canal est vide après extraction
+        std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+        send(fd, response.c_str(), response.size(), 0);
+        return;
+    }
+	for (std::vector<Chanel>::iterator i = _chanel.begin() ; i != _chanel.end(); i++)
+	{
+        if ((*i).getName() == channel)
+		{
+			msg.getArgument().substr(spacePos + 1);
+		}
+	}
+	std::string response = ERR_NOSUCHCHANNEL(channel);
+	send(fd, response.c_str(), response.size(), 0);
+	return;
+}
+
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
 	Message msg;
+
+	/*ajout*/
+	msg.setCommand("KICK");
+	msg.setArgument("#general Romain");
+	handleKick(fd, msg, this->_chanel);
 
 	std::vector<std::string> stringBuffer;
 	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
@@ -100,10 +151,10 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 		handlePrivMsg(fd, std::string(buffer));
-	// if (msg.getCommand() == "KICK") 
-	// {  // Ajout de la commande KICK
-    //     handleKick(fd, msg, this->_chanel);
-    // }
+	if (msg.getCommand() == "KICK") 
+	{  // Ajout de la commande KICK
+        handleKick(fd, msg, this->_chanel);
+    }
 	if (!strncmp(buffer.data(), "JOIN ", 5)) //si c'est join la commande, a changer grace au futur parsing ?
 	{
 		//std::cout << "made join " << std::endl; //debug, a retirer

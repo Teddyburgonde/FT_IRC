@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/07 14:03:24 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/07 15:02:50 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ class Server
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
 		void handlePrivMsg(int fd, const std::string& command);
-		//void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
+		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
