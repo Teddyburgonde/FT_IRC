@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 19:52:03 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/07 15:21:02 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,6 @@ std::vector<std::string> create_chanName(const char *argument)
 	return (chanName);
 }
 
-static int	is_user_already_in_chan(int fd, std::vector<int> userInChannel)
-{
-	std::vector<int>::iterator it_userInChannel;
-
-	it_userInChannel = userInChannel.begin();
-	while (it_userInChannel != userInChannel.end())
-	{
-		if (*it_userInChannel == fd) //si le user est déjà dans la liste des gens dans le serveur
-			return (1);
-		it_userInChannel++;
-	}
-	return (0);
-}
 //DEBUG, PERMET DE PRINT TOUT LES USER DE TOUT LES CHANNEL, A GARDER DE COTE
 void	print_userInchan(std::vector<Chanel> &_chanel)
 {
@@ -84,7 +71,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
 {
 	std::vector<Chanel>::iterator 		it_ChanExist; //channel existant
 	std::vector<std::string>::const_iterator	it_chanNew;
-	
+
 	std::string argumentStr = msg.getArgument();
 	//std::cout << "Valeur de argumentStr: " << argumentStr << std::endl;
 	//std::cout << "Valeur de msg.getArgument: " << msg.getArgument() << std::endl;
@@ -92,9 +79,9 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
 	const std::vector<std::string> 			&chanName = create_chanName(argument);
 
 
-	//print_userInchan(_chanel);//à enlevé, c'est du debug meme la fonction	
+	//print_userInchan(_chanel);//à enlevé, c'est du debug meme la fonction
 
-	
+
 	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
 	{
 		std::cout << "No channel joined. Try JOIN #<channel>" << std::endl;
@@ -127,7 +114,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
 			newChan.addUser(fd, true); // il rejoint en operateur psk c'est lui qui l'a créé
 			_chanel.push_back(newChan); //on ajoute le nouveau channel a la list de channel existant
 		}
-		else if (is_user_already_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
+		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
 		{
 			(*it_ChanExist).addUser(fd, false); //on ajoute la personne qui a fais la commande join à la liste des personnes qui sont dans ce channel.
 			std::cout << "User: " << fd << "added to " << (*it_ChanExist).getName() << std::endl; //debug aussi, a retirer ?? ou a laissé ???

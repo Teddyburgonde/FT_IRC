@@ -4,16 +4,16 @@
 #include "../include/Message.hpp"
 #include <algorithm>
 
-void Server::handleNick(int fd, const std::string& newNick) 
+void Server::handleNick(int fd, const std::string& newNick)
 {
-    if (newNick.empty()) 
+    if (newNick.empty())
 	{
         std::string response = ERR_NONICKNAMEGIVEN(std::string("Server"), "");
         send(fd, response.c_str(), response.size(), 0);
         return;
     }
 
-    for (size_t i = 0; i < _clients.size(); ++i) 
+    for (size_t i = 0; i < _clients.size(); ++i)
 	{
         if (_clients[i].getNickname() == newNick) {
             std::string response = ERR_NICKNAMEINUSE(std::string("Server"), newNick);
@@ -50,14 +50,14 @@ void Server::handlePrivMsg(int fd, const std::string& command)
     	}
 		 // Trouver le message après ":"
     	size_t colonPos = command.find(':', spacePos);
-    	if (colonPos == std::string::npos) 
+    	if (colonPos == std::string::npos)
 		{
         	std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
         	send(fd, response.c_str(), response.size(), 0);
         	return;
     	}
     	std::string message = command.substr(colonPos + 1); // Tout après ":" est le message
-    	if (message.empty()) 
+    	if (message.empty())
 		{
         	std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
         	send(fd, response.c_str(), response.size(), 0);
@@ -65,16 +65,16 @@ void Server::handlePrivMsg(int fd, const std::string& command)
     	}
     	// Envoyer le message au destinataire
     	bool recipientFound = false;
-    	for (size_t i = 0; i < _clients.size(); i++) 
+    	for (size_t i = 0; i < _clients.size(); i++)
 		{
-        	if (_clients[i].getNickname() == recipient) 
+        	if (_clients[i].getNickname() == recipient)
 			{
             	send(_clients[i].getFd(), message.c_str(), message.size(), 0);
             	recipientFound = true;
             	break;
         	}
     	}
-    	if (!recipientFound) 
+    	if (!recipientFound)
 		{
         	std::string response = ERR_NOSUCHNICK(std::string("Server"), recipient);
         	send(fd, response.c_str(), response.size(), 0);
@@ -91,7 +91,7 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	if (msg.getCommand().empty())
 		return ;
 	std::string newNick;
-	if (strncmp(buffer.data(), "NICK ", 5) == 0) 
+	if (strncmp(buffer.data(), "NICK ", 5) == 0)
 	{
     	std::string newNick = std::string(buffer.begin() + 5, buffer.end());
     	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\r'), newNick.end());
@@ -100,7 +100,7 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 		handlePrivMsg(fd, std::string(buffer));
-	// if (msg.getCommand() == "KICK") 
+	// if (msg.getCommand() == "KICK")
 	// {  // Ajout de la commande KICK
     //     handleKick(fd, msg, this->_chanel);
     // }
@@ -117,18 +117,23 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 		this->_chanel[0].sendMessageToChanel(fd, msg); //chanel[0] == que le premier salon. Faut coder le fais d'envoyé dans le salon ou il est le client
 		std::cout << "send a message to general" << std::endl;
 	}
+	if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size())) //si c'est join la commande, a changer grace au futur parsing ?
+	{
+		//std::cout << "made join " << std::endl; //debug, a retirer
+		handleJoin(fd, msg, this->_chanel);
+	}
 }
 
 void parse_buffer(std::vector <std::string> &buffer, Message& msg)
 {
 
 	//Message msg;
-	
+
 	// Est t'il vide ?
 	if (buffer.empty())
         throw std::runtime_error("Buffer is empty");
-	
-	
+
+
 	std::string firstElement = buffer.front();
 	if (firstElement[0] == ' ')
 	{
@@ -138,14 +143,14 @@ void parse_buffer(std::vector <std::string> &buffer, Message& msg)
 	}
 	size_t spacePos = firstElement.find(' ');
 
-	if (spacePos != std::string::npos) 
+	if (spacePos != std::string::npos)
 	{
     	std::string line = firstElement.substr(0, spacePos);
 		msg.setCommand(line);
 		std::string argument = firstElement.substr(spacePos + 1);
         msg.setArgument(argument);
-	} 
-	else 
+	}
+	else
 	{
     	msg.setCommand(firstElement);
         msg.setArgument(""); // Aucun argument

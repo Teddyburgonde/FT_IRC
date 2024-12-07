@@ -93,3 +93,12 @@ std::vector<int>	Chanel::getUserInChannel()
 	return (this->_user);
 }
 
+void	Chanel::setInvitedUser(int fd)//setter de _invitedUser
+{
+	this->_invitedUser.push_back(fd);
+}
+
+std::vector<int>	Chanel::getInvitedUser()//getter de _invitedUser
+{
+	return (this->_invitedUser);
+}

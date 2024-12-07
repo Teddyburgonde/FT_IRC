@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
+#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/05 15:47:39 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/07 17:56:29 by gmersch          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,8 +36,9 @@ SRCS = main.cpp \
 		serverClear.cpp \
 		serverIncomingConnections.cpp \
 		cmd/join.cpp \
-		
-	
+		cmd/invite.cpp \
+
+
 
 #============== OBJECT FILES ================#
 
@@ -64,12 +65,12 @@ $(NAME) : $(OBJS)
 	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(GREEN) EXECUTABLE READY !$(RESET)"
 
-clean: 
+clean:
 	@$(RM) $(OBJS)
 
 fclean: clean
-	@$(RM) $(NAME) 
+	@$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re 
+.PHONY: all clean fclean re

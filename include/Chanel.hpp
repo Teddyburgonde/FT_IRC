@@ -23,20 +23,29 @@ class Chanel
 
 		std::vector<int> _user;
 		std::vector<int> _operator;
+		std::vector<int> _invitedUser;
 
 	public:
 		Chanel();
 		~Chanel();
 
-		void	addUser(int newUser, bool isOperator);
-		void	removeUser(int newUser);
+		void	addUser(int newUser, bool isOperator); //setter de _user, isOperator set le user aussi dans _operator si 'true'
+		std::vector<int> getUserInChannel(); //getter de _user
+		void	removeUser(int newUser); //enlever un user de _user
+
+		std::string	getName(); //getter de _name
+		void		setName(std::string chanName); //setter de _name
+
 		void	sendMessageToChanel(int userSender, std::string &msg);
 
-		std::string	getName();
-		void	setName(std::string chanName);
-		std::vector<int> getUserInChannel();
+		void				setInvitedUser(int fd);//setter de _invitedUser
+		std::vector<int>	getInvitedUser();//getter de _invitedUser
+
 };
 
-void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel);
+void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel); //cmd JOIN
+int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
+void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients); //cmd INVITE
+
 
 #endif
