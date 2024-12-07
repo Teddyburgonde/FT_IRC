@@ -83,18 +83,37 @@ void Server::handlePrivMsg(int fd, const std::string& command)
 
 
 /*
+wtf 
+bool Server::isUserInChannel(int fd, const Chanel &channel)
+{
+    for (std::vector<int>::const_iterator userIt = channel.getUserInChannel().begin();
+         userIt != channel.getUserInChannel().end(); ++userIt)
+    {
+        if (*userIt == fd)
+            return true;
+    }
+    return false;
+}
+
+bool Server::isTargetInChannel(const std::string &targetUser, const Chanel &channel)
+{
+    for (std::vector<int>::const_iterator userIt = channel.getUserInChannel().begin();
+         userIt != channel.getUserInChannel().end(); ++userIt)
+    {
+        if (std::to_string(*userIt) == targetUser) // Si targetUser est un fd converti
+            return true;
+    }
+    return false;
+}
+
+
+
 KICK <channel> <target> [<comment>]
-L'expediteur doit etre dans le canal
-L'utilisateur a expulser doit egalement etre dans le canal.
-L'expéditeur doit avoir les privilèges requis pour expulser un utilisateur (opérateur du canal).
-
-
-:<expéditeur> KICK <channel> <target> :<comment>
-
-ERR_NOSUCHCHANNEL : Le canal n'existe pas. (Je l'ai).
-ERR_NOTONCHANNEL : L'expéditeur n'est pas sur le canal. (je l'ai).
-ERR_USERNOTINCHANNEL : L'utilisateur à expulser n'est pas sur le canal. (je l'ai) 
-ERR_CHANOPRIVSNEEDED : L'expéditeur n'a pas les droits pour expulser. (je l'ai)
+1. Ajouter une vérification si l’expéditeur est dans le canal.
+2. Vérifier si l’expéditeur a les privilèges nécessaires (admin).
+3. Ajouter une vérification si la cible existe avant de chercher dans le canal.
+4. Ajouter une gestion de la raison pour l’expulsion.
+5. Implémenter une méthode pour retirer la cible du canal et notifier les utilisateurs.
 
 */
 
@@ -110,22 +129,72 @@ void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 	std::string channel = msg.getArgument().substr(0, spacePos);
 	if (channel.empty()) 
 	{
-        // Vérifier si le nom du canal est vide après extraction
-        std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-        send(fd, response.c_str(), response.size(), 0);
-        return;
-    }
-	for (std::vector<Chanel>::iterator i = _chanel.begin() ; i != _chanel.end(); i++)
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+		send(fd, response.c_str(), response.size(), 0);
+		return;
+	}
+	std::string targetUser = msg.getArgument().substr(spacePos + 1);
+	if (targetUser.empty())
 	{
-        if ((*i).getName() == channel)
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+		send(fd, response.c_str(), response.size(), 0);
+		return;
+	}
+
+	// Parcourir les canaux pour trouver le canal correspondant
+	for (std::vector<Chanel>::iterator i = _chanel.begin(); i != _chanel.end(); i++)
+	{
+		if ((*i).getName() == channel)
 		{
-			msg.getArgument().substr(spacePos + 1);
+			// Vérifier si l'expéditeur est dans le canal
+			bool senderInChannel = false;
+			for (std::vector<int>::iterator userIt = (*i).getUserInChannel().begin();
+				 userIt != (*i).getUserInChannel().end(); ++userIt)
+			{
+				if (*userIt == fd) // Vérifie si l'expéditeur est dans le canal
+				{
+					senderInChannel = true;
+					break;
+				}
+			}
+
+			if (!senderInChannel)
+			{
+				std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
+				send(fd, response.c_str(), response.size(), 0);
+				return;
+			}
+
+			// Vérifier si l'utilisateur cible est dans le canal
+			bool targetInChannel = false;
+			for (std::vector<int>::iterator userIt = (*i).getUserInChannel().begin();
+				 userIt != (*i).getUserInChannel().end(); ++userIt)
+			{
+				 if (std::to_string(*userIt) == targetUser) 
+				{
+					targetInChannel = true;
+					break;
+				}
+			}
+
+			if (!targetInChannel)
+			{
+				std::string response = ERR_USERNOTINCHANNEL(std::string("Server"), targetUser, channel);
+				send(fd, response.c_str(), response.size(), 0);
+				return;
+			}
+
+			// Les vérifications sont terminées, vous pouvez avancer à l'étape suivante
+			return; // Ici, vous pouvez continuer vers la vérification des privilèges
 		}
 	}
+
+	// Si aucun canal correspondant n'est trouvé
 	std::string response = ERR_NOSUCHCHANNEL(channel);
 	send(fd, response.c_str(), response.size(), 0);
 	return;
 }
+
 
 void Server::analyzeData(int fd,  const std::string &buffer)
 {

@@ -92,4 +92,3 @@ std::vector<int>	Chanel::getUserInChannel()
 {
 	return (this->_user);
 }
-
