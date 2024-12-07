@@ -6,13 +6,14 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/05 15:51:00 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/07 14:03:24 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include "Message.hpp"
 #include <iostream>
 #include <vector>
 #include <poll.h>
@@ -72,9 +73,8 @@ int	skipSpaces(const char *str);
 
 
 
-
+class Message;
 class Client;
-
 class Chanel;
 /*
 Dans la class Server, il y a toute les informations  sur le serveur.
@@ -101,6 +101,9 @@ class Server
 		void acceptNewClient(); // Accepter les nouveaux clients
 		void receiveNewData(int fd); // Reception de la data 
 		void analyzeData(int fd,  const std::string &buffer);
+		void handleNick(int fd, const std::string& newNick) ;
+		void handlePrivMsg(int fd, const std::string& command);
+		//void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
