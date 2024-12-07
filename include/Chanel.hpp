@@ -25,6 +25,12 @@ class Chanel
 		std::vector<int> _operator;
 		std::vector<int> _invitedUser;
 
+		bool	_mode_i;
+		bool	_mode_t;
+		bool	_mode_k;
+		bool	_mode_o;
+		bool	_mode_l;
+
 	public:
 		Chanel();
 		~Chanel();

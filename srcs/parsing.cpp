@@ -126,7 +126,6 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 
 void parse_buffer(std::vector <std::string> &buffer, Message& msg)
 {
-
 	//Message msg;
 
 	// Est t'il vide ?

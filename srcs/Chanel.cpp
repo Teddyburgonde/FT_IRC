@@ -1,6 +1,6 @@
 #include "../include/Chanel.hpp"
 
-Chanel::Chanel()
+Chanel::Chanel() : _mode_i(false), _mode_k(false), _mode_l(false), _mode_o(false), _mode_t(false)
 {
 
 }
