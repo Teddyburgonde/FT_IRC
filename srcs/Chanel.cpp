@@ -1,6 +1,6 @@
 #include "../include/Chanel.hpp"
 
-Chanel::Chanel() : _mode_i(false), _mode_k(false), _mode_l(false), _mode_o(false), _mode_t(false)
+Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false)
 {
 
 }
@@ -61,6 +61,11 @@ void	Chanel::removeUser(int newUser)
 		//erreur, usr pas dans le chan
 }
 
+std::vector<int>	Chanel::getOperatorUser()//getter de _operator
+{
+	return (this->_operator);
+}
+
 void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 {
 	std::vector<int>::iterator it =  this->_user.begin(); //je set l'iterateur au debut du vecteur _user qui contient tout les user du chanel
@@ -101,4 +106,54 @@ void	Chanel::setInvitedUser(int fd)//setter de _invitedUser
 std::vector<int>	Chanel::getInvitedUser()//getter de _invitedUser
 {
 	return (this->_invitedUser);
+}
+
+void	Chanel::setModeI(bool set)
+{
+	this->_mode_i = set;
+}
+
+void	Chanel::setModeT(bool set)
+{
+	this->_mode_t = set;
+}
+
+void	Chanel::setModeK(bool set)
+{
+	this->_mode_k = set;
+}
+
+void	Chanel::setModeO(bool set)
+{
+	this->_mode_o = set;
+}
+
+void	Chanel::setModeL(bool set)
+{
+	this->_mode_l = set;
+}
+
+bool	Chanel::getModeI()
+{
+	return (this->_mode_i);
+}
+
+bool	Chanel::getModeT()
+{
+	return (this->_mode_t);
+}
+
+bool	Chanel::getModeK()
+{
+	return (this->_mode_k);
+}
+
+bool	Chanel::getModeO()
+{
+	return (this->_mode_o);
+}
+
+bool	Chanel::getModeL()
+{
+	return (this->_mode_l);
 }

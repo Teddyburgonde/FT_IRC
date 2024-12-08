@@ -104,10 +104,10 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	// {  // Ajout de la commande KICK
     //     handleKick(fd, msg, this->_chanel);
     // }
-	if (!strncmp(buffer.data(), "JOIN ", 5)) //si c'est join la commande, a changer grace au futur parsing ?
+	if (!strncmp(buffer.data(), "JOIN ", 5))
 	{
 		//std::cout << "made join " << std::endl; //debug, a retirer
-		handleJoin(fd, msg, this->_chanel);
+		handleJoin(fd, msg, this->_chanel, this->_clients);
 	}
 	if (!strncmp(buffer.data(), "SEND #general", 13)) // a redefinir, marche seulement pour general
 	{
@@ -117,10 +117,16 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 		this->_chanel[0].sendMessageToChanel(fd, msg); //chanel[0] == que le premier salon. Faut coder le fais d'envoyé dans le salon ou il est le client
 		std::cout << "send a message to general" << std::endl;
 	}
-	if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size())) //si c'est join la commande, a changer grace au futur parsing ?
+	if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size()))
 	{
 		//std::cout << "made join " << std::endl; //debug, a retirer
-		handleJoin(fd, msg, this->_chanel);
+		handleJoin(fd, msg, this->_chanel, this->_clients);
+	}
+	if (!strncmp((msg.getCommand()).c_str(), "MODE", msg.getCommand().size())) 
+	{
+		//std::cout << "made join " << std::endl; //debug, a retirer
+		modeCommand(fd, msg, this->_chanel, _clients);
+		std::cout << "MODE MADE" << std::endl;
 	}
 }
 

@@ -6,7 +6,7 @@
 #    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/07 17:56:29 by gmersch          ###   ########.fr        #
+#    Updated: 2024/12/08 12:20:56 by gmersch          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,8 @@ SRCS = main.cpp \
 		serverIncomingConnections.cpp \
 		cmd/join.cpp \
 		cmd/invite.cpp \
+		cmd/mode.cpp \
+		
 
 
 

@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/07 15:21:02 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/08 14:40:53 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,12 @@ std::vector<std::string> create_chanName(const char *argument)
 	//si je fais ##general ca va faire de la merde ??
 	while (argument[i] && argument[i] != ' ') //on stop quand espace ou fin de ligne //ATTENTION, PROBABLEMENT \r ou \t je sais plus
 	{
-		//std::cout << " Je rentre ici" << std::endl;
 		if ((i == 0 && argument[0] == '#') || (i > 0 && argument[i - 1] == ',' && argument[i] == '#')) //si le premier carractere est un #, ou sinon faut que le #soit juste apres une ','.
 		{
 			f = i;
 			while (argument[f] && argument[f] != ',' && argument[f] != ' ' && argument[f] != '\n') //on set f au bout de la chaine qu'on veut recup
 				f++;
 			chanName.push_back(std::string(argument + i, argument + f)); //on recupere une chaine qui debute à i et qui fini à f et on l'ajoute au vecteur chanName;
-			//std::cout << " La valeur de chanName :" << chanName[0] << std::endl;
 		}
 		else if (i == 0)
 		{
@@ -67,20 +65,13 @@ void	print_userInchan(std::vector<Chanel> &_chanel)
 	}
 }
 
-void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
+void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)
 {
 	std::vector<Chanel>::iterator 		it_ChanExist; //channel existant
 	std::vector<std::string>::const_iterator	it_chanNew;
-
 	std::string argumentStr = msg.getArgument();
-	//std::cout << "Valeur de argumentStr: " << argumentStr << std::endl;
-	//std::cout << "Valeur de msg.getArgument: " << msg.getArgument() << std::endl;
 	const char	*argument = argumentStr.c_str(); //arguement  est egale a la string stocker dans la class msg._argument
 	const std::vector<std::string> 			&chanName = create_chanName(argument);
-
-
-	//print_userInchan(_chanel);//à enlevé, c'est du debug meme la fonction
-
 
 	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
 	{
@@ -91,21 +82,13 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
 	it_chanNew = chanName.begin(); //init de l'iterator des differents nom de chan qu'on cherche
 	while (it_chanNew != chanName.end()) //Tant que je trouve pas 'general' par exemple dans la liste des channels existantes
 	{
-		//std::cout << "itchanName = " << *it_chanNew << std::endl;
 		it_ChanExist = _chanel.begin(); //on repart du debut de la list de channel existant afin de la parcourir en entier et de bien chercher partout
 		while (it_ChanExist != _chanel.end()) //tant qu'on a pas chercher dans tout ceux existant
 		{
-			//le \n <?????? qui fqis lq dif ??
-			//std::string chanNameExist = (*it_ChanExist).getName();
-			//std::string chanNameNEW = (*it_chanNew);
-			//std::cout << chanNameExist << " = exist" << std::endl;
-			//std::cout << chanNameNEW << " = new" << std::endl;
-			//std::cout << strcmp(((*it_ChanExist).getName()).c_str(), chanNameNEW.c_str()) << std::endl;
 			if (!strcmp(((*it_ChanExist).getName()).c_str(), (*it_chanNew).c_str())) //si le nom du chan est le meme qu'un chan existant
 				break; //on break pour garder l'iterator sur le bon chan
 			it_ChanExist++;
 		}
-		//en gros ici it vaut rien car ca break pas....
 		if (it_ChanExist == _chanel.end()) //si chan existe pas, (donc 'it' est a la fin car on a tout parcouru sans trouver)
 		{
 			std::cout << "Create chan: " << *it_chanNew << std::endl; //!debug, à retirer!
@@ -116,12 +99,14 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel)
 		}
 		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
 		{
-			(*it_ChanExist).addUser(fd, false); //on ajoute la personne qui a fais la commande join à la liste des personnes qui sont dans ce channel.
-			std::cout << "User: " << fd << "added to " << (*it_ChanExist).getName() << std::endl; //debug aussi, a retirer ?? ou a laissé ???
+			if ((*it_ChanExist).getModeI() == true && is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
+			{
+				std::string error = /*nomduserv*/ "473 " + find_nickname_with_fd(fd, _clients) + " " + (*it_ChanExist).getName() + " :Cannot join channel (+i)";
+				send(fd, error.c_str(), error.size(), 0);
+			}
+			else 
+				(*it_ChanExist).addUser(fd, false); //on ajoute la personne qui a fais la commande join à la liste des personnes qui sont dans ce channel.
 		}
-		else //channel existais deja mais user deja dedans
-			std::cout << "User " << fd << " already in channel " << (*it_ChanExist).getName() << std::endl;//Attention, faut probablement changer ce qui est ecrit !
 		it_chanNew++; //On passe au prochain channel que la personne veut rejoindre
 	}
-	//std::cout << "---------------------" << std::endl;
 }

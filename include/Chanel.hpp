@@ -19,7 +19,7 @@ class Chanel
 	private:
 		std::string	_name;
 		std::string	_topic;
-		std::string _mode;
+		//std::string _mode;
 
 		std::vector<int> _user;
 		std::vector<int> _operator;
@@ -38,6 +38,7 @@ class Chanel
 		void	addUser(int newUser, bool isOperator); //setter de _user, isOperator set le user aussi dans _operator si 'true'
 		std::vector<int> getUserInChannel(); //getter de _user
 		void	removeUser(int newUser); //enlever un user de _user
+		std::vector<int>	getOperatorUser();//getter de _operator
 
 		std::string	getName(); //getter de _name
 		void		setName(std::string chanName); //setter de _name
@@ -47,11 +48,26 @@ class Chanel
 		void				setInvitedUser(int fd);//setter de _invitedUser
 		std::vector<int>	getInvitedUser();//getter de _invitedUser
 
+		void	setModeI(bool set);
+		void	setModeT(bool set);
+		void	setModeK(bool set);
+		void	setModeO(bool set);
+		void	setModeL(bool set);
+
+		bool	getModeI();
+		bool	getModeT();
+		bool	getModeK();
+		bool	getModeO();
+		bool	getModeL();
+
 };
 
-void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel); //cmd JOIN
-int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
+void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);
 void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients); //cmd INVITE
+void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);
+
+int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
+std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel); //trouver un channel a partir de son nom
 
 
 #endif
