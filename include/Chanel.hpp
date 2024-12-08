@@ -21,7 +21,8 @@ class Chanel
 		std::string	_topic;
 		std::string _mode;
 
-		std::vector<int> _user;
+		// j'ai modifier le nom de cette variable
+		std::vector<int> _userInChannel;
 		std::vector<int> _operator;
 
 	public:
@@ -35,6 +36,7 @@ class Chanel
 		std::string	getName();
 		void	setName(std::string chanName);
 		std::vector<int> getUserInChannel();
+		const std::vector<int>& getOperators() const;
 };
 
 void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel);

@@ -117,29 +117,66 @@ KICK <channel> <target> [<comment>]
 
 */
 
+
+const std::vector<int>& Chanel::getOperators() const
+{
+	return (_operator);
+}
+
+
+
+
+/* Cette fonction Verifie si le format est bien respecter pour la commande KICK
+	KICK <channel> <target> [<comment>] 
+	Commande valide :
+	KICK #general Adrien
+	Commande invalide 
+	KICK #general
+*/
+
+bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser) 
+{
+    // Trouver la position du premier espace dans les arguments de la commande.
+    size_t spacePos = msg.getArgument().find(' ');
+    
+    // Si aucun espace n'est trouvé apres le #channel
+	// cela signifie que le format est invalide.
+    if (spacePos == std::string::npos) 
+	{
+        std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+        // Envoyer la réponse d'erreur au client qui a envoyé la commande.
+        send(fd, response.c_str(), response.size(), 0);
+        // false le format n'est pas correct.
+        return false;
+    }
+    // Extraire le nom du canal en prenant la sous-chaîne avant l'espace.
+    // donc la il y a #channel dans la variable channel 
+	channel = msg.getArgument().substr(0, spacePos);
+    // Extraire le nom de l'utilisateur cible en prenant la sous-chaîne après l'espace.
+    // substr(spacePos + 1) extrait le texte apres l'espace 
+	// donc la il y a le nom de l'utilisateur par exemple "Galaad"
+	targetUser = msg.getArgument().substr(spacePos + 1);
+
+    // Si le nom du canal ou le nom de l'utilisateur cible est vide, le format est invalide.
+    if (channel.empty() || targetUser.empty()) 
+	{
+        std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+        // Envoyer la réponse d'erreur au client qui a envoyé la commande.
+        send(fd, response.c_str(), response.size(), 0);
+         // false le format n'est pas correct.
+        return false;
+    }
+    // Command valid
+    return true;
+}
+
 void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 {
-	size_t spacePos = msg.getArgument().find(' ');
-	if (spacePos == std::string::npos)
-	{
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-		send(fd, response.c_str(), response.size(), 0);
-		return;
-	}
-	std::string channel = msg.getArgument().substr(0, spacePos);
-	if (channel.empty()) 
-	{
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-		send(fd, response.c_str(), response.size(), 0);
-		return;
-	}
-	std::string targetUser = msg.getArgument().substr(spacePos + 1);
-	if (targetUser.empty())
-	{
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-		send(fd, response.c_str(), response.size(), 0);
-		return;
-	}
+	std::string channel;
+	std::string targetUser;
+
+	if (!validateKickArgs(fd, msg, channel, targetUser))
+        return;
 
 	// Parcourir les canaux pour trouver le canal correspondant
 	for (std::vector<Chanel>::iterator i = _chanel.begin(); i != _chanel.end(); i++)
@@ -165,14 +202,24 @@ void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 				return;
 			}
 
+			std::vector<int> operators = (*i).getOperators();
+			if (std::find(operators.begin(), operators.end(), fd) == operators.end()) 
+			{
+    			std::string response = ERR_CHANOPRIVSNEEDED(std::string("Server"), channel);
+   				send(fd, response.c_str(), response.size(), 0);
+    			return;
+			}
 			// Vérifier si l'utilisateur cible est dans le canal
 			bool targetInChannel = false;
+			// La liste des utilisateurs dans le chanel
 			for (std::vector<int>::iterator userIt = (*i).getUserInChannel().begin();
 				 userIt != (*i).getUserInChannel().end(); ++userIt)
 			{
-				 if (std::to_string(*userIt) == targetUser) 
+				if (std::to_string(*userIt) == targetUser) 
 				{
 					targetInChannel = true;
+					// erase permet de le retirer de la liste des utilisateurs du chanel 
+					(*i).getUserInChannel().erase(userIt);
 					break;
 				}
 			}
@@ -188,7 +235,6 @@ void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 			return; // Ici, vous pouvez continuer vers la vérification des privilèges
 		}
 	}
-
 	// Si aucun canal correspondant n'est trouvé
 	std::string response = ERR_NOSUCHCHANNEL(channel);
 	send(fd, response.c_str(), response.size(), 0);
