@@ -20,26 +20,53 @@ class Chanel
 	private:
 		std::string	_name;
 		std::string	_topic;
-		std::string _mode;
 
-		// j'ai modifier le nom de cette variable
 		std::vector<int> _userInChannel;
 		std::vector<int> _operator;
+		std::vector<int> _invitedUser;
+
+		bool	_mode_i;
+		bool	_mode_t;
+		bool	_mode_k;
+		bool	_mode_o;
+		bool	_mode_l;
 
 	public:
 		Chanel();
 		~Chanel();
 
-		void	addUser(int newUser, bool isOperator);
-		void	removeUser(int newUser);
+		void	addUser(int newUser, bool isOperator); //setter de _userInChannel, isOperator set le user aussi dans _operator si 'true'
+		std::vector<int>& getUserInChannel(); //getter de _userInChannel
+		void	removeUser(int newUser); //enlever un user de _userInChannel
+		std::vector<int>&	getOperatorUser();//getter de _operator
+
+		std::string	getName(); //getter de _name
+		void		setName(std::string chanName); //setter de _name
+
 		void	sendMessageToChanel(int userSender, std::string &msg);
 
-		std::string	getName();
-		void	setName(std::string chanName);
-		std::vector<int>& getUserInChannel();
-		const std::vector<int>& getOperators() const;
+		void				setInvitedUser(int fd);//setter de _invitedUser
+		std::vector<int>	getInvitedUser();//getter de _invitedUser
+
+		void	setModeI(bool set);
+		void	setModeT(bool set);
+		void	setModeK(bool set);
+		void	setModeO(bool set);
+		void	setModeL(bool set);
+
+		bool	getModeI();
+		bool	getModeT();
+		bool	getModeK();
+		bool	getModeO();
+		bool	getModeL();
+
 };
 
-void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel);
+void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);
+void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients); //cmd INVITE
+void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);
+
+int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
+std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel); //trouver un channel a partir de son nom
 
 #endif

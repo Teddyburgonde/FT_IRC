@@ -13,7 +13,7 @@
 
 
 #define ERR_TOOMUCHPARAMS(client, cmd)                (client + " " + cmd + " :Too much parameters\r\n")
-#define ERR_USERONCHANNEL(nick, channel)            (": 303 " + nick + " " + channel + " :is already on channel\r\n")
+#define ERR_userInChannelONCHANNEL(nick, channel)            (": 303 " + nick + " " + channel + " :is already on channel\r\n")
 #define ERR_NOSUCHNICK(client, nickname)            (": 401 " + client + " " + nickname + " :No such nickname\r\n")
 #define ERR_NOSUCHCHANNEL(channel)                    (": 403 " + channel + " :No such channel\r\n")
 #define ERR_CANNOTSENDTOCHAN(client, channel)        (": 404 " + client + " " + channel + " :Cannot send to channel\r\n")
@@ -23,7 +23,7 @@
 #define ERR_NICKNAMEINUSE(client, nick)                (": 433 * " + client + " " + nick + " :Nickname is already in use\r\n")
 
 
-#define ERR_USERNOTINCHANNEL(client, nick, channel)    (": 441 " + client + " " + nick + " " + channel + " :They aren't on that channel\r\n")
+#define ERR_userInChannelNOTINCHANNEL(client, nick, channel)    (": 441 " + client + " " + nick + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(client, channel)            (": 442 " + client + " " + channel + " :Not on that channel\r\n")
 #define ERR_NOTREGISTERED(client)                    (": 451 " + client + " :You have not registered\r\n")
 #define ERR_NEEDMOREPARAMS(client, cmd)                (": 461 " + client + " " + cmd + " :Not enough parameters\r\n")

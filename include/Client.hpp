@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/02 09:09:32 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/09 15:08:38 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,24 +35,28 @@ class Client
 		std::string IpAddress;  // adresse ip du client
 		std::string _nickname;
 		std::string _username;
-	
+
 	public:
 		Client();
 		Client(int fd, const std::string &ip);
 		~Client();
-	
+
 	public:
 		/* Getters */
 		int getFd() const;
 		std::string    getNickname();
 		std::string    getUsername();
-		
+
 		/* Setters */
 		void    setNickname(std::string newNickname);
 		void    setUsername(std::string newUsername);
 		void    setFd(int fd); // setter pour le file descriptor
 		void    setIpAddress(const std::string &ip); // setter pour l'adresse ip
 };
+
+int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients); // amettre dans utils ??
+std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
+
 
 #endif
 

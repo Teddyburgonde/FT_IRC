@@ -1,6 +1,6 @@
 #include "../include/Chanel.hpp"
 
-Chanel::Chanel()
+Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false)
 {
 
 }
@@ -12,7 +12,7 @@ Chanel::~Chanel()
 
 void	Chanel::addUser(int newUser, bool isOperator)
 {
-	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _user
+	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
 
 	us_it = this->_userInChannel.begin();
@@ -34,7 +34,7 @@ void	Chanel::addUser(int newUser, bool isOperator)
 
 void	Chanel::removeUser(int newUser)
 {
-	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _user
+	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
 
 	us_it = this->_userInChannel.begin();
@@ -59,6 +59,11 @@ void	Chanel::removeUser(int newUser)
 	}
 	//else //si on à rien changé (donc etait pas dans le chanel)
 		//erreur, usr pas dans le chan
+}
+
+std::vector<int>&	Chanel::getOperatorUser()//getter de _operator
+{
+	return (this->_operator);
 }
 
 void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
@@ -91,4 +96,64 @@ void	Chanel::setName(std::string chanName)
 std::vector<int>&	Chanel::getUserInChannel()
 {
 	return (this->_userInChannel);
+}
+
+void	Chanel::setInvitedUser(int fd)//setter de _invitedUser
+{
+	this->_invitedUser.push_back(fd);
+}
+
+std::vector<int>	Chanel::getInvitedUser()//getter de _invitedUser
+{
+	return (this->_invitedUser);
+}
+
+void	Chanel::setModeI(bool set)
+{
+	this->_mode_i = set;
+}
+
+void	Chanel::setModeT(bool set)
+{
+	this->_mode_t = set;
+}
+
+void	Chanel::setModeK(bool set)
+{
+	this->_mode_k = set;
+}
+
+void	Chanel::setModeO(bool set)
+{
+	this->_mode_o = set;
+}
+
+void	Chanel::setModeL(bool set)
+{
+	this->_mode_l = set;
+}
+
+bool	Chanel::getModeI()
+{
+	return (this->_mode_i);
+}
+
+bool	Chanel::getModeT()
+{
+	return (this->_mode_t);
+}
+
+bool	Chanel::getModeK()
+{
+	return (this->_mode_k);
+}
+
+bool	Chanel::getModeO()
+{
+	return (this->_mode_o);
+}
+
+bool	Chanel::getModeL()
+{
+	return (this->_mode_l);
 }

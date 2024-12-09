@@ -43,5 +43,5 @@ void Server::execute_command( Request request)
 	else if (cmd == "INVITE")
 		invite_command(request);
 	else
-		send_message(SERVER_NAME " 421 " + request.get_user()->get_nickname() + " " + cmd + " :Unknown command", request.get_user()->get_fd());
+		send_message(SERVER_NAME " 421 " + request.get_userInChannel()->get_nickname() + " " + cmd + " :Unknown command", request.get_userInChannel()->get_fd());
 }
