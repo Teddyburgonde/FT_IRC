@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/08 14:40:53 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/09 15:07:34 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ std::vector<std::string> create_chanName(const char *argument)
 void	print_userInchan(std::vector<Chanel> &_chanel)
 {
 	std::vector<Chanel>::iterator	it = _chanel.begin();
-	std::vector<int> id_user;
+	std::vector<int> id_userInChannel;
 
 	while (it != _chanel.end())
 	{
 		std::cout << "Dans le channel " << (*it).getName();;
-		id_user = (*it).getUserInChannel();
-		std::vector<int>::iterator	it_id = id_user.begin();
-		while (it_id != id_user.end())
+		id_userInChannel = (*it).getUserInChannel();
+		std::vector<int>::iterator	it_id = id_userInChannel.begin();
+		while (it_id != id_userInChannel.end())
 		{
 			std::cout << "	dans channel: " << *it_id << std::endl;
 			it_id++;

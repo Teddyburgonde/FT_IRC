@@ -12,6 +12,7 @@
 #include <string.h>
 #include "Client.hpp"
 #include "Server.hpp" //??
+#include <sstream> 
 
 class Message;
 class Chanel
@@ -19,9 +20,8 @@ class Chanel
 	private:
 		std::string	_name;
 		std::string	_topic;
-		//std::string _mode;
 
-		std::vector<int> _user;
+		std::vector<int> _userInChannel;
 		std::vector<int> _operator;
 		std::vector<int> _invitedUser;
 
@@ -35,10 +35,10 @@ class Chanel
 		Chanel();
 		~Chanel();
 
-		void	addUser(int newUser, bool isOperator); //setter de _user, isOperator set le user aussi dans _operator si 'true'
-		std::vector<int> getUserInChannel(); //getter de _user
-		void	removeUser(int newUser); //enlever un user de _user
-		std::vector<int>	getOperatorUser();//getter de _operator
+		void	addUser(int newUser, bool isOperator); //setter de _userInChannel, isOperator set le user aussi dans _operator si 'true'
+		std::vector<int>& getUserInChannel(); //getter de _userInChannel
+		void	removeUser(int newUser); //enlever un user de _userInChannel
+		std::vector<int>&	getOperatorUser();//getter de _operator
 
 		std::string	getName(); //getter de _name
 		void		setName(std::string chanName); //setter de _name
@@ -68,6 +68,5 @@ void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector
 
 int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
 std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel); //trouver un channel a partir de son nom
-
 
 #endif

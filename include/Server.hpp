@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/07 14:03:24 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/09 15:30:42 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,12 @@ class Server
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
 		void handlePrivMsg(int fd, const std::string& command);
-		//void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
+		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
+		bool isSenderInChannel(int fd, Chanel &channel);
+		bool isSenderOperator(int fd, Chanel &channel);
+		bool validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
+		bool isTargetInChannel(const std::string &targetUser, Chanel &channel);
+		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };

@@ -85,6 +85,11 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 {
 	Message msg;
 
+	/*ajout*/
+	//msg.setCommand("KICK");
+	//msg.setArgument("#general Romain");
+	//handleKick(fd, msg, this->_chanel);
+
 	std::vector<std::string> stringBuffer;
 	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
 	parse_buffer(stringBuffer, msg);
@@ -100,10 +105,10 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 		handlePrivMsg(fd, std::string(buffer));
-	// if (msg.getCommand() == "KICK")
-	// {  // Ajout de la commande KICK
-    //     handleKick(fd, msg, this->_chanel);
-    // }
+	if (msg.getCommand() == "KICK") 
+	{  // Ajout de la commande KICK
+        handleKick(fd, msg, this->_chanel);
+    }
 	if (!strncmp(buffer.data(), "JOIN ", 5))
 	{
 		//std::cout << "made join " << std::endl; //debug, a retirer

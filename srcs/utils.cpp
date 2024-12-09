@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/08 12:25:27 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/09 15:05:46 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ int skipSpaces(const char *str)
 //Permet de chercher dans une list de user, un user specifique. Renvoie 1 si le user est trouvé. UNE LIST, PAS CHAN
 int	is_user_in_chan(int fd, std::vector<int> userInChannel)
 {
-	std::vector<int>::iterator it_userInChannel;
+	std::vector<int>::iterator it_userInChannelInChannel;
 
-	it_userInChannel = userInChannel.begin();
-	while (it_userInChannel != userInChannel.end())
+	it_userInChannelInChannel = userInChannel.begin();
+	while (it_userInChannelInChannel != userInChannel.end())
 	{
-		if (*it_userInChannel == fd) //si le user est déjà dans la liste des gens dans le serveur
+		if (*it_userInChannelInChannel == fd) //si le user est déjà dans la liste des gens dans le serveur
 			return (1);
-		it_userInChannel++;
+		it_userInChannelInChannel++;
 	}
 	return (0);
 }
