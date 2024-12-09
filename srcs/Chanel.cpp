@@ -15,15 +15,15 @@ void	Chanel::addUser(int newUser, bool isOperator)
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _user
 	std::vector<int>::iterator op_it;
 
-	us_it = this->_user.begin();
+	us_it = this->_userInChannel.begin();
 	op_it = this->_operator.begin();
-	while (us_it != this->_user.end()) //on parcour la list
+	while (us_it != this->_userInChannel.end()) //on parcour la list
 		us_it++;
-	if (us_it == _user.end())
-		this->_user.push_back(newUser);
+	if (us_it == _userInChannel.end())
+		this->_userInChannel.push_back(newUser);
 	if (isOperator)
 	{
-		while (op_it != this->_user.end()) //pareil mais pour la list op
+		while (op_it != this->_userInChannel.end()) //pareil mais pour la list op
 			op_it++;
 		if (us_it == _operator.end())
 			this->_operator.push_back(newUser);
@@ -37,22 +37,22 @@ void	Chanel::removeUser(int newUser)
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _user
 	std::vector<int>::iterator op_it;
 
-	us_it = this->_user.begin();
+	us_it = this->_userInChannel.begin();
 	op_it = this->_operator.begin();
-	while (us_it != this->_user.end()) //on parcour la list
+	while (us_it != this->_userInChannel.end()) //on parcour la list
 	{
 		if (*us_it == newUser)//si il est trouve
 		{
-			this->_user.erase(us_it);//on le supprime
+			this->_userInChannel.erase(us_it);//on le supprime
 			break;
 		}
 		us_it++;
 	}
-	while (op_it != this->_user.end()) //pareil mais pour la list op
+	while (op_it != this->_userInChannel.end()) //pareil mais pour la list op
 	{
 		if (*op_it == newUser)
 		{
-			this->_user.erase(op_it);
+			this->_userInChannel.erase(op_it);
 			break;
 		}
 		op_it++;
@@ -63,9 +63,9 @@ void	Chanel::removeUser(int newUser)
 
 void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 {
-	std::vector<int>::iterator it =  this->_user.begin(); //je set l'iterateur au debut du vecteur _user qui contient tout les user du chanel
+	std::vector<int>::iterator it =  this->_userInChannel.begin(); //je set l'iterateur au debut du vecteur _userInChannel qui contient tout les user du chanel
 
-	while (it != this->_user.end()) //tant que ont a pas envoyé à touts les user du chan
+	while (it != this->_userInChannel.end()) //tant que ont a pas envoyé à touts les user du chan
 	{
 		std::cout << "user in chan: " << *it << std::endl;
 		if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
@@ -88,7 +88,7 @@ void	Chanel::setName(std::string chanName)
 	this->_name = chanName;
 }
 
-std::vector<int>	Chanel::getUserInChannel()
+std::vector<int>&	Chanel::getUserInChannel()
 {
-	return (this->_user);
+	return (this->_userInChannel);
 }

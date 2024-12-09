@@ -177,8 +177,9 @@ Galaad est l'expediteur, Toto la target.
 
 bool Server::isSenderInChannel(int fd, Chanel &channel)
 {	
-	for (std::vector<int>::iterator userIt = channel.getUserInChannel().begin();
-			userIt != channel.getUserInChannel().end(); ++userIt)
+	const std::vector<int>& users = channel.getUserInChannel();
+	for (std::vector<int>::const_iterator userIt = users.begin();
+			userIt != users.end(); ++userIt)
 	{
 		if (*userIt == fd) // il a trouvé l'expéditeur. 
 			return true;
@@ -207,18 +208,21 @@ bool Server::isSenderOperator(int fd, Chanel &channel)
 Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le cas on 
 le retire de la liste des utilisateurs.
 */
+
 bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
 {
-	for (std::vector<int>::iterator userIt = channel.getUserInChannel().begin();
-			userIt != channel.getUserInChannel().end(); ++userIt)
-	{
-		if (std::to_string(*userIt) == targetUser) 
-		{
-			channel.getUserInChannel().erase(userIt);
-			return true;
-		}
-	}
-	return false;
+    std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
+    for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
+    {
+        std::ostringstream oss; 
+        oss << *userIt; // converti un entier en chaine de caractere
+        if (oss.str() == targetUser) 
+        {
+            users.erase(userIt); // Supprime l'utilisateur de la liste
+            return true;
+        }
+    }
+    return false;
 }
 
 /*
@@ -264,7 +268,11 @@ void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 				send(fd, response.c_str(), response.size(), 0);
 				return ;
 			}
-			notifyKick(*i, std::to_string(fd), targetUser, "Kicked by operator");
+			std::ostringstream oss;
+
+			oss << fd;
+			std::string fdStr = oss.str();
+			notifyKick(*i, fdStr, targetUser, "Kicked by operator");
 			return ;
 		}
 	}
