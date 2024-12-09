@@ -124,8 +124,6 @@ const std::vector<int>& Chanel::getOperators() const
 }
 
 
-
-
 /* Cette fonction Verifie si le format est bien respecter pour la commande KICK
 	KICK <channel> <target> [<comment>] 
 	Commande valide :
@@ -170,6 +168,73 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
     return true;
 }
 
+/*
+Vérifie si l'expéditeur est dans le canal
+L'expediteur c'est celui qui fais la command KICK
+Par Exemple si Galaad est connecté au server et q'il tape KICK #general Toto 
+Galaad est l'expediteur, Toto la target.
+*/
+
+bool Server::isSenderInChannel(int fd, Chanel &channel)
+{	
+	for (std::vector<int>::iterator userIt = channel.getUserInChannel().begin();
+			userIt != channel.getUserInChannel().end(); ++userIt)
+	{
+		if (*userIt == fd) // il a trouvé l'expéditeur. 
+			return true;
+	}
+	return false;	
+}
+
+/*
+Cette fonction vérifie si l'expéditeur est un operateur.
+Cela permet de savoir si l'utilisateur a les privilèges pour faire la command KICK
+*/
+bool Server::isSenderOperator(int fd, Chanel &channel)
+{
+	// dans channel il y a une liste d'operator 
+	// on stock la liste de fd (les operator) dans le vector operators.
+	std::vector<int> operators = channel.getOperators();
+
+	// Si le fd est trouvé dans le vecteur operators, 
+	// std::find retourne un itérateur pointant vers la position où l'élément a été trouvé.
+	// pour resumer si il a trouver l'operator il renvoie true sinon false
+	bool isOperator = std::find(operators.begin(), operators.end(), fd) != operators.end();
+	return (isOperator);
+}
+
+/*
+Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le cas on 
+le retire de la liste des utilisateurs.
+*/
+bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
+{
+	for (std::vector<int>::iterator userIt = channel.getUserInChannel().begin();
+			userIt != channel.getUserInChannel().end(); ++userIt)
+	{
+		if (std::to_string(*userIt) == targetUser) 
+		{
+			channel.getUserInChannel().erase(userIt);
+			return true;
+		}
+	}
+	return false;
+}
+
+/*
+Cette fonction informe tous les utilisateurs d'un canal qu'un utilisateur a été expulsé.
+*/
+
+void Server::notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason) 
+{
+	// Creation d'un message sous forme de chaîne .
+    std::string kickMessage = ":" + sender + " KICK " + channel.getName() + " " + targetUser + " :" + reason + "\r\n";
+    
+	// -1 pour envoyer le message a tout le monde sauf a celui qui viens de se faire kick
+	channel.sendMessageToChanel(-1, kickMessage);
+}
+
+
 void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 {
 	std::string channel;
@@ -177,70 +242,36 @@ void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 
 	if (!validateKickArgs(fd, msg, channel, targetUser))
         return;
-
-	// Parcourir les canaux pour trouver le canal correspondant
 	for (std::vector<Chanel>::iterator i = _chanel.begin(); i != _chanel.end(); i++)
 	{
 		if ((*i).getName() == channel)
 		{
-			// Vérifier si l'expéditeur est dans le canal
-			bool senderInChannel = false;
-			for (std::vector<int>::iterator userIt = (*i).getUserInChannel().begin();
-				 userIt != (*i).getUserInChannel().end(); ++userIt)
-			{
-				if (*userIt == fd) // Vérifie si l'expéditeur est dans le canal
-				{
-					senderInChannel = true;
-					break;
-				}
-			}
-
-			if (!senderInChannel)
+			if (!isSenderInChannel(fd, *i))
 			{
 				std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
 				send(fd, response.c_str(), response.size(), 0);
 				return;
 			}
-
-			std::vector<int> operators = (*i).getOperators();
-			if (std::find(operators.begin(), operators.end(), fd) == operators.end()) 
+			if (!isSenderOperator(fd, *i))
 			{
     			std::string response = ERR_CHANOPRIVSNEEDED(std::string("Server"), channel);
    				send(fd, response.c_str(), response.size(), 0);
     			return;
 			}
-			// Vérifier si l'utilisateur cible est dans le canal
-			bool targetInChannel = false;
-			// La liste des utilisateurs dans le chanel
-			for (std::vector<int>::iterator userIt = (*i).getUserInChannel().begin();
-				 userIt != (*i).getUserInChannel().end(); ++userIt)
-			{
-				if (std::to_string(*userIt) == targetUser) 
-				{
-					targetInChannel = true;
-					// erase permet de le retirer de la liste des utilisateurs du chanel 
-					(*i).getUserInChannel().erase(userIt);
-					break;
-				}
-			}
-
-			if (!targetInChannel)
+			if (!isTargetInChannel(targetUser, *i))
 			{
 				std::string response = ERR_USERNOTINCHANNEL(std::string("Server"), targetUser, channel);
 				send(fd, response.c_str(), response.size(), 0);
-				return;
+				return ;
 			}
-
-			// Les vérifications sont terminées, vous pouvez avancer à l'étape suivante
-			return; // Ici, vous pouvez continuer vers la vérification des privilèges
+			notifyKick(*i, std::to_string(fd), targetUser, "Kicked by operator");
+			return ;
 		}
 	}
 	// Si aucun canal correspondant n'est trouvé
 	std::string response = ERR_NOSUCHCHANNEL(channel);
 	send(fd, response.c_str(), response.size(), 0);
-	return;
 }
-
 
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
