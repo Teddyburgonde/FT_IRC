@@ -10,6 +10,35 @@ Chanel::~Chanel()
 
 }
 
+std::string	Chanel::getName()
+{
+	return (this->_name);
+}
+
+void	Chanel::setName(std::string chanName)
+{
+	this->_name = chanName;
+}
+
+std::string	Chanel::getTopic()
+{
+	return (this->_topic);
+}
+void		Chanel::setTopic(std::string topicStr) //setter de _topic
+{
+	this->_topic = topicStr;
+}
+
+std::string	Chanel::getPassword() 
+{
+	return (this->_password);
+}
+
+void		Chanel::setPassword(std::string passwordStr) //setter de _password
+{
+	this->_password = passwordStr;
+}
+
 void	Chanel::addUser(int newUser, bool isOperator)
 {
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
@@ -83,15 +112,6 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 		send(*it, msg.c_str(), msg.size(), 0);
 }
 
-std::string	Chanel::getName()
-{
-	return (this->_name);
-}
-
-void	Chanel::setName(std::string chanName)
-{
-	this->_name = chanName;
-}
 
 std::vector<int>&	Chanel::getUserInChannel()
 {

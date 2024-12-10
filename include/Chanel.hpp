@@ -20,6 +20,7 @@ class Chanel
 	private:
 		std::string	_name;
 		std::string	_topic;
+		std::string _password;
 
 		std::vector<int> _userInChannel;
 		std::vector<int> _operator;
@@ -35,13 +36,19 @@ class Chanel
 		Chanel();
 		~Chanel();
 
+		std::string	getName(); //getter de _name
+		void		setName(std::string chanName); //setter de _name
+		std::string	getTopic();
+		void		setTopic(std::string topicStr); //setter de _name
+		std::string	getPassword();
+		void		setPassword(std::string passwordStr); //setter de _name
+
+
 		void	addUser(int newUser, bool isOperator); //setter de _userInChannel, isOperator set le user aussi dans _operator si 'true'
 		std::vector<int>& getUserInChannel(); //getter de _userInChannel
 		void	removeUser(int newUser); //enlever un user de _userInChannel
 		std::vector<int>&	getOperatorUser();//getter de _operator
 
-		std::string	getName(); //getter de _name
-		void		setName(std::string chanName); //setter de _name
 
 		void	sendMessageToChanel(int userSender, std::string &msg);
 

@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:07:34 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/10 17:17:57 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<
 		}
 		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
 		{
+			//QUELQUE PQRT ICI, FAIRE UN CHECK SI K POUR MDP EST ACTIVE !!
 			if ((*it_ChanExist).getModeI() == true && is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
 			{
 				std::string error = /*nomduserv*/ "473 " + find_nickname_with_fd(fd, _clients) + " " + (*it_ChanExist).getName() + " :Cannot join channel (+i)";
