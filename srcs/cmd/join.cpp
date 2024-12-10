@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:07:34 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/10 11:07:40 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,16 +97,29 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<
 			newChan.addUser(fd, true); // il rejoint en operateur psk c'est lui qui l'a créé
 			_chanel.push_back(newChan); //on ajoute le nouveau channel a la list de channel existant
 		}
-		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
-		{
-			if ((*it_ChanExist).getModeI() == true && is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
-			{
-				std::string error = /*nomduserv*/ "473 " + find_nickname_with_fd(fd, _clients) + " " + (*it_ChanExist).getName() + " :Cannot join channel (+i)";
-				send(fd, error.c_str(), error.size(), 0);
-			}
-			else 
-				(*it_ChanExist).addUser(fd, false); //on ajoute la personne qui a fais la commande join à la liste des personnes qui sont dans ce channel.
-		}
+		// else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
+		// {
+		// 	if ((*it_ChanExist).getModeI() == true && is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
+		// 	{
+		// 		std::string error = /*nomduserv*/ "473 " + find_nickname_with_fd(fd, _clients) + " " + (*it_ChanExist).getName() + " :Cannot join channel (+i)";
+		// 		send(fd, error.c_str(), error.size(), 0);
+		// 	}
+		// 	else 
+		// 		(*it_ChanExist).addUser(fd, false); //on ajoute la personne qui a fais la commande join à la liste des personnes qui sont dans ce channel.
+		// }
+		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)
+{
+    if ((*it_ChanExist).getModeI() == true && is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) 
+    {
+        std::string error = "473 " + find_nickname_with_fd(fd, _clients) + " " + (*it_ChanExist).getName() + " :Cannot join channel (+i)";
+        send(fd, error.c_str(), error.size(), 0);
+    }
+    else 
+    {
+        (*it_ChanExist).addUser(fd, false); 
+        std::cout << "User " << fd << " added to channel " << (*it_ChanExist).getName() << std::endl;
+    }
+}
 		it_chanNew++; //On passe au prochain channel que la personne veut rejoindre
 	}
 }

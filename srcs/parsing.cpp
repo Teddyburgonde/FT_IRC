@@ -85,11 +85,6 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 {
 	Message msg;
 
-	/*ajout*/
-	//msg.setCommand("KICK");
-	//msg.setArgument("#general Romain");
-	//handleKick(fd, msg, this->_chanel);
-
 	std::vector<std::string> stringBuffer;
 	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
 	parse_buffer(stringBuffer, msg);
