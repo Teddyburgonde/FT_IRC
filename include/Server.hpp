@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/11 14:42:59 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/11 17:44:17 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,20 @@
 #define ERR_NOCHANMODES(channel)                    (": 477 " + channel + " :Channel doesn't support modes\r\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel)        (": 482 " + client + " " + channel + " :You're not channel operator\r\n")
 
-
-/* Utils */
-
-int	skipSpaces(const char *str);
-std::string get_next_argument(const char *line, int &index);
-
-
-
 class Message;
 class Client;
 class Chanel;
+
+/* Utils */
+
+int			skipSpaces(const char *str);
+std::string get_next_argument(const char *line, int &index);
+void		send_error(std::string error, int fd);
+int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
+std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
+Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
+
+
 /*
 Dans la class Server, il y a toute les informations  sur le serveur.
 Il y a aussi un vecteur de clients qui sont connectes au serveur.

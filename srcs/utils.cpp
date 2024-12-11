@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/11 14:53:04 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/11 16:06:16 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,49 @@ std::string get_next_argument(const char *line, int &index)
 		index++;
 	}
 	return (std::string(line + start, line + index));
+}
+
+void	send_error(std::string error, int fd)
+{
+	send(fd, error.c_str(), error.size(), 0);
+}
+
+int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients) // amettre dans utils ??
+{
+	std::vector<Client>::iterator	it = _clients.begin(); //iterator sur client
+
+	while (it != _clients.end()) //on parcour tout les clients existant
+	{
+		if (name == (*it).getNickname()) //si le nom d'un client est le meme que celui donne en parametre
+			return ((*it).getFd()); //on return le fd (int) du client.
+		it++;
+	}
+	return (0);
+}
+
+Client	find_it_client_with_fd(int fd, std::vector<Client> &_clients) // amettre dans utils ??
+{
+	std::vector<Client>::iterator	it = _clients.begin(); //iterator sur client
+
+	while (it != _clients.end()) //on parcour tout les clients existant
+	{
+		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
+			return (*it); //on return le fd (int) du client.
+		it++;
+	}
+	return (*it);
+}
+
+//Pareil, a mettre dans utils ? Sert a trouver un nickname a partir d'un fd donne. est l'inverse de find_fd_with_name
+std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients)
+{
+	std::vector<Client>::iterator	it = _clients.begin(); //iterator sur client
+
+	while (it != _clients.end()) //on parcour tout les clients existant
+	{
+		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
+			return ((*it).getNickname()); //on return le fd (int) du client.
+		it++;
+	}
+	return ("");
 }

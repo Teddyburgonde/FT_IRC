@@ -32,6 +32,9 @@ class Chanel
 		bool	_mode_o;
 		bool	_mode_l;
 
+		int		_nb_user_max;
+		int		_nb_user_in;
+
 	public:
 		Chanel();
 		~Chanel();
@@ -66,6 +69,12 @@ class Chanel
 		bool	getModeK();
 		bool	getModeO();
 		bool	getModeL();
+
+		void	set_nb_user_max(int nb);
+		void	set_nb_user_in(bool add_remove);
+
+		int		get_nb_user_max();
+		int		get_nb_user_in();
 
 };
 

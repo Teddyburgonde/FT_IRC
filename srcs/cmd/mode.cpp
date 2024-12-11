@@ -21,6 +21,21 @@ static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plu
 		it_channel.setPassword("");
 }
 
+static void	handle_modeL(std::string argument, /*int fd, Message &msg,*/ bool is_plus, Chanel it_channel/*, std::string nickname*/)
+{
+	std::string nb_user_max;
+	int i = 0;
+
+	nb_user_max = get_next_argument(argument.c_str(), i);
+	//if (nb_user_max.empty())
+	//{
+		//error
+	//}
+	//atoi de nb_user_max
+	//definir setnb_user_max du channel
+	it_channel.setModeL(is_plus);
+}
+
 static void	find_mode(std::string &mode, std::vector<Chanel>::iterator it_channel, std::string nickname_of_sender, int fd, std::string &argument, Message &msg)
 {
 	bool is_plus; //true if +, false if -
@@ -38,14 +53,9 @@ static void	find_mode(std::string &mode, std::vector<Chanel>::iterator it_channe
 	else if (mode[1] == 'o')
 		(*it_channel).setModeO(is_plus);
 	else if (mode[1] == 'l')
-		(*it_channel).setModeL(is_plus);
+		handle_modeL(argument, fd,/* msg, is_plus,*/ (*it_channel)/*, nickname_of_sender*/);
 	else
 		send_error(ERR_UNKNOWNMODE(nickname_of_sender, mode[1]), fd);
-}
-
-void	send_error(std::string error, int fd)
-{
-	send(fd, error.c_str(), error.size(), 0);
 }
 
 void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)

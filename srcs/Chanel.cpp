@@ -177,3 +177,27 @@ bool	Chanel::getModeL()
 {
 	return (this->_mode_l);
 }
+
+void	Chanel::set_nb_user_max(int nb)
+{
+	this->_nb_user_max = nb;
+}
+
+int		Chanel::get_nb_user_max()
+{
+	return (this->_nb_user_max);
+}
+
+//if add_remove = true, add somewone. If = false, remove somewone.
+void	Chanel::set_nb_user_in(bool add_remove)
+{
+	if (add_remove)
+		this->_nb_user_in++;
+	else
+		this->_nb_user_in--;
+}
+
+int	Chanel::get_nb_user_in()
+{
+	return (this->_nb_user_in);
+}
