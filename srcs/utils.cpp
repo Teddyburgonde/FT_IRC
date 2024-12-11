@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:05:46 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/11 14:53:04 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,21 @@ std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, s
 		it_channel++;
 	}
 	return (it_channel);
+}
+
+std::string get_next_argument(const char *line, int &index)
+{
+	int		start;
+	bool	full_arg = false;
+
+	while (line[index] && line[index] == ' ')
+		index++;
+	start = index;
+	while (line[start] && line[start] != '\n' && (line[start] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
+	{
+		if (line[index] == ':')
+			full_arg = true;
+		index++;
+	}
+	return (std::string(line + start, line + index));
 }

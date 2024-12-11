@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/09 15:30:42 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/11 14:42:59 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@
 #define ERR_PASSWDMISMATCH(client)                    (": 464 " + client + " :Password incorrect\r\n")
 #define ERR_KEYSET(channel)                            (": 467 " + channel + " :Channel key already set\r\n")
 #define ERR_CHANNELISFULL(client, channel)            (": 471 " + client + " " + channel + " :Cannot join channel (+l)\r\n")
+#define ERR_UNKNOWNMODE(client, mode)        			(": 472 " + client + " " + std::string(1, mode) + " :is unknown mode char to me\r\n") //ajout par Galaad
 #define ERR_INVITEONLYCHAN(client, channel)            (": 473 " + client + " " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BADCHANNELKEY(client, channel)            (": 475 " + client + " " + channel + " :Cannot join channel (+k)\r\n")
 #define ERR_NOCHANMODES(channel)                    (": 477 " + channel + " :Channel doesn't support modes\r\n")
@@ -67,9 +68,7 @@
 /* Utils */
 
 int	skipSpaces(const char *str);
-
-
-
+std::string get_next_argument(const char *line, int &index);
 
 
 
