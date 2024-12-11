@@ -60,6 +60,9 @@ class Chanel
 		bool	getModeO();
 		bool	getModeL();
 
+		std::string getTopic() const;       // Ajoue Teddy 11/12/2024
+    	void setTopic(const std::string&); // Ajoue Teddy 11/12/2024
+
 };
 
 void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);

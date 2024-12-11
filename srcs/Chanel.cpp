@@ -157,3 +157,17 @@ bool	Chanel::getModeL()
 {
 	return (this->_mode_l);
 }
+
+// Ajoue Teddy 11/12/2024
+
+// Récupérer le sujet actuel du canal
+std::string Chanel::getTopic() const 
+{
+    return _topic;
+}
+
+// Définir ou modifier le sujet du canal
+void Chanel::setTopic(const std::string& topic) 
+{
+    _topic = topic;
+}
