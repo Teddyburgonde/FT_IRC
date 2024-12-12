@@ -132,9 +132,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 {
 	// 1. Verification si le channel existe 
 	size_t spacePos = msg.getArgument().find(' ');
-	std::string channel; 
-	channel = msg.getArgument().substr(0, spacePos);
-	if (channel.empty())
+	if (spacePos == std::string::npos)
 	{
 		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
         // Envoyer la réponse d'erreur au client qui a envoyé la commande.
@@ -142,38 +140,56 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
          // false le format n'est pas correct.
         return ;
 	}
-	bool channelFound = false;
-    for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it)
+	std::string channel = msg.getArgument().substr(0, spacePos);
+    
+	Chanel* targetChannel = NULL;
+	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it)
 	{
         if (it->getName() == channel) 
 		{
-            // Le canal existe, passer à l'étape suivante
-			channelFound = true;
-            break ;
+			targetChannel = &(*it); // Conserver l'adresse du canal trouvé
+            break;
         }
     }
-	if (!channelFound) 
+	if (!targetChannel) 
 	{
 		// Si le canal n'a pas été trouvé
     	std::string response = ERR_NOSUCHCHANNEL(channel);
     	send(fd, response.c_str(), response.size(), 0);
     	return; // On arrête la fonction si le canal n'existe pas.
 	}
-	// 2. Vérifier si le canal existe dans _chanel
-	if (!isSenderInChannel(fd, *it)) 
+	// 3. Vérifier si le canal existe dans _chanel
+	if (!isSenderInChannel(fd, *targetChannel)) 
 	{
     	std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
     	send(fd, response.c_str(), response.size(), 0);
     	return;
 	}
+	size_t topicStart = msg.getArgument().find(':');
+	if (topicStart == std::string::npos)
+	{
+		// Pas de sujet fourni, renvoyer l'erreur NEEDMOREPARAMS
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
+        send(fd, response.c_str(), response.size(), 0);
+        return;
+		
+	}
+	std::string newTopic = msg.getArgument().substr(topicStart + 1);
 
-	// 3. Vérifier si _topic contient une valeur
-	// - TOPIC <channel> :<new_topic>
+    if (newTopic.empty()) 
+    {
+        // Sujet vide fourni, renvoyer le sujet actuel
+        std::string response = RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic());
+        send(fd, response.c_str(), response.size(), 0);
+        return;
+    }
 
-    // Si aucun canal correspondant n'est trouvé
-    std::string response = ERR_NOSUCHCHANNEL(channel);
-    send(fd, response.c_str(), response.size(), 0);
-
+    // Mettre à jour le sujet
+    targetChannel->setTopic(newTopic);
+    std::ostringstream oss;
+    oss << fd;
+    std::string notification = ":" + oss.str() + " TOPIC " + targetChannel->getName() + " :" + targetChannel->getTopic() + "\r\n";
+    targetChannel->sendMessageToChanel(fd, notification);
 }
 
 void Server::analyzeData(int fd,  const std::string &buffer)
