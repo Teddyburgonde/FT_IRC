@@ -106,91 +106,86 @@ Reponses possibles du serveur
 - 461 <user> TOPIC :Not enough parameters : La commande est incomplète.
 
 
-Pseudo code : 
-
-1. Savoir si le channel existe
-Cette étape doit toujours être la première. Si le channel n'existe pas, il est inutile d'effectuer les autres vérifications.
-
-2. Vérifier si l'utilisateur est dans le channel
-Cette étape est essentielle pour éviter que des utilisateurs non membres accèdent ou modifient le sujet.
-
-3. Vérifier si _topic contient une valeur
-Une fois les prérequis remplis (le channel existe, et l'utilisateur est membre), tu peux vérifier si _topic est défini ou non.
-
-4. Si _topic est vide, définir une valeur
-Logique correcte ici. Tu peux ajouter une vérification pour les permissions (seuls les opérateurs peuvent définir un sujet).
-
-5. Si _topic est déjà défini, vérifier les droits pour le modifier
-Au lieu d'interdire complètement la modification, vérifie si l'utilisateur a les droits (souvent réservé aux opérateurs). Si ce n’est pas le comportement voulu, reste sur l'idée que le sujet est immuable après sa définition.
-
-6. Afficher la valeur de _topic si elle est demandée
-Finalement, affiche le sujet si tout est conforme. Si _topic est vide, renvoie RPL_NOTOPIC.
-
+Test de la fonction 
+1. Definir un sujet ✅
+2.Cas où aucun sujet n'est fourni ✅
+3. Cas où un autre utilisateur demande le sujet ✅ 
 */
+
 
 void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel)
 {
-	// 1. Verification si le channel existe 
+	// 1. Vérifier si un canal est spécifié
 	size_t spacePos = msg.getArgument().find(' ');
-	if (spacePos == std::string::npos)
+	std::string channel = (spacePos == std::string::npos) ? msg.getArgument() : msg.getArgument().substr(0, spacePos);
+
+	if (channel.empty())
 	{
 		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
-        // Envoyer la réponse d'erreur au client qui a envoyé la commande.
-        send(fd, response.c_str(), response.size(), 0);
-         // false le format n'est pas correct.
-        return ;
+		send(fd, response.c_str(), response.size(), 0);
+		return;
 	}
-	std::string channel = msg.getArgument().substr(0, spacePos);
-    
+
+	// 2. Trouver le canal correspondant
 	Chanel* targetChannel = NULL;
 	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it)
 	{
-        if (it->getName() == channel) 
+		if (it->getName() == channel) 
 		{
-			targetChannel = &(*it); // Conserver l'adresse du canal trouvé
-            break;
-        }
-    }
+			targetChannel = &(*it);
+			break;
+		}
+	}
 	if (!targetChannel) 
 	{
-		// Si le canal n'a pas été trouvé
-    	std::string response = ERR_NOSUCHCHANNEL(channel);
-    	send(fd, response.c_str(), response.size(), 0);
-    	return; // On arrête la fonction si le canal n'existe pas.
+		std::string response = ERR_NOSUCHCHANNEL(channel);
+		send(fd, response.c_str(), response.size(), 0);
+		return;
 	}
-	// 3. Vérifier si le canal existe dans _chanel
+
+	// 3. Vérifier si l'expéditeur est dans le canal
 	if (!isSenderInChannel(fd, *targetChannel)) 
 	{
-    	std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
-    	send(fd, response.c_str(), response.size(), 0);
-    	return;
+		std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
+		send(fd, response.c_str(), response.size(), 0);
+		return;
 	}
+
+	// 4. Vérifier si un nouveau sujet est fourni
 	size_t topicStart = msg.getArgument().find(':');
-	if (topicStart == std::string::npos)
+	if (topicStart == std::string::npos) 
 	{
-		// Pas de sujet fourni, renvoyer l'erreur NEEDMOREPARAMS
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
-        send(fd, response.c_str(), response.size(), 0);
-        return;
-		
+		// Pas de nouveau sujet fourni, afficher le sujet actuel
+		if (!targetChannel->getTopic().empty()) 
+		{
+			std::string response = RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic());
+			send(fd, response.c_str(), response.size(), 0);
+			return;
+		}
+
+		// Aucun sujet défini
+		std::string response = RPL_NOTOPIC(std::string("Server"), targetChannel->getName());
+		send(fd, response.c_str(), response.size(), 0);
+		return;
 	}
+
+	// 5. Extraire et mettre à jour le sujet
 	std::string newTopic = msg.getArgument().substr(topicStart + 1);
+	if (newTopic.empty()) 
+	{
+		// Sujet vide fourni, renvoyer une erreur
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
+		send(fd, response.c_str(), response.size(), 0);
+		return;
+	}
 
-    if (newTopic.empty()) 
-    {
-        // Sujet vide fourni, renvoyer le sujet actuel
-        std::string response = RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic());
-        send(fd, response.c_str(), response.size(), 0);
-        return;
-    }
-
-    // Mettre à jour le sujet
-    targetChannel->setTopic(newTopic);
-    std::ostringstream oss;
-    oss << fd;
-    std::string notification = ":" + oss.str() + " TOPIC " + targetChannel->getName() + " :" + targetChannel->getTopic() + "\r\n";
-    targetChannel->sendMessageToChanel(fd, notification);
+	targetChannel->setTopic(newTopic);
+	std::ostringstream oss;
+	oss << fd;
+	std::string notification = ":" + oss.str() + " TOPIC " + targetChannel->getName() + " :" + targetChannel->getTopic() + "\r\n";
+	targetChannel->sendMessageToChanel(fd, notification);
 }
+
 
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
@@ -208,6 +203,16 @@ void Server::analyzeData(int fd,  const std::string &buffer)
     	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\r'), newNick.end());
     	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\n'), newNick.end());
     	handleNick(fd, newNick);
+	}
+	if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
+	{
+		std::string topicArguments = std::string(buffer.begin() + 6, buffer.end());
+    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\r'), topicArguments.end());
+    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\n'), topicArguments.end());
+    	Message msg;
+		msg.setCommand("TOPIC");
+		msg.setArgument(topicArguments);
+		handleTopic(fd, msg, _chanel);
 	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 		handlePrivMsg(fd, std::string(buffer));
