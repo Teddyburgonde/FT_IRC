@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/11 13:42:52 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/13 14:17:15 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ class Server
 		bool isTargetInChannel(const std::string &targetUser, Chanel &channel);
 		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
-	
+		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
+		void sendError(int fd, const std::string &errorMessage);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };

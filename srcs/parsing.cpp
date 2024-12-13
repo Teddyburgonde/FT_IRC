@@ -112,6 +112,23 @@ Test de la fonction
 3. Cas où un autre utilisateur demande le sujet ✅ 
 */
 
+/* Le server envoie un message d'erreur aux clients connectés */
+void Server::sendError(int fd, const std::string &errorMessage) 
+{
+	send(fd, errorMessage.c_str(), errorMessage.size(), 0);
+}
+
+/*Permet de trouver le channel */
+
+Chanel* Server::findChannel(const std::string &channelName, std::vector<Chanel> &_chanel) 
+{
+	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it) 
+	{
+		if (it->getName() == channelName)
+			return &(*it);
+	}
+	return NULL;
+}
 
 void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel)
 {
@@ -121,33 +138,22 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 
 	if (channel.empty())
 	{
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
-		send(fd, response.c_str(), response.size(), 0);
+		sendError(fd, ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"));
 		return;
 	}
 
 	// 2. Trouver le canal correspondant
-	Chanel* targetChannel = NULL;
-	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it)
-	{
-		if (it->getName() == channel) 
-		{
-			targetChannel = &(*it);
-			break;
-		}
-	}
+	Chanel* targetChannel = findChannel(channel, _chanel);
 	if (!targetChannel) 
 	{
-		std::string response = ERR_NOSUCHCHANNEL(channel);
-		send(fd, response.c_str(), response.size(), 0);
+		sendError(fd, ERR_NOSUCHCHANNEL(channel));
 		return;
 	}
 
 	// 3. Vérifier si l'expéditeur est dans le canal
 	if (!isSenderInChannel(fd, *targetChannel)) 
 	{
-		std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
-		send(fd, response.c_str(), response.size(), 0);
+		sendError(fd, ERR_NOTONCHANNEL(std::string("Server"), channel));
 		return;
 	}
 
@@ -157,15 +163,9 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 	{
 		// Pas de nouveau sujet fourni, afficher le sujet actuel
 		if (!targetChannel->getTopic().empty()) 
-		{
-			std::string response = RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic());
-			send(fd, response.c_str(), response.size(), 0);
-			return;
-		}
-
-		// Aucun sujet défini
-		std::string response = RPL_NOTOPIC(std::string("Server"), targetChannel->getName());
-		send(fd, response.c_str(), response.size(), 0);
+			sendError(fd, RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic()));
+		else
+			sendError(fd, RPL_NOTOPIC(std::string("Server"), targetChannel->getName()));
 		return;
 	}
 
@@ -173,9 +173,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 	std::string newTopic = msg.getArgument().substr(topicStart + 1);
 	if (newTopic.empty()) 
 	{
-		// Sujet vide fourni, renvoyer une erreur
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC");
-		send(fd, response.c_str(), response.size(), 0);
+		sendError(fd, ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"));
 		return;
 	}
 
