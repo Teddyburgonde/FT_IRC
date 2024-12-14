@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:32:02 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/14 19:51:48 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
         oss << *userIt; // converti un entier en chaine de caractere
         if (oss.str() == targetUser) 
         {
-            users.erase(userIt); // Supprime l'utilisateur de la liste
+            channel.removeUser(*userIt); // Supprime l'utilisateur de la liste
             return true;
         }
     }

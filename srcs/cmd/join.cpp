@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/11 17:39:40 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/14 18:54:28 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,24 +72,22 @@ void	print_userInchan(std::vector<Chanel> &_chanel)
 //return 1 if error
 int	check_active_mode(std::vector<Chanel>::iterator	&it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
 {
-	//QUELQUE PQRT ICI, FAIRE UN CHECK SI K POUR MDP EST ACTIVE !!
+	//EST CE QUE PLUSIEUR ERREURDOIVENT S'QFFICHER SI ERREUR ?? OU JUSTE UNE SEUL ET FAIRE DES ELSE IF
 	if ((*it_ChanExist).getModeI() == true && is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
 	{
 		send_error(ERR_INVITEONLYCHAN(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
 		return (1);
 	}
-	if ((*it_ChanExist).getModeK() == true)
+	if ((*it_ChanExist).getModeK() == true && (arg_after_channel.empty() || arg_after_channel != (*it_ChanExist).getPassword()))
 	{
-		if (arg_after_channel.empty() || arg_after_channel != (*it_ChanExist).getPassword()) //si pas de mdp ou mauvais mdp
-		{
-			send_error(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
-			return (1);
-		}
+		send_error(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		return (1);
 	}
-	//if ((*it_ChanExist).getModeL() == true) // nb limite de personne
-	//{
-		//a faire, check si ya pas trop de monde en comparent user in et user max de channel
-	//}
+	if ((*it_ChanExist).getModeL() == true && (*it_ChanExist).get_nb_user_in() == (*it_ChanExist).get_nb_user_max()) // nb limite de personne
+	{
+		send_error(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		return (1);	
+	}
 	return (0);
 }
 
@@ -106,7 +104,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<
 
 	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
 	{
-		std::cout << "No channel joined. Try JOIN #<channel>" << std::endl;
+		std::cout << "No channel joined. Try JOIN #<channel>" << std::endl; //erreur, pqs cout
 		return;
 	}
 	it_chanNew = chanName.begin();
@@ -122,22 +120,19 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<
 		if (it_ChanExist == _chanel.end()) //si chan existe pas, (donc 'it' est a la fin car on a tout parcouru sans trouver)
 		{
 			std::cout << "Create chan: " << *it_chanNew << std::endl; //!debug, à retirer!
-			Chanel newChan; //On créé un nouveau channel
-			newChan.setName(*it_chanNew); //on set le nom du channel qu'on viens de cree
-			newChan.addUser(fd, true); // il rejoint en operateur psk c'est lui qui l'a créé
-			_chanel.push_back(newChan); //on ajoute le nouveau channel a la list de channel existant
-			std::string joinMessage = ":" + user_sender.getNickname() + "!" + user_sender.getUsername() + "@" + user_sender.getIpAdress() + " JOIN :" + *it_chanNew + "\r\n";
+			Chanel newChan;
+			newChan.setName(*it_chanNew);
+			newChan.addUser(fd, true);
+			_chanel.push_back(newChan);
+			std::string joinMessage = RPL_JOIN(user_sender.getNickname(), (*it_ChanExist).getName());
 			send (fd, joinMessage.c_str(), joinMessage.size(), 0);
 		}
-		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0)//sinon, donc le channel existais deja
+		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0 && check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)//sinon, donc le channel existais deja
 		{
-			if (check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)//si pas d'erreur
-			{
-				(*it_ChanExist).addUser(fd, false); //on ajoute la personne qui a fais la commande join à la liste des personnes qui sont dans ce channel.
-				//faire le pvmsg qui envoie a tout ceux sur le channel
-				std::string joinMessage = ":" + user_sender.getNickname() + "!" + user_sender.getUsername() + "@" + user_sender.getIpAdress() + " JOIN :" + *it_chanNew + "\r\n";
-				send (fd, joinMessage.c_str(), joinMessage.size(), 0);
-			} 
+			(*it_ChanExist).addUser(fd, false);
+			std::string joinMessage = RPL_JOIN(user_sender.getNickname(), (*it_ChanExist).getName());
+			(*it_ChanExist).sendMessageToChanel(fd, joinMessage); //on envoie le message comme quoi quelun  a join a tout les gens du salon
+			send (fd, joinMessage.c_str(), joinMessage.size(), 0);
 		}
 		it_chanNew++; //On passe au prochain channel que la personne veut rejoindre
 	}

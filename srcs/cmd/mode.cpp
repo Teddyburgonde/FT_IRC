@@ -21,18 +21,25 @@ static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plu
 		it_channel.setPassword("");
 }
 
-static void	handle_modeL(std::string argument, /*int fd, Message &msg,*/ bool is_plus, Chanel it_channel/*, std::string nickname*/)
+static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plus, Chanel it_channel, std::string nickname)
 {
 	std::string nb_user_max;
 	int i = 0;
+	int number;
 
 	nb_user_max = get_next_argument(argument.c_str(), i);
-	//if (nb_user_max.empty())
-	//{
-		//error
-	//}
-	//atoi de nb_user_max
-	//definir setnb_user_max du channel
+	if (nb_user_max.empty())
+	{
+		//error // ???
+		return ;
+	}
+	std::stringstream ss(nb_user_max);
+	if (!(ss >> number) || !ss.eof()) //si on essaye de mettre ss dans number et que ca marche pas ou vide
+	{
+		send_error(ERR_TOOMUCHPARAMS(nickname, msg.getCommand()), fd);
+        return;
+    }
+	it_channel.set_nb_user_max(number); // on defini le nb
 	it_channel.setModeL(is_plus);
 }
 
@@ -53,7 +60,7 @@ static void	find_mode(std::string &mode, std::vector<Chanel>::iterator it_channe
 	else if (mode[1] == 'o')
 		(*it_channel).setModeO(is_plus);
 	else if (mode[1] == 'l')
-		handle_modeL(argument, fd,/* msg, is_plus,*/ (*it_channel)/*, nickname_of_sender*/);
+		handle_modeL(argument, fd, msg, is_plus, (*it_channel), nickname_of_sender);
 	else
 		send_error(ERR_UNKNOWNMODE(nickname_of_sender, mode[1]), fd);
 }

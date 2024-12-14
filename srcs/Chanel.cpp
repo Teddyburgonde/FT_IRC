@@ -1,6 +1,6 @@
 #include "../include/Chanel.hpp"
 
-Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false)
+Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false), _nb_user_in(0)
 {
 
 }
@@ -57,6 +57,7 @@ void	Chanel::addUser(int newUser, bool isOperator)
 		if (us_it == _operator.end())
 			this->_operator.push_back(newUser);
 	}
+	this->set_nb_user_in(true); //on ajoute 1 au nombre de personne dans le channel
 	//else //si on à rien changé (donc deja operator si on voulais le mettre op, ou deja client si on voulais juste le mettre en client)
 		//erreur, user deja dans le chanel/ deja op
 }
@@ -88,6 +89,7 @@ void	Chanel::removeUser(int newUser)
 	}
 	//else //si on à rien changé (donc etait pas dans le chanel)
 		//erreur, usr pas dans le chan
+	this->set_nb_user_in(false);
 }
 
 std::vector<int>&	Chanel::getOperatorUser()//getter de _operator
