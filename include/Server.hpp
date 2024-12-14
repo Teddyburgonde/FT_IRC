@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/13 14:17:15 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/14 12:50:45 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,5 +116,7 @@ class Server
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
+	void handlePrivMsg(int fd, const std::string& command);
+	void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
 
 #endif

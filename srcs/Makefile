@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
+#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/09 15:34:38 by gmersch          ###   ########.fr        #
+#    Updated: 2024/12/14 12:53:41 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,11 +30,14 @@ SRCS = main.cpp \
 		Chanel.cpp \
 		parsing.cpp \
 		Message.cpp \
+		nick.cpp \
 		utils.cpp \
+		topic.cpp \
 		serverClose.cpp \
 		serverSignals.cpp \
 		serverClear.cpp \
 		serverIncomingConnections.cpp \
+		privMsg.cpp \
 		cmd/join.cpp \
 		cmd/invite.cpp \
 		cmd/mode.cpp \
