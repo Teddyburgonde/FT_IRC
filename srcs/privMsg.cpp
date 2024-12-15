@@ -6,59 +6,58 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:49:50 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/15 14:02:17 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 15:30:53 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
+#include "../include/Chanel.hpp"
 
-void Server::handlePrivMsg(int fd, const std::string& command)
+void Server::handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel)
 {
 	int	index;
 
 	index = 0;
 	// Trouver le destinataire
-	size_t spacePos = command.find(' ', 8);
+	size_t spacePos = msg.getArgument().find(' ', 8);
 	if (spacePos == std::string::npos)
 	{
 		std::string response = ERR_NORECIPIENT(std::string ("Server"), "");
 		send(fd, response.c_str(), response.size(), 0);
 		return ;
 	}
-	//std::string get_next_argument(const char *line, int &index)
-	std::string recipient = command.substr(8, spacePos - 8); // Extrait le destinataire
-	//std::string recipient = get_next_argument(command.c_str(), index);
-	//std::cout << "Valeur de index: " << index << std::endl;
-	std::cout << "Valeur du command: " << command << std::endl;
+	if (msg.getArgument().empty())
+	{
+    	std::cout << "Aucun argument dans le message" << std::endl;
+    	return;
+	}
+	std::string recipient = get_next_argument(msg.getArgument().c_str(), index);
 	if (recipient.empty())
 	{
 		std::string response = ERR_NORECIPIENT(std::string("Server"), "");
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
+	std::string message = get_next_argument(msg.getArgument().c_str(), index);
 	if (recipient[0] == '#')
 	{
-		std::cout << "fonction de Galaad  " << recipient[0] << std::endl;
+		std::vector<Chanel>::iterator it_channel_to_send = find_channel_with_name(recipient, _chanel);
+		if (it_channel_to_send == _chanel.end())
+		{
+			std::string response = ERR_NOSUCHCHANNEL(recipient);
+			send(fd, response.c_str(), response.size(), 0);
+			return ;
+		}
+		(*it_channel_to_send).sendMessageToChanel(fd, message);
+		return ;
 	}
-	// Trouver le message après ":"
-	size_t colonPos = command.find(':', spacePos);
-	if (colonPos == std::string::npos)
-	{
-		std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
-		send(fd, response.c_str(), response.size(), 0);
-		return;
-	}
-	std::string message = command.substr(colonPos + 1); // Tout après ":" est le message
 	if (message.empty())
 	{
 		std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
-	//std::string get_next_argument(const char *line, int &index)
-	// std::cout << "Valeur du message: " << message << std::endl;
-	// std::cout << "Valeur du message[0]: " << message[0] << std::endl;
 	// Envoyer le message au destinataire
 	bool recipientFound = false;
 	for (size_t i = 0; i < _clients.size(); i++)

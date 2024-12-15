@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/15 12:47:15 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:39:18 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,18 @@ std::string get_next_argument(const char *line, int &index)
     int        start;
     bool    full_arg = false;
 
+	if (!line)
+        return "";
     while (line[index] && line[index] == ' ')
         index++;
     start = index;
-    while (line[start] && line[start] != '\n' && (line[start] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
+    while (line[index] && line[index] != '\n' && (line[index] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
     {
         if (line[index] == ':')
             full_arg = true;
         index++;
     }
+	if (start == index)
+        return "";
     return (std::string(line + start, line + index));
 }

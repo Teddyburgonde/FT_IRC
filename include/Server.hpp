@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/15 12:47:57 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:51:31 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,18 @@
 #define ERR_CHANOPRIVSNEEDED(client, channel)        (": 482 " + client + " " + channel + " :You're not channel operator\r\n")
 
 
-/* Utils */
-
-int	skipSpaces(const char *str);
-
-
-
-
 
 
 class Message;
 class Client;
 class Chanel;
+
+
+
+/* Utils */
+
+int	skipSpaces(const char *str);
+std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel);
 /*
 Dans la class Server, il y a toute les informations  sur le serveur.
 Il y a aussi un vecteur de clients qui sont connectes au serveur.
@@ -103,7 +103,7 @@ class Server
 		void receiveNewData(int fd); // Reception de la data 
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
-		void handlePrivMsg(int fd, const std::string& command);
+		//void handlePrivMsg(int fd, const std::string& command);
 		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		bool isSenderInChannel(int fd, Chanel &channel);
 		bool isSenderOperator(int fd, Chanel &channel);
@@ -113,10 +113,10 @@ class Server
 		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
 		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
 		void sendError(int fd, const std::string &errorMessage);
+		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
-	void handlePrivMsg(int fd, const std::string& command);
 	void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
 	std::string get_next_argument(const char *line, int &index);
 #endif

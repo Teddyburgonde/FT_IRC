@@ -44,7 +44,6 @@ class Chanel
 		void		setName(std::string chanName); //setter de _name
 
 		void	sendMessageToChanel(int userSender, std::string &msg);
-
 		void				setInvitedUser(int fd);//setter de _invitedUser
 		std::vector<int>	getInvitedUser();//getter de _invitedUser
 

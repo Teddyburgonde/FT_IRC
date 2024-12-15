@@ -66,7 +66,8 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 		handleTopic(fd, msg, _chanel);
 	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
-		handlePrivMsg(fd, std::string(buffer));
+		handlePrivMsg(fd, msg, this->_chanel);
+		// handlePrivMsg(fd, std::string(buffer));
 	if (msg.getCommand() == "KICK") 
 	{  // Ajout de la commande KICK
         handleKick(fd, msg, this->_chanel);
