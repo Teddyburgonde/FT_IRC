@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/14 12:50:45 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 12:47:57 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,5 +118,5 @@ class Server
 };
 	void handlePrivMsg(int fd, const std::string& command);
 	void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
-
+	std::string get_next_argument(const char *line, int &index);
 #endif

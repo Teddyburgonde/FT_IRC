@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:49:50 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/14 12:55:37 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 14:02:17 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 void Server::handlePrivMsg(int fd, const std::string& command)
 {
+	int	index;
+
+	index = 0;
 	// Trouver le destinataire
 	size_t spacePos = command.find(' ', 8);
 	if (spacePos == std::string::npos)
@@ -23,14 +26,22 @@ void Server::handlePrivMsg(int fd, const std::string& command)
 		send(fd, response.c_str(), response.size(), 0);
 		return ;
 	}
+	//std::string get_next_argument(const char *line, int &index)
 	std::string recipient = command.substr(8, spacePos - 8); // Extrait le destinataire
+	//std::string recipient = get_next_argument(command.c_str(), index);
+	//std::cout << "Valeur de index: " << index << std::endl;
+	std::cout << "Valeur du command: " << command << std::endl;
 	if (recipient.empty())
 	{
 		std::string response = ERR_NORECIPIENT(std::string("Server"), "");
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
-		// Trouver le message après ":"
+	if (recipient[0] == '#')
+	{
+		std::cout << "fonction de Galaad  " << recipient[0] << std::endl;
+	}
+	// Trouver le message après ":"
 	size_t colonPos = command.find(':', spacePos);
 	if (colonPos == std::string::npos)
 	{
@@ -45,6 +56,9 @@ void Server::handlePrivMsg(int fd, const std::string& command)
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
+	//std::string get_next_argument(const char *line, int &index)
+	// std::cout << "Valeur du message: " << message << std::endl;
+	// std::cout << "Valeur du message[0]: " << message[0] << std::endl;
 	// Envoyer le message au destinataire
 	bool recipientFound = false;
 	for (size_t i = 0; i < _clients.size(); i++)
