@@ -81,11 +81,11 @@ void	Chanel::removeUser(int newUser)
 		}
 		us_it++;
 	}
-	while (op_it != this->_userInChannel.end()) //pareil mais pour la list op
+	while (op_it != this->_operator.end()) //pareil mais pour la list op
 	{
 		if (*op_it == newUser)
 		{
-			this->_userInChannel.erase(op_it);
+			this->_operator.erase(op_it);
 			break;
 		}
 		op_it++;

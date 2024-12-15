@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/15 17:07:30 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 17:26:56 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,8 @@ bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
 		std::string stock = find_nickname_with_fd(*userIt, this->_clients);
 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser) 
         {
-            users.erase(userIt); // Supprime l'utilisateur de la liste
+           // users.erase(userIt); // Supprime l'utilisateur de la liste
+			channel.removeUser(*userIt); // Supprime l'utilisateur de la liste
             return true;
         }
     }
