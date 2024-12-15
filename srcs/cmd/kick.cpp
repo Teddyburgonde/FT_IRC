@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/10 14:19:02 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 17:07:30 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,25 @@ bool Server::isSenderOperator(int fd, Chanel &channel)
 Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le cas on 
 le retire de la liste des utilisateurs.
 */
+
+// bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
+// {
+//     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
+//     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
+//     {
+//         // std::ostringstream oss; 
+//         // oss << *userIt; // converti un entier en chaine de caractere
+//         std::ostringstream oss; 
+//         oss << *userIt; // converti un entier en chaine de caractere
+// 		std::cout << oss.str();
+// 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser) 
+//         {
+//             channel.removeUser(*userIt); // Supprime l'utilisateur de la liste
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
 {

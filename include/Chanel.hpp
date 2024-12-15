@@ -20,6 +20,7 @@ class Chanel
 	private:
 		std::string	_name;
 		std::string	_topic;
+		std::string _password;
 
 		std::vector<int> _userInChannel;
 		std::vector<int> _operator;
@@ -31,19 +32,27 @@ class Chanel
 		bool	_mode_o;
 		bool	_mode_l;
 
+		int		_nb_user_max;
+		int		_nb_user_in;
+
 	public:
 		Chanel();
 		~Chanel();
+
+		std::string	getName(); //getter de _name
+		void		setName(std::string chanName); //setter de _name
+		std::string	getPassword();
+		void		setPassword(std::string passwordStr); //setter de _name
+
 
 		void	addUser(int newUser, bool isOperator); //setter de _userInChannel, isOperator set le user aussi dans _operator si 'true'
 		std::vector<int>& getUserInChannel(); //getter de _userInChannel
 		void	removeUser(int newUser); //enlever un user de _userInChannel
 		std::vector<int>&	getOperatorUser();//getter de _operator
 
-		std::string	getName(); //getter de _name
-		void		setName(std::string chanName); //setter de _name
 
 		void	sendMessageToChanel(int userSender, std::string &msg);
+
 		void				setInvitedUser(int fd);//setter de _invitedUser
 		std::vector<int>	getInvitedUser();//getter de _invitedUser
 
@@ -59,8 +68,14 @@ class Chanel
 		bool	getModeO();
 		bool	getModeL();
 
-		std::string getTopic() const;       // Ajoue Teddy 11/12/2024
-    	void setTopic(const std::string&); // Ajoue Teddy 11/12/2024
+		void	set_nb_user_max(int nb);
+		void	set_nb_user_in(bool add_remove);
+
+		int		get_nb_user_max();
+		int		get_nb_user_in();
+
+		std::string getTopic() const;
+    	void setTopic(const std::string&); 
 
 };
 

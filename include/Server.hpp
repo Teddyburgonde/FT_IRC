@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/15 14:51:31 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/15 16:28:16 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,24 +58,26 @@
 #define ERR_PASSWDMISMATCH(client)                    (": 464 " + client + " :Password incorrect\r\n")
 #define ERR_KEYSET(channel)                            (": 467 " + channel + " :Channel key already set\r\n")
 #define ERR_CHANNELISFULL(client, channel)            (": 471 " + client + " " + channel + " :Cannot join channel (+l)\r\n")
+#define ERR_UNKNOWNMODE(client, mode)        			(": 472 " + client + " " + std::string(1, mode) + " :is unknown mode char to me\r\n") //ajout par Galaad
 #define ERR_INVITEONLYCHAN(client, channel)            (": 473 " + client + " " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BADCHANNELKEY(client, channel)            (": 475 " + client + " " + channel + " :Cannot join channel (+k)\r\n")
 #define ERR_NOCHANMODES(channel)                    (": 477 " + channel + " :Channel doesn't support modes\r\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel)        (": 482 " + client + " " + channel + " :You're not channel operator\r\n")
 
-
-
-
 class Message;
 class Client;
 class Chanel;
 
-
-
 /* Utils */
 
-int	skipSpaces(const char *str);
-std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel);
+int			skipSpaces(const char *str);
+std::string get_next_argument(const char *line, int &index);
+void		send_error(std::string error, int fd);
+int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
+std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
+Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
+
+
 /*
 Dans la class Server, il y a toute les informations  sur le serveur.
 Il y a aussi un vecteur de clients qui sont connectes au serveur.
@@ -90,7 +92,6 @@ class Server
 		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
 		std::vector<struct pollfd> _pollFds; // tableau où sera stocker tous les sockets à surveiller
 		std::vector<Chanel> _chanel;
-	
 	public:
 		Server();
 		~Server();
@@ -103,7 +104,7 @@ class Server
 		void receiveNewData(int fd); // Reception de la data 
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
-		//void handlePrivMsg(int fd, const std::string& command);
+		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		bool isSenderInChannel(int fd, Chanel &channel);
 		bool isSenderOperator(int fd, Chanel &channel);
@@ -111,12 +112,12 @@ class Server
 		bool isTargetInChannel(const std::string &targetUser, Chanel &channel);
 		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
-		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
 		void sendError(int fd, const std::string &errorMessage);
-		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
+		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
+	
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
-	void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
-	std::string get_next_argument(const char *line, int &index);
+
+
 #endif

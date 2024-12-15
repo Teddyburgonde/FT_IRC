@@ -3,34 +3,6 @@
 #include "../../include/Message.hpp"
 #include "../../include/Chanel.hpp"
 
-int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients) // amettre dans utils ??
-{
-	std::vector<Client>::iterator	it = _clients.begin(); //iterator sur client
-
-	while (it != _clients.end()) //on parcour tout les clients existant
-	{
-		if (name == (*it).getNickname()) //si le nom d'un client est le meme que celui donne en parametre
-			return ((*it).getFd()); //on return le fd (int) du client.
-		it++;
-	}
-	return (0);
-}
-
-//Pareil, a mettre dans utils ? Sert a trouver un nickname a partir d'un fd donne. est l'inverse de find_fd_with_name
-std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients)
-{
-	std::vector<Client>::iterator	it = _clients.begin(); //iterator sur client
-
-	while (it != _clients.end()) //on parcour tout les clients existant
-	{
-		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
-			return ((*it).getNickname()); //on return le fd (int) du client.
-		it++;
-	}
-	return ("");
-}
-	
-
 void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)
 {
 	std::vector<Chanel>::iterator it_channel = _chanel.begin();

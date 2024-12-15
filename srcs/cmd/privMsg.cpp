@@ -1,18 +1,7 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   privMsg.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/14 12:49:50 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/15 15:30:53 by tebandam         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "../include/Server.hpp"
-#include "../include/Client.hpp"
-#include "../include/Chanel.hpp"
+#include "../../include/Client.hpp"
+#include "../../include/Server.hpp"
+#include "../../include/Message.hpp"
+#include "../../include/Chanel.hpp"
 
 void Server::handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel)
 {

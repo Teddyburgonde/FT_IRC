@@ -5,14 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/14 12:52:26 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/14 12:53:25 by tebandam         ###   ########.fr       */
+/*   Created: 2024/12/15 16:34:07 by tebandam          #+#    #+#             */
+/*   Updated: 2024/12/15 16:34:08 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "../include/Server.hpp"
-#include "../include/Client.hpp"
+#include "../../include/Client.hpp"
+#include "../../include/Server.hpp"
+#include "../../include/Message.hpp"
+#include "../../include/Chanel.hpp"
 
 void Server::handleNick(int fd, const std::string& newNick)
 {

@@ -4,40 +4,6 @@
 #include "../include/Message.hpp"
 #include <algorithm>
 
-
-void parse_buffer(std::vector <std::string> &buffer, Message& msg)
-{
-	//Message msg;
-
-	// Est t'il vide ?
-	if (buffer.empty())
-        throw std::runtime_error("Buffer is empty");
-
-
-	std::string firstElement = buffer.front();
-	if (firstElement[0] == ' ')
-	{
-		std::cout <<  "The command must not be preceded by a space." << std::endl;
-		return ;
-		//throw(std::runtime_error("The command must not be preceded by a space."));
-	}
-	size_t spacePos = firstElement.find(' ');
-
-	if (spacePos != std::string::npos)
-	{
-    	std::string line = firstElement.substr(0, spacePos);
-		msg.setCommand(line);
-		std::string argument = firstElement.substr(spacePos + 1);
-        msg.setArgument(argument);
-	}
-	else
-	{
-    	msg.setCommand(firstElement);
-        msg.setArgument(""); // Aucun argument
-	}
-    return ;
-}
-
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
 	Message msg;
@@ -98,3 +64,35 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	}
 }
 
+void parse_buffer(std::vector <std::string> &buffer, Message& msg)
+{
+	//Message msg;
+
+	// Est t'il vide ?
+	if (buffer.empty())
+        throw std::runtime_error("Buffer is empty");
+
+
+	std::string firstElement = buffer.front();
+	if (firstElement[0] == ' ')
+	{
+		std::cout <<  "The command must not be preceded by a space." << std::endl;
+		return ;
+		//throw(std::runtime_error("The command must not be preceded by a space."));
+	}
+	size_t spacePos = firstElement.find(' ');
+
+	if (spacePos != std::string::npos)
+	{
+    	std::string line = firstElement.substr(0, spacePos);
+		msg.setCommand(line);
+		std::string argument = firstElement.substr(spacePos + 1);
+        msg.setArgument(argument);
+	}
+	else
+	{
+    	msg.setCommand(firstElement);
+        msg.setArgument(""); // Aucun argument
+	}
+    return ;
+}
