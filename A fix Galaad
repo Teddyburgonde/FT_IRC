@@ -1,3 +1,8 @@
 FIX Chanel, c'est Channel avec deux 'n'....
 
+JOIN MODE +k et autre mode
 
+
+remplacer findChannel par find_channel_it (le miens)
+
+return logique donc tous avec () ou tous sans

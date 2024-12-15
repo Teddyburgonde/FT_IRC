@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
+#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/09 15:34:38 by gmersch          ###   ########.fr        #
+#    Updated: 2024/12/15 16:43:53 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,10 @@ SRCS = main.cpp \
 		cmd/invite.cpp \
 		cmd/mode.cpp \
 		cmd/kick.cpp \
+		cmd/nick.cpp \
+		cmd/privMsg.cpp \
+		cmd/topic.cpp \
+		
 		
 
 

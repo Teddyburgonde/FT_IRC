@@ -4,91 +4,9 @@
 #include "../include/Message.hpp"
 #include <algorithm>
 
-void Server::handleNick(int fd, const std::string& newNick)
-{
-    if (newNick.empty())
-	{
-        std::string response = ERR_NONICKNAMEGIVEN(std::string("Server"), "");
-        send(fd, response.c_str(), response.size(), 0);
-        return;
-    }
-
-    for (size_t i = 0; i < _clients.size(); ++i)
-	{
-        if (_clients[i].getNickname() == newNick) {
-            std::string response = ERR_NICKNAMEINUSE(std::string("Server"), newNick);
-            send(fd, response.c_str(), response.size(), 0);
-            return;
-        }
-
-        if (_clients[i].getFd() == fd) {
-            _clients[i].setNickname(newNick);
-            std::string response = RPL_WELCOME(newNick);
-            send(fd, response.c_str(), response.size(), 0);
-            std::cout << "Client FD: " << fd << " Nickname: " << newNick << std::endl;
-            return;
-        }
-    }
-}
-
-void Server::handlePrivMsg(int fd, const std::string& command)
-{
-	// Trouver le destinataire
-		size_t spacePos = command.find(' ', 8);
-		if (spacePos == std::string::npos)
-		{
-			std::string response = ERR_NORECIPIENT(std::string ("Server"), "");
-        	send(fd, response.c_str(), response.size(), 0);
-        	return ;
-		}
-		std::string recipient = command.substr(8, spacePos - 8); // Extrait le destinataire
-    	if (recipient.empty())
-		{
-        	std::string response = ERR_NORECIPIENT(std::string("Server"), "");
-        	send(fd, response.c_str(), response.size(), 0);
-        	return;
-    	}
-		 // Trouver le message après ":"
-    	size_t colonPos = command.find(':', spacePos);
-    	if (colonPos == std::string::npos)
-		{
-        	std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
-        	send(fd, response.c_str(), response.size(), 0);
-        	return;
-    	}
-    	std::string message = command.substr(colonPos + 1); // Tout après ":" est le message
-    	if (message.empty())
-		{
-        	std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
-        	send(fd, response.c_str(), response.size(), 0);
-        	return;
-    	}
-    	// Envoyer le message au destinataire
-    	bool recipientFound = false;
-    	for (size_t i = 0; i < _clients.size(); i++)
-		{
-        	if (_clients[i].getNickname() == recipient)
-			{
-            	send(_clients[i].getFd(), message.c_str(), message.size(), 0);
-            	recipientFound = true;
-            	break;
-        	}
-    	}
-    	if (!recipientFound)
-		{
-        	std::string response = ERR_NOSUCHNICK(std::string("Server"), recipient);
-        	send(fd, response.c_str(), response.size(), 0);
-   		}
-}
-
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
 	Message msg;
-
-	/*ajout*/
-	//msg.setCommand("KICK");
-	//msg.setArgument("#general Romain");
-	//handleKick(fd, msg, this->_chanel);
 
 	std::vector<std::string> stringBuffer;
 	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
@@ -103,8 +21,19 @@ void Server::analyzeData(int fd,  const std::string &buffer)
     	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\n'), newNick.end());
     	handleNick(fd, newNick);
 	}
+	if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
+	{
+		std::string topicArguments = std::string(buffer.begin() + 6, buffer.end());
+    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\r'), topicArguments.end());
+    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\n'), topicArguments.end());
+    	Message msg;
+		msg.setCommand("TOPIC");
+		msg.setArgument(topicArguments);
+		handleTopic(fd, msg, _chanel);
+	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
-		handlePrivMsg(fd, std::string(buffer));
+		handlePrivMsg(fd, msg, this->_chanel);
+		// handlePrivMsg(fd, std::string(buffer));
 	if (msg.getCommand() == "KICK") 
 	{  // Ajout de la commande KICK
         handleKick(fd, msg, this->_chanel);
@@ -165,9 +94,5 @@ void parse_buffer(std::vector <std::string> &buffer, Message& msg)
     	msg.setCommand(firstElement);
         msg.setArgument(""); // Aucun argument
 	}
-
-	//std::cout << "Commande extraite : " << msg.getCommand() << std::endl;
-    //std::cout << "Argument extrait : " << msg.getArgument() << std::endl;
-
     return ;
 }

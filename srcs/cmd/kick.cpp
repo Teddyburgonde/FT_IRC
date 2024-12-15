@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:32:02 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/15 17:07:30 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,11 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
     // Extraire le nom de l'utilisateur cible en prenant la sous-chaîne après l'espace.
     // substr(spacePos + 1) extrait le texte apres l'espace 
 	// donc la il y a le nom de l'utilisateur par exemple "Galaad"
-	targetUser = msg.getArgument().substr(spacePos + 1);
-
+	targetUser = msg.getArgument().substr(spacePos +1);
     // Si le nom du canal ou le nom de l'utilisateur cible est vide, le format est invalide.
-    if (channel.empty() || targetUser.empty()) 
+	targetUser.erase(std::remove(targetUser.begin(), targetUser.end(), '\r'), targetUser.end());
+	targetUser.erase(std::remove(targetUser.begin(), targetUser.end(), '\n'), targetUser.end());
+	if (channel.empty() || targetUser.empty()) 
 	{
         std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
         // Envoyer la réponse d'erreur au client qui a envoyé la commande.
@@ -102,6 +103,25 @@ Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le c
 le retire de la liste des utilisateurs.
 */
 
+// bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
+// {
+//     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
+//     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
+//     {
+//         // std::ostringstream oss; 
+//         // oss << *userIt; // converti un entier en chaine de caractere
+//         std::ostringstream oss; 
+//         oss << *userIt; // converti un entier en chaine de caractere
+// 		std::cout << oss.str();
+// 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser) 
+//         {
+//             channel.removeUser(*userIt); // Supprime l'utilisateur de la liste
+//             return true;
+//         }
+//     }
+//     return false;
+// }
+
 bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
 {
     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
@@ -109,7 +129,9 @@ bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
     {
         std::ostringstream oss; 
         oss << *userIt; // converti un entier en chaine de caractere
-        if (oss.str() == targetUser) 
+		std::cout << oss.str();
+		std::string stock = find_nickname_with_fd(*userIt, this->_clients);
+		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser) 
         {
             users.erase(userIt); // Supprime l'utilisateur de la liste
             return true;

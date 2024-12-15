@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:08:38 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/11 16:10:16 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,15 @@ class Client
 	public:
 		/* Getters */
 		int getFd() const;
-		std::string    getNickname();
-		std::string    getUsername();
+		std::string	getIpAdress();
+		std::string	getNickname();
+		std::string	getUsername();
 
 		/* Setters */
-		void    setNickname(std::string newNickname);
-		void    setUsername(std::string newUsername);
 		void    setFd(int fd); // setter pour le file descriptor
+		void    setNickname(std::string newNickname);
 		void    setIpAddress(const std::string &ip); // setter pour l'adresse ip
+		void    setUsername(std::string newUsername);
 };
 
 int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients); // amettre dans utils ??

@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:45:08 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/09 15:20:58 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/11 16:18:35 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ int Client::getFd() const
 {
 	return this->_fd;
 }
+
+std::string	Client::getIpAdress()
+{
+	return (this->IpAddress);
+}
+
 
 std::string Client::getNickname()
 {

@@ -1,6 +1,6 @@
 #include "../include/Chanel.hpp"
 
-Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false)
+Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false), _nb_user_in(0)
 {
 
 }
@@ -8,6 +8,38 @@ Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false
 Chanel::~Chanel()
 {
 
+}
+
+std::string	Chanel::getName()
+{
+	return (this->_name);
+}
+
+void		Chanel::setName(std::string chanName)
+{
+	this->_name = chanName;
+}
+
+// Récupérer le sujet actuel du canal
+std::string Chanel::getTopic() const 
+{
+    return _topic;
+}
+
+// Définir ou modifier le sujet du canal
+void Chanel::setTopic(const std::string& topic) 
+{
+    _topic = topic;
+}
+
+std::string	Chanel::getPassword() 
+{
+	return (this->_password);
+}
+
+void		Chanel::setPassword(std::string passwordStr) //setter de _password
+{
+	this->_password = passwordStr;
 }
 
 void	Chanel::addUser(int newUser, bool isOperator)
@@ -28,6 +60,7 @@ void	Chanel::addUser(int newUser, bool isOperator)
 		if (us_it == _operator.end())
 			this->_operator.push_back(newUser);
 	}
+	this->set_nb_user_in(true); //on ajoute 1 au nombre de personne dans le channel
 	//else //si on à rien changé (donc deja operator si on voulais le mettre op, ou deja client si on voulais juste le mettre en client)
 		//erreur, user deja dans le chanel/ deja op
 }
@@ -59,6 +92,7 @@ void	Chanel::removeUser(int newUser)
 	}
 	//else //si on à rien changé (donc etait pas dans le chanel)
 		//erreur, usr pas dans le chan
+	this->set_nb_user_in(false);
 }
 
 std::vector<int>&	Chanel::getOperatorUser()//getter de _operator
@@ -83,15 +117,6 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 		send(*it, msg.c_str(), msg.size(), 0);
 }
 
-std::string	Chanel::getName()
-{
-	return (this->_name);
-}
-
-void	Chanel::setName(std::string chanName)
-{
-	this->_name = chanName;
-}
 
 std::vector<int>&	Chanel::getUserInChannel()
 {
@@ -156,4 +181,28 @@ bool	Chanel::getModeO()
 bool	Chanel::getModeL()
 {
 	return (this->_mode_l);
+}
+
+void	Chanel::set_nb_user_max(int nb)
+{
+	this->_nb_user_max = nb;
+}
+
+int		Chanel::get_nb_user_max()
+{
+	return (this->_nb_user_max);
+}
+
+//if add_remove = true, add somewone. If = false, remove somewone.
+void	Chanel::set_nb_user_in(bool add_remove)
+{
+	if (add_remove)
+		this->_nb_user_in++;
+	else
+		this->_nb_user_in--;
+}
+
+int	Chanel::get_nb_user_in()
+{
+	return (this->_nb_user_in);
 }
