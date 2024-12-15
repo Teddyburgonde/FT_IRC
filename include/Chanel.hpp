@@ -41,8 +41,6 @@ class Chanel
 
 		std::string	getName(); //getter de _name
 		void		setName(std::string chanName); //setter de _name
-		std::string	getTopic();
-		void		setTopic(std::string topicStr); //setter de _name
 		std::string	getPassword();
 		void		setPassword(std::string passwordStr); //setter de _name
 
@@ -75,6 +73,9 @@ class Chanel
 
 		int		get_nb_user_max();
 		int		get_nb_user_in();
+
+		std::string getTopic() const;
+    	void setTopic(const std::string&); 
 
 };
 

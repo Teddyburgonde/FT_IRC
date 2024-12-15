@@ -3,9 +3,6 @@
 #include "../../include/Message.hpp"
 #include "../../include/Chanel.hpp"
 
-
-	
-
 void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)
 {
 	std::vector<Chanel>::iterator it_channel = _chanel.begin();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/11 16:06:16 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/15 16:40:11 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,19 +56,23 @@ std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, s
 
 std::string get_next_argument(const char *line, int &index)
 {
-	int		start;
-	bool	full_arg = false;
+    int        start;
+    bool    full_arg = false;
 
-	while (line[index] && line[index] == ' ')
-		index++;
-	start = index;
-	while (line[start] && line[start] != '\n' && (line[start] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
-	{
-		if (line[index] == ':')
-			full_arg = true;
-		index++;
-	}
-	return (std::string(line + start, line + index));
+	if (!line)
+        return "";
+    while (line[index] && line[index] == ' ')
+        index++;
+    start = index;
+    while (line[index] && line[index] != '\n' && (line[index] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
+    {
+        if (line[index] == ':')
+            full_arg = true;
+        index++;
+    }
+	if (start == index)
+        return "";
+    return (std::string(line + start, line + index));
 }
 
 void	send_error(std::string error, int fd)
@@ -102,7 +106,7 @@ Client	find_it_client_with_fd(int fd, std::vector<Client> &_clients) // amettre 
 	return (*it);
 }
 
-//Pareil, a mettre dans utils ? Sert a trouver un nickname a partir d'un fd donne. est l'inverse de find_fd_with_name
+//Sert a trouver un nickname a partir d'un fd donne. est l'inverse de find_fd_with_name
 std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients)
 {
 	std::vector<Client>::iterator	it = _clients.begin(); //iterator sur client

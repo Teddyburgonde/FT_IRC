@@ -15,18 +15,21 @@ std::string	Chanel::getName()
 	return (this->_name);
 }
 
-void	Chanel::setName(std::string chanName)
+void		Chanel::setName(std::string chanName)
 {
 	this->_name = chanName;
 }
 
-std::string	Chanel::getTopic()
+// Récupérer le sujet actuel du canal
+std::string Chanel::getTopic() const 
 {
-	return (this->_topic);
+    return _topic;
 }
-void		Chanel::setTopic(std::string topicStr) //setter de _topic
+
+// Définir ou modifier le sujet du canal
+void Chanel::setTopic(const std::string& topic) 
 {
-	this->_topic = topicStr;
+    _topic = topic;
 }
 
 std::string	Chanel::getPassword() 

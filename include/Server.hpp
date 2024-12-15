@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/11 17:44:17 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/15 16:28:16 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,17 @@ class Server
 		void receiveNewData(int fd); // Reception de la data 
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
-		void handlePrivMsg(int fd, const std::string& command);
+		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		bool isSenderInChannel(int fd, Chanel &channel);
 		bool isSenderOperator(int fd, Chanel &channel);
 		bool validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
 		bool isTargetInChannel(const std::string &targetUser, Chanel &channel);
 		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
+		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
+		void sendError(int fd, const std::string &errorMessage);
+		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
+	
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
