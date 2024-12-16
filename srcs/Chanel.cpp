@@ -109,8 +109,8 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 		//sauf que send permet de mettre des flags mais c'est a pousser.
 		it++; //on passe au user suivant
 	}
-	if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
-		send(*it, msg.c_str(), msg.size(), 0);
+	//if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
+	//	send(*it, msg.c_str(), msg.size(), 0);
 }
 
 
