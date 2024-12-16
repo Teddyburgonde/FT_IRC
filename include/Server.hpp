@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/15 16:28:16 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:52:57 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ class Server
 		void closeFds(); // fermeture des file descriptors
 		void clearClients(int fd); // effacer les clients
 		void acceptNewClient(); // Accepter les nouveaux clients
-		void receiveNewData(int fd); // Reception de la data 
+		void receiveNewData(int fd); // Reception de la data
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
 		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
@@ -109,12 +109,12 @@ class Server
 		bool isSenderInChannel(int fd, Chanel &channel);
 		bool isSenderOperator(int fd, Chanel &channel);
 		bool validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
-		bool isTargetInChannel(const std::string &targetUser, Chanel &channel);
+		bool isTargetInChannel(const std::string &targetUser, Chanel &channel, int fd);
 		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
 		void sendError(int fd, const std::string &errorMessage);
 		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
-	
+
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
