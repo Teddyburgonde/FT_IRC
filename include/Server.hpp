@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/15 16:28:16 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/16 15:38:09 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "Message.hpp"
 #include <iostream>
+#include <map>
 #include <vector>
 #include <poll.h>
 #include <netinet/in.h>
@@ -87,6 +88,7 @@ class Server
 	private:
 		int	_fd; // file descriptor du client
 		int _port;  // port du serveur
+		std::string _password; // password
 		int _serverSocketFd; // file descriptor du serveur socket
 		static bool Signal; // variable pour le signal
 		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
@@ -94,6 +96,7 @@ class Server
 		std::vector<Chanel> _chanel;
 	public:
 		Server();
+		Server(int port, std::string &password);
 		~Server();
 		void serverInit(); // initialisation du serveur
 		void createServerSocket(); // creation du serveur socket
@@ -113,8 +116,10 @@ class Server
 		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
 		void sendError(int fd, const std::string &errorMessage);
+		bool verifyPassword(const std::string& clientPassword) const; 
 		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
-	
+		std::map<int, bool> _authenticatedClients; // test 
+		bool authenticatedClients(int fd,  const std::string &buffer);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };

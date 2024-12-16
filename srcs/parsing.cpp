@@ -4,8 +4,43 @@
 #include "../include/Message.hpp"
 #include <algorithm>
 
+bool Server::authenticatedClients(int fd,  const std::string &buffer)
+{
+	if (_authenticatedClients.find(fd) == _authenticatedClients.end())
+		_authenticatedClients[fd] = false;
+	if (!_authenticatedClients[fd]) 
+	{
+		// Vérifie si la commande est "PASS"
+		if (strncmp(buffer.data(), "PASS ", 5) == 0) 
+		{
+			std::string clientPassword = std::string(buffer.begin() + 5, buffer.end());
+			clientPassword.erase(std::remove(clientPassword.begin(), clientPassword.end(), '\r'), clientPassword.end());
+			clientPassword.erase(std::remove(clientPassword.begin(), clientPassword.end(), '\n'), clientPassword.end());
+
+			if (clientPassword == _password) 
+			{
+				_authenticatedClients[fd] = true; // Authentifie le client
+				send(fd, "OK :Password accepted\n", 23, 0);
+				return true; 
+			}
+			else
+			{
+				send(fd, "ERROR :Invalid password\n", 25, 0);
+				return false;
+			}
+		}
+		else
+		{
+			send(fd, "ERROR :You must authenticate first using PASS\r\n", 47, 0);
+			return false;
+		}
+	}
+	return true;
+}
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
+	 if (!authenticatedClients(fd, buffer))
+        return;
 	Message msg;
 
 	std::vector<std::string> stringBuffer;
