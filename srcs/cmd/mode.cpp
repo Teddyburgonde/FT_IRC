@@ -3,7 +3,7 @@
 #include "../../include/Message.hpp"
 #include "../../include/Chanel.hpp"
 
-static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plus, Chanel it_channel, std::string nickname)
+static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plus, Chanel &it_channel, std::string nickname)
 {
 	std::string password;
 	int			i = 0;
@@ -21,7 +21,7 @@ static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plu
 		it_channel.setPassword("");
 }
 
-static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plus, Chanel it_channel, std::string nickname)
+static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plus, Chanel &it_channel, std::string nickname)
 {
 	std::string	nb_user_max;
 	int i = 0;
@@ -43,7 +43,7 @@ static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plu
 	it_channel.setModeL(is_plus);
 }
 
-static void handle_modeO(std::string argument, int fd, Message &msg, bool is_plus, Chanel it_channel, std::string nickname, std::vector<Client> &_clients)
+static void handle_modeO(std::string argument, int fd, Message &msg, bool is_plus, Chanel &it_channel, std::string nickname, std::vector<Client> &_clients)
 {
 	int			i = 0;
 	std::string	new_operator_name = get_next_argument(argument.c_str(), i);
@@ -53,7 +53,12 @@ static void handle_modeO(std::string argument, int fd, Message &msg, bool is_plu
 		send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
 		return;
 	}
-	//est ce que la personne qu'on veut mettre op est bien deja dans le channel
+	int fd_new_op = find_fd_with_nickname(new_operator_name, _clients);
+	if (fd_new_op == 0)
+	{
+		send_error(ERR_NOSUCHNICK(nickname, new_operator_name), fd);
+		return;
+	}
 	if (!is_user_in_chan(find_fd_with_nickname(new_operator_name, _clients), it_channel.getUserInChannel()))
 	{
 		send_error(ERR_USERNOTINCHANNEL(nickname, new_operator_name, it_channel.getName()), fd);
@@ -113,9 +118,9 @@ void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector
 		return;
 	}
 	std::string mode = get_next_argument(line, index);
-	if ((mode[0] != '+' && mode[0] != '-') || (mode.size() != 2)) //si le premier char nest pas un + ou -
+	if (mode.empty() || (mode[0] != '+' && mode[0] != '-') || (mode.size() != 2)) //si le premier char nest pas un + ou -
 	{
-		send_error(ERR_NOSUCHCHANNEL(channelName), fd); //PAS SUR, LERREUR EST MAUVAIS ARGUMENT, PAS CHANNEL PAS TROUVE ????
+		send_error(ERR_NEEDMOREPARAMS(nickname_of_sender, msg.getCommand()), fd);
 		return;
 	}
 	if (line[index] && line[index] != '\n') //si il reste des choses

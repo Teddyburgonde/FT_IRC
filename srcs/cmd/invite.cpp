@@ -7,55 +7,39 @@ void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vect
 {
 	std::vector<Chanel>::iterator it_channel = _chanel.begin();
 	int			fdUserToInvite;
-	std::string	argumentStr = msg.getArgument();
-	const char	*argument = argumentStr.c_str();
+	std::string	argument = msg.getArgument();
 	std::string	channelName; //channel en question ou on veut inviter
-	std::string name; //le nickname de la personne qu'on veut inviter
+	std::string nameInvite; //le nickname de la personne qu'on veut inviter
+	std::string nick_of_sender = find_nickname_with_fd(fd, _clients); //le nom de fd, la personne qui fais la commande
 	int	i;
-	int	f;
 
 	i = 0;//recuperer le fd de la personne qu'on veut inviter et le mettre dans fdUserToInvite
-	while (argument[i] && argument[i] != ' ' && argument[i] != '\n')
-		i++;
-	name = std::string(argument, argument + i); //name = le premier mot de msg
-	fdUserToInvite = find_fd_with_nickname(name, _clients); //on recupere le fd correspondant au nom
+	nameInvite = get_next_argument(argument.c_str(), i);
+	fdUserToInvite = find_fd_with_nickname(nameInvite, _clients); //on recupere le fd correspondant au nom
 	if (fdUserToInvite == 0) //error si le nickname est pas trouve
 	{
-		std::string error /*<< nom du serveur*/= "401 " + find_nickname_with_fd(fd, _clients) + " ";
-		error = error + name + " :No such nick/channel";
-		send(fd, error.c_str(), error.size(), 0);
+		send_error(ERR_NOSUCHNICK(nick_of_sender, nameInvite), fd);
 		return;
 	}
-	while (argument[i] && argument[i] == ' ')//recuperer le channel dont on parle
-		i++;
-	f = i; //i est egale au debut de la string contenant le channel quon veut recup
-	while (argument[f] && argument[f] != ' ' && argument[f] != '\n')
-		f++; //on va a la fin de largument qui est le channel normalement
-	channelName = std::string(argument + i, argument + f);
-	if (!argument[i] || argument[i] != '#' || i == f) //error
-	{
-		std::string error/*<< nom du serveur*/= "479 " + find_nickname_with_fd(fd, _clients) + " ";
-		error = error + channelName + " :Illegal channel name";
-		send(fd, error.c_str(), error.size(), 0);
-		return;
-	}
-	//definir it_client sur le bon channel
+	channelName = get_next_argument(argument.c_str(), i);
 	while (it_channel != _chanel.end() && (*it_channel).getName() != channelName) //tant qu'on est pas sur le bon channel ou a la fin car on peut inviter dans un channel qui existe pas
 		it_channel++;
-	if (it_channel != _chanel.end())//dans le cas ou le channel existe
+	if (channelName.empty() || channelName[0] != '#' || it_channel == _chanel.end())
 	{
-		if ((*it_channel).getModeI() == true)
-		{
-			if (is_user_in_chan(fd, (*it_channel).getOperatorUser()) == false)
-			{
-				std::string nickname_of_sender = find_nickname_with_fd(fd, _clients);
-				std::string error /*<< nom du serv*/ = "482 " + nickname_of_sender + " " + channelName + " :You're not channel operator";
-				send(fd, error.c_str(), error.size(), 0);
-				return;
-			}
-		}
-		(*it_channel).setInvitedUser(fdUserToInvite);
+		send_error(ERR_NOSUCHCHANNEL(channelName), fd);
+		return;
 	}
-	std::string msgForUserToInvite =/*<< nom du serv*/ "341 " + name + " " + find_nickname_with_fd(fd, _clients) + channelName;
+	if (is_user_in_chan(fd, (*it_channel).getUserInChannel()) == false) //si pers qui fait cmd pas dans chan
+	{
+		send_error(ERR_USERNOTINCHANNEL(nick_of_sender, nick_of_sender, channelName), fd);
+	}
+	if (is_user_in_chan(fd, (*it_channel).getOperatorUser()) == false) //check si la pers qui a fait la cmd est op du chan
+	{
+		send_error(ERR_CHANOPRIVSNEEDED(nick_of_sender, channelName), fd);
+		return;
+	}
+	(*it_channel).setInvitedUser(fdUserToInvite);
+	//on envoie un message a la personne invitee
+	std::string msgForUserToInvite = RPL_INVITESNDR(nick_of_sender, nameInvite, channelName);
 	send(fdUserToInvite, msgForUserToInvite.c_str(), msgForUserToInvite.size(), 0);
 }
