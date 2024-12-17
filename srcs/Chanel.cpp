@@ -1,6 +1,6 @@
 #include "../include/Chanel.hpp"
 
-Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_o(false), _mode_l(false), _nb_user_in(0)
+Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_l(false), _nb_user_in(0)
 {
 
 }
@@ -21,23 +21,23 @@ void		Chanel::setName(std::string chanName)
 }
 
 // Récupérer le sujet actuel du canal
-std::string Chanel::getTopic() const 
+std::string Chanel::getTopic() const
 {
     return _topic;
 }
 
 // Définir ou modifier le sujet du canal
-void Chanel::setTopic(const std::string& topic) 
+void Chanel::setTopic(const std::string& topic)
 {
     _topic = topic;
 }
 
-std::string	Chanel::getPassword() 
+std::string	Chanel::getPassword()
 {
 	return (this->_password);
 }
 
-void		Chanel::setPassword(std::string passwordStr) //setter de _password
+void	Chanel::setPassword(std::string passwordStr) //setter de _name
 {
 	this->_password = passwordStr;
 }
@@ -47,51 +47,47 @@ void	Chanel::addUser(int newUser, bool isOperator)
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
 
-	us_it = this->_userInChannel.begin();
-	op_it = this->_operator.begin();
-	while (us_it != this->_userInChannel.end()) //on parcour la list
-		us_it++;
+	us_it = std::find(this->_userInChannel.begin(), this->_userInChannel.end(), newUser);
 	if (us_it == _userInChannel.end())
-		this->_userInChannel.push_back(newUser);
-	if (isOperator)
 	{
-		while (op_it != this->_userInChannel.end()) //pareil mais pour la list op
-			op_it++;
-		if (us_it == _operator.end())
+		this->_userInChannel.push_back(newUser);
+		this->set_nb_user_in(true);//on ajoute 1 au nombre de personne dans le channel
+	}
+	op_it = std::find(this->_operator.begin(), this->_operator.end(), newUser);
+	if (isOperator) // il doit etre op
+	{
+		if (op_it == _operator.end())
 			this->_operator.push_back(newUser);
 	}
-	this->set_nb_user_in(true); //on ajoute 1 au nombre de personne dans le channel
-	//else //si on à rien changé (donc deja operator si on voulais le mettre op, ou deja client si on voulais juste le mettre en client)
-		//erreur, user deja dans le chanel/ deja op
+	else //le user ne dois pas etre op
+	{
+		if (op_it != _operator.end())
+			this->_operator.erase(op_it);
+	}
 }
 
-void	Chanel::removeUser(int newUser)
+void	Chanel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 {
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
+	bool	user_found = false;
 
-	us_it = this->_userInChannel.begin();
-	op_it = this->_operator.begin();
-	while (us_it != this->_userInChannel.end()) //on parcour la list
+	us_it = std::find(this->_userInChannel.begin(), this->_userInChannel.end(), newUser);
+	if (us_it != _userInChannel.end())
 	{
-		if (*us_it == newUser)//si il est trouve
-		{
-			this->_userInChannel.erase(us_it);//on le supprime
-			break;
-		}
-		us_it++;
+		this->_userInChannel.erase(us_it);
+		user_found = true;
 	}
-	while (op_it != this->_userInChannel.end()) //pareil mais pour la list op
+	op_it = std::find(this->_operator.begin(), this->_operator.end(), newUser);
+	if (op_it != _operator.end())
 	{
-		if (*op_it == newUser)
-		{
-			this->_userInChannel.erase(op_it);
-			break;
-		}
-		op_it++;
+		this->_operator.erase(op_it);
 	}
-	//else //si on à rien changé (donc etait pas dans le chanel)
-		//erreur, usr pas dans le chan
+	if (user_found == false)
+	{
+		send_error(ERR_NOTONCHANNEL(find_nickname_with_fd(newUser, _clients), this->_name), fd);
+		return;
+	}
 	this->set_nb_user_in(false);
 }
 
@@ -113,8 +109,8 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 		//sauf que send permet de mettre des flags mais c'est a pousser.
 		it++; //on passe au user suivant
 	}
-	if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
-		send(*it, msg.c_str(), msg.size(), 0);
+	//if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
+	//	send(*it, msg.c_str(), msg.size(), 0);
 }
 
 
@@ -148,11 +144,6 @@ void	Chanel::setModeK(bool set)
 	this->_mode_k = set;
 }
 
-void	Chanel::setModeO(bool set)
-{
-	this->_mode_o = set;
-}
-
 void	Chanel::setModeL(bool set)
 {
 	this->_mode_l = set;
@@ -171,11 +162,6 @@ bool	Chanel::getModeT()
 bool	Chanel::getModeK()
 {
 	return (this->_mode_k);
-}
-
-bool	Chanel::getModeO()
-{
-	return (this->_mode_o);
 }
 
 bool	Chanel::getModeL()
