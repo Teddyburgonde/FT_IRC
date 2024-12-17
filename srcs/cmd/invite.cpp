@@ -32,6 +32,7 @@ void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vect
 	if (is_user_in_chan(fd, (*it_channel).getUserInChannel()) == false) //si pers qui fait cmd pas dans chan
 	{
 		send_error(ERR_USERNOTINCHANNEL(nick_of_sender, nick_of_sender, channelName), fd);
+		return;
 	}
 	if (is_user_in_chan(fd, (*it_channel).getOperatorUser()) == false) //check si la pers qui a fait la cmd est op du chan
 	{
