@@ -89,7 +89,7 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size()))
 	{
 		//std::cout << "made join " << std::endl; //debug, a retirer
-		handleJoin(fd, msg, this->_chanel, this->_clients);
+		inviteCommand(fd, msg, this->_chanel, this->_clients);
 	}
 	if (!strncmp((msg.getCommand()).c_str(), "MODE", msg.getCommand().size())) 
 	{

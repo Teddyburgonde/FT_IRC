@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/16 13:59:15 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:14:33 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@
 #include "../include/Message.hpp"
 
 
-Server::Server(int port, std::string& password) : _port(port), _password(password)
+/* Constructor */
+Server::Server()
 {
 
 }
 
-/* Constructor */
-Server::Server()
+Server::Server(int port, std::string& password) : _port(port), _password(password)
 {
 
 }
@@ -99,7 +99,6 @@ Initialise le server
 */
 void Server::serverInit()
 {
-	//this->_port = 4444; // Port du serveur
 	createServerSocket(); // Creation de la socket serveur
 
 	std::cout << "Server <" << _serverSocketFd << "> Connected"  << std::endl;

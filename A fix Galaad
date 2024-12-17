@@ -6,3 +6,8 @@ JOIN MODE +k et autre mode
 remplacer findChannel par find_channel_it (le miens)
 
 return logique donc tous avec () ou tous sans
+
+demander a Teddy si send_error on doit pas mettre le nom du gars qui a fais l'erreur ? Lui met juste 'Server' dans la case client
+
+A test:
+-Tout les modes

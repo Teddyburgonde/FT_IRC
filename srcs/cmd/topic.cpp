@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/15 16:26:19 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/16 18:10:54 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@
 /*
 TOPIC
 
-A quoi elle sert ? 
+A quoi elle sert ?
 - Permet de définir ou d'afficher le sujet (topic) d'un canal.
 
-Afficher le sujet d'un canal 
+Afficher le sujet d'un canal
 - TOPIC <channel>
 
 Changer le sujet d'un canal
 - TOPIC <channel> :<new_topic>
 
-Reponses possibles du serveur 
+Reponses possibles du serveur
 
-1. Afficher le sujet existant : 
+1. Afficher le sujet existant :
 
 - 332 <user> <channel> :<topic> : Le sujet actuel du canal.
 - 331 <user> <channel> :No topic is set : Aucun sujet n'est défini pour le canal.
@@ -45,16 +45,16 @@ Reponses possibles du serveur
 
 
 /* Le server envoie un message d'erreur aux clients connectés */
-void Server::sendError(int fd, const std::string &errorMessage) 
+void Server::sendError(int fd, const std::string &errorMessage)
 {
 	send(fd, errorMessage.c_str(), errorMessage.size(), 0);
 }
 
 /*Permet de trouver le channel */
 
-Chanel* Server::findChannel(const std::string &channelName, std::vector<Chanel> &_chanel) 
+Chanel* Server::findChannel(const std::string &channelName, std::vector<Chanel> &_chanel)
 {
-	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it) 
+	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it)
 	{
 		if (it->getName() == channelName)
 			return &(*it);
@@ -76,25 +76,34 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 
 	// 2. Trouver le canal correspondant
 	Chanel* targetChannel = findChannel(channel, _chanel);
-	if (!targetChannel) 
+	if (!targetChannel)
 	{
 		sendError(fd, ERR_NOSUCHCHANNEL(channel));
 		return;
 	}
 
 	// 3. Vérifier si l'expéditeur est dans le canal
-	if (!isSenderInChannel(fd, *targetChannel)) 
+	if (!isSenderInChannel(fd, *targetChannel))
 	{
 		sendError(fd, ERR_NOTONCHANNEL(std::string("Server"), channel));
 		return;
 	}
 
+	//!AJOUT GALAAD
+	//Si pas operateur et que le mode operateur only est active pour les topics (+t)
+	//erreur
+	if (!is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
+	{
+		send_error(ERR_CHANOPRIVSNEEDED(find_nickname_with_fd(fd, this->_clients), targetChannel->getName()), fd);
+		return;
+	}
+
 	// 4. Vérifier si un nouveau sujet est fourni
 	size_t topicStart = msg.getArgument().find(':');
-	if (topicStart == std::string::npos) 
+	if (topicStart == std::string::npos)
 	{
 		// Pas de nouveau sujet fourni, afficher le sujet actuel
-		if (!targetChannel->getTopic().empty()) 
+		if (!targetChannel->getTopic().empty())
 			sendError(fd, RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic()));
 		else
 			sendError(fd, RPL_NOTOPIC(std::string("Server"), targetChannel->getName()));
@@ -103,7 +112,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 
 	// 5. Extraire et mettre à jour le sujet
 	std::string newTopic = msg.getArgument().substr(topicStart + 1);
-	if (newTopic.empty()) 
+	if (newTopic.empty())
 	{
 		sendError(fd, ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"));
 		return;

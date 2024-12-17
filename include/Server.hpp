@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/16 15:38:09 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:22:15 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
 
 
+
 /*
 Dans la class Server, il y a toute les informations  sur le serveur.
 Il y a aussi un vecteur de clients qui sont connectes au serveur.
@@ -104,7 +105,7 @@ class Server
 		void closeFds(); // fermeture des file descriptors
 		void clearClients(int fd); // effacer les clients
 		void acceptNewClient(); // Accepter les nouveaux clients
-		void receiveNewData(int fd); // Reception de la data 
+		void receiveNewData(int fd); // Reception de la data
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
 		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
@@ -112,7 +113,7 @@ class Server
 		bool isSenderInChannel(int fd, Chanel &channel);
 		bool isSenderOperator(int fd, Chanel &channel);
 		bool validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
-		bool isTargetInChannel(const std::string &targetUser, Chanel &channel);
+		bool isTargetInChannel(const std::string &targetUser, Chanel &channel, int fd);
 		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
 		void sendError(int fd, const std::string &errorMessage);
