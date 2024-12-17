@@ -30,7 +30,6 @@ class Chanel
 		bool	_mode_i;
 		bool	_mode_t;
 		bool	_mode_k;
-		bool	_mode_o;
 		bool	_mode_l;
 
 		int		_nb_user_max;
