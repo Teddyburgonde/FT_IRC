@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/16 21:00:55 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/17 15:04:58 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel, i
 		std::string stock = find_nickname_with_fd(*userIt, this->_clients);
 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser)
         {
-           // users.erase(userIt); // Supprime l'utilisateur de la liste
 			channel.removeUser(*userIt, fd, this->_clients); // Supprime l'utilisateur de la liste
             return true;
         }

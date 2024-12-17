@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/04 10:40:06 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:14:33 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,14 @@
 #include <sys/socket.h>
 #include "../include/Message.hpp"
 
+
 /* Constructor */
 Server::Server()
+{
+
+}
+
+Server::Server(int port, std::string& password) : _port(port), _password(password)
 {
 
 }
@@ -55,9 +61,7 @@ void Server::createServerSocket()
 	// 1. Creation de la socket
 	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocketFd == -1)
-	{
 		throw(std::runtime_error("faild to create socket"));
-	}
 	std::cout << "The socket is created with fd: " << _serverSocketFd << std::endl;
 	// 2. Configurer des options spécifiques pour une socket
 	int en = 1; // en = enable.
@@ -85,12 +89,16 @@ void Server::createServerSocket()
 }
 
 
+bool Server::verifyPassword(const std::string& clientPassword) const 
+{
+        return _password == clientPassword;
+}
+
 /*
 Initialise le server
 */
 void Server::serverInit()
 {
-	this->_port = 4444; // Port du serveur
 	createServerSocket(); // Creation de la socket serveur
 
 	std::cout << "Server <" << _serverSocketFd << "> Connected"  << std::endl;
