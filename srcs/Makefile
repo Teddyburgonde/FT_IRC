@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/15 16:43:53 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/19 17:56:17 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ SRCS = main.cpp \
 		cmd/nick.cpp \
 		cmd/privMsg.cpp \
 		cmd/topic.cpp \
+		cmd/user.cpp \
 		
 		
 

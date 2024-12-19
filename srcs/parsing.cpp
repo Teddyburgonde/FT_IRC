@@ -56,6 +56,13 @@ void Server::analyzeData(int fd,  const std::string &buffer)
     	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\n'), newNick.end());
     	handleNick(fd, newNick);
 	}
+	if (strncmp(buffer.data(), "USER ", 5) == 0)
+	{
+		std::string userArguments = std::string(buffer.begin() + 5, buffer.end());
+		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\r'), userArguments.end());
+		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\n'), userArguments.end());
+		handleUser(fd, userArguments);
+	}
 	if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
 	{
 		std::string topicArguments = std::string(buffer.begin() + 6, buffer.end());

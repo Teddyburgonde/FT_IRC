@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/17 15:14:33 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/19 16:35:21 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ Server::Server(int port, std::string& password) : _port(port), _password(passwor
 /* Destructor */
 Server::~Server()
 {
-
+	// closeFds(); // Fermer tous les descripteurs ouverts
+    // std::cout << "Server resources have been cleaned up!" << std::endl; ???
 }
 
 /* Getters */
@@ -104,7 +105,7 @@ void Server::serverInit()
 	std::cout << "Server <" << _serverSocketFd << "> Connected"  << std::endl;
 	std::cout << "Waiting to accept a connection...\n";
 	// tant qu'on ne reçois pas un signal la boucle continue
-	while (Server::Signal == false)
+	while (!Server::Signal)
 	{
 		// _pollFds[0] c'est le premier element dans le vector.
 		// _pollFds.size() signifie qu'il surveille tous les sockets dans le vecteur
@@ -112,8 +113,12 @@ void Server::serverInit()
 		// -1 signifie qu'il y a une erreur
 		// on a toujours pas recu de signal , donc cela veut dire qu'il y a une erreur mais
 		// que cela ne provient pas du signal
-		if ((poll(&_pollFds[0], _pollFds.size(), -1) == -1) && Server::Signal == false)
+		if ((poll(&_pollFds[0], _pollFds.size(), -1) == -1))
+		{
+			if (Server::Signal)
+				break;
     		throw(std::runtime_error("poll() faild"));
+		}
 		for (size_t i = 0; i < _pollFds.size(); i++) // Parcours le vector là où est stocke tous les fd des sockets
 		{			// & c'est operateur bits. Cela signifie que le bits correponds a POLLIN
 			if (_pollFds[i].revents & POLLIN) // revents c'est qu'il a detecter un evenement et POLLIN c'est de type data en attente de lecture
@@ -127,4 +132,5 @@ void Server::serverInit()
 		}
 	}
 	closeFds(); // ferme tous les fd ouvert
+	std::cout << "Server is shutting down..." << std::endl;
 }

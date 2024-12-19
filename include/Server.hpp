@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/17 15:22:15 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/19 17:58:51 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ class Server
 		void receiveNewData(int fd); // Reception de la data
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
+		void handleUser(int fd, const std::string& user);
 		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
 		bool isSenderInChannel(int fd, Chanel &channel);
