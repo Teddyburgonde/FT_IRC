@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/20 11:14:20 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:02:30 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 // Valider le format du nom d'utilisateur.
 bool isValidUsername(const std::string& user) 
 {
-    if (user.empty() || user.size() > 9) // Limite de 9 caractères pour le nom d'utilisateur
+    if (user.empty() || user.size() > 10) // Limite de 9 caractères pour le nom d'utilisateur
         return false;
     if (!std::isalpha(user[0])) // Premier caractère doit être une lettre
         return false;
@@ -67,4 +67,5 @@ void Server::handleUser(int fd, const std::string& user)
     }
 	std::string response = RPL_WELCOME(user);
 	send(fd, response.c_str(), response.size(), 0);
+      std::cout << "Client FD: " << fd << " User: " << user << std::endl;
 }
