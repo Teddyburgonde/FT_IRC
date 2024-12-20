@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/20 15:40:17 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/20 15:52:52 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,8 @@ SRCS = main.cpp \
 		cmd/topic.cpp \
 		cmd/user.cpp \
 
-SRCS_BONUS = ../bonus/main.cpp 
+SRCS_BONUS = ../bonus/main.cpp \
+			../bonus/Server.cpp \
 		
 
 #============== OBJECT FILES ================#
