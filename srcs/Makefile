@@ -6,13 +6,16 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/19 17:56:17 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/20 15:40:17 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #=================== NAME ===================#
 
+
+
 NAME = irc
+NAME_BONUS = bot
 
 #================ COMPILATOR ================#
 
@@ -43,14 +46,14 @@ SRCS = main.cpp \
 		cmd/privMsg.cpp \
 		cmd/topic.cpp \
 		cmd/user.cpp \
-		
-		
 
-
+SRCS_BONUS = ../bonus/main.cpp 
+		
 
 #============== OBJECT FILES ================#
 
 OBJS = $(SRCS:.cpp=.o)
+OBJS_BONUS = $(SRCS_BONUS:.cpp=.o)
 
 #==========GENERATION BINARY FILES ==========#
 
@@ -73,11 +76,15 @@ $(NAME) : $(OBJS)
 	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(GREEN) EXECUTABLE READY !$(RESET)"
 
+bonus: $(OBJS_BONUS)
+	$(CPP) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
+	@echo "$(GREEN) EXECUTABLE BONUS READY !$(RESET)"
+
 clean:
-	@$(RM) $(OBJS)
+	@$(RM) $(OBJS) $(OBJS_BONUS)
 
 fclean: clean
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) $(NAME_BONUS)
 
 re: fclean all
 

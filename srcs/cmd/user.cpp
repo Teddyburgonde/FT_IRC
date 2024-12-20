@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/20 15:02:30 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/20 15:13:40 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "../../include/Message.hpp"
 
 // Valider le format du nom d'utilisateur.
-bool isValidUsername(const std::string& user) 
+static bool isValidUsername(const std::string& user) 
 {
     if (user.empty() || user.size() > 10) // Limite de 9 caractères pour le nom d'utilisateur
         return false;
