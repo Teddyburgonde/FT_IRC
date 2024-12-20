@@ -6,17 +6,17 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/19 18:24:48 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/20 11:14:20 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Server.hpp"
 #include "../../include/Chanel.hpp"
 #include "../../include/Message.hpp"
-#include "../include/Client.hpp"
-#include "../include/Server.hpp"
-#include "../include/Chanel.hpp"
-#include "../include/Message.hpp"
+#include "../../include/Client.hpp"
+#include "../../include/Server.hpp"
+#include "../../include/Chanel.hpp"
+#include "../../include/Message.hpp"
 
 // Valider le format du nom d'utilisateur.
 bool isValidUsername(const std::string& user) 
@@ -33,21 +33,27 @@ bool isValidUsername(const std::string& user)
     return true;
 }
 
-void handleUser(int fd, const std::string& user)
+void Server::handleUser(int fd, const std::string& user)
 {
 	if (!isValidUsername(user))
 	{
 		std::string response = ERR_ERRONEUSNICKNAME(std::string("Server"), user);
 		send(fd, response.c_str(), response.size(), 0);
-		return;
+		return ;
 	}
+    // Vérifier si la liste des clients est vide
+    if (_clients.empty()) 
+    {
+        std::cerr << "Error: No clients connected, handleUser aborted." << std::endl;
+        return ;
+    }
 	// Vérifie si l'utilisateur a déjà défini un nom
-	for (size_t i = 0; i < _clients.size(); ++i) 
+	for (size_t i = 0; i < this->_clients.size(); ++i) 
 	{
-        if (_clients[i].getFd() == fd && !_clients[i].getUsername().empty()) {
-            std::string response = ERR_ALREADYREGISTERED(std::string("Server"));
+        if (this->_clients[i].getFd() == fd && ! this->_clients[i].getUsername().empty()) {
+            std::string response = ERR_ALREADYREGISTRED(std::string("Server"));
             send(fd, response.c_str(), response.size(), 0);
-            return;
+            return ;
         }
     }
 	// Associer l'utilisateur à la structure Client
@@ -56,7 +62,7 @@ void handleUser(int fd, const std::string& user)
         if (_clients[i].getFd() == fd) 
 		{
             _clients[i].setUsername(user);
-            break;
+            break ;
         }
     }
 	std::string response = RPL_WELCOME(user);
