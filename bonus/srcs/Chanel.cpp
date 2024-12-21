@@ -192,3 +192,18 @@ int	Chanel::get_nb_user_in()
 {
 	return (this->_nb_user_in);
 }
+
+bool Chanel::hasClient(int fd)
+{
+	for (size_t i = 0; i < _userInChannel.size(); i++)
+	{
+		if (_userInChannel[i] == fd)  // Comparer le fd du client avec l'élément du vecteur
+			return true;  // Si trouvé, retourner true
+	}
+	return false;  // Si le client n'est pas trouvé, retourner false
+}
+
+void Chanel::addClient(int fd)
+{
+	_userInChannel.push_back(fd);  // Ajouter un client au vecteur
+}

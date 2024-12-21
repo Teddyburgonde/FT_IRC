@@ -37,6 +37,18 @@ bool Server::authenticatedClients(int fd,  const std::string &buffer)
 	}
 	return true;
 }
+
+
+void Chanel::testsendMessageToChanel(int userSender, std::string &msg)
+{
+	(void)userSender;
+    // Parcourt tous les clients du canal et envoie le message à tout le monde, y compris l'expéditeur
+    for (size_t i = 0; i < _userInChannel.size(); i++)
+    {
+        send(_userInChannel[i], msg.c_str(), msg.size(), 0);  // Envoie le message à chaque client
+    }
+}
+
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
 	 if (!authenticatedClients(fd, buffer))
@@ -75,7 +87,6 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	}
 	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 		handlePrivMsg(fd, msg, this->_chanel);
-		// handlePrivMsg(fd, std::string(buffer));
 	if (msg.getCommand() == "KICK") 
 	{  // Ajout de la commande KICK
         handleKick(fd, msg, this->_chanel);
@@ -85,18 +96,38 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 		//std::cout << "made join " << std::endl; //debug, a retirer
 		handleJoin(fd, msg, this->_chanel, this->_clients);
 	}
-	if (!strncmp(buffer.data(), "SEND #general", 13)) // a redefinir, marche seulement pour general
+	if (strstr(buffer.c_str(), "zut") != NULL)
 	{
-		//besoins du parsing
-		std::string msg = std::string(buffer.data() + 13); //ici je recup le msg apres le SEND #general donc a changer
-		//dans l'idee faudrais juste envoye le truc après le # grace au parsing ? Au lieu de channel[0], je retrouve le nom du bon salon.
-		this->_chanel[0].sendMessageToChanel(fd, msg); //chanel[0] == que le premier salon. Faut coder le fais d'envoyé dans le salon ou il est le client
-		std::cout << "send a message to general" << std::endl;
-	}
-	if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size()))
-	{
-		//std::cout << "made join " << std::endl; //debug, a retirer
-		inviteCommand(fd, msg, this->_chanel, this->_clients);
+		// Message à envoyer
+		std::string reply = "Insult prohibited in this channel 😡\n";
+
+		// Trouver le canal du client
+		std::string clientChannel;
+
+		// Pour chaque canal, vérifier si le client est dedans
+		for (size_t i = 0; i < _chanel.size(); i++)
+		{
+			if (_chanel[i].hasClient(fd))  // Vérifie si le client est dans ce canal
+			{
+				clientChannel = _chanel[i].getName();  // Récupère le nom du canal où le client est
+				break;
+			}
+		}
+		// Si un canal a été trouvé
+		if (!clientChannel.empty())
+		{
+			// Trouver le canal dans la liste des canaux
+			for (size_t i = 0; i < _chanel.size(); i++)
+			{
+				if (_chanel[i].getName() == clientChannel)  // Si c'est le bon canal
+				{
+					// Utiliser sendMessageToChanel pour envoyer à tous les clients du canal, y compris l'expéditeur
+					_chanel[i].testsendMessageToChanel(fd, reply);  // Envoie le message à tous les clients du canal
+					break;
+				}
+			}
+		}
+    	std::cout << "detected insult ❗" << std::endl;
 	}
 	if (!strncmp((msg.getCommand()).c_str(), "MODE", msg.getCommand().size())) 
 	{

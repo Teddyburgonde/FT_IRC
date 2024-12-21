@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/19 17:58:51 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/21 11:05:07 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ class Server
 		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
 		std::map<int, bool> _authenticatedClients; // test 
 		bool authenticatedClients(int fd,  const std::string &buffer);
+		void sendToAllClientsInChannel(const std::string &message, const std::string &channelName);
 	public:
 		int getFd() const; // getter pour le file descriptor
 };

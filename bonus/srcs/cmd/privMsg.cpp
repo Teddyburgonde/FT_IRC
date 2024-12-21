@@ -18,7 +18,7 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel)
 	}
 	if (msg.getArgument().empty())
 	{
-    	std::cout << "Aucun argument dans le message" << std::endl;
+    	std::cout << "No argument in the message" << std::endl;
     	return;
 	}
 	std::string recipient = get_next_argument(msg.getArgument().c_str(), index);
