@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/21 09:57:45 by tebandam         ###   ########.fr        #
+#    Updated: 2024/12/21 17:56:42 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRCS_BONUS = main.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \
+		bot.cpp \
 		serverClose.cpp \
 		serverSignals.cpp \
 		serverClear.cpp \

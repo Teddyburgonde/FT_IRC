@@ -78,7 +78,7 @@ class Chanel
 		bool hasClient(int fd); //test 21/12/2024
 		void addClient(int fd);
 
-		void testsendMessageToChanel(int userSender, std::string &msg);
+		void botMessageToChanel(int userSender, std::string &msg);
 };
 
 void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);

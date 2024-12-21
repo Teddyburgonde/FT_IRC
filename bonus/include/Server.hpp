@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/21 11:05:07 by tebandam         ###   ########.fr       */
+/*   Updated: 2024/12/21 17:51:49 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ class Server
 		std::map<int, bool> _authenticatedClients; // test 
 		bool authenticatedClients(int fd,  const std::string &buffer);
 		void sendToAllClientsInChannel(const std::string &message, const std::string &channelName);
+		void handleBot(int fd); //! ICI GAlAAD j'ai ajouté cette fonction pour le bot
 	public:
 		int getFd() const; // getter pour le file descriptor
 };
