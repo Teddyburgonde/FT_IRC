@@ -6,14 +6,14 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/17 15:09:19 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/01/30 15:30:25 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstdlib>
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
-#include "../include/Chanel.hpp"
+#include "../include/Channel.hpp"
 #include <algorithm>
 #include <cstring>
 

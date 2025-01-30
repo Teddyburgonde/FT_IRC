@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/15 16:40:11 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:34:42 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Client.hpp"
 #include "../include/Server.hpp"
 #include "../include/Message.hpp"
-#include "../include/Chanel.hpp"
+#include "../include/Channel.hpp"
 
 int skipSpaces(const char *str)
 {
@@ -40,12 +40,12 @@ int	is_user_in_chan(int fd, std::vector<int> userInChannel)
 }
 
 //utils ?? sert a trouver un channel a partir d'un nom
-std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel)
+std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel)
 {
-	std::vector<Chanel>::iterator it_channel;
+	std::vector<Channel>::iterator it_channel;
 
-	it_channel = _chanel.begin();
-	while (it_channel != _chanel.end())
+	it_channel = _channel.begin();
+	while (it_channel != _channel.end())
 	{
 		if ((*it_channel).getName() == channelName)
 			return (it_channel);

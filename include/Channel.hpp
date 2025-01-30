@@ -1,5 +1,5 @@
-#ifndef CHANEL_HPP
-# define CHANEL_HPP
+#ifndef CHANNEL_HPP
+# define CHANNEL_HPP
 
 #include <iostream>
 #include <vector>
@@ -16,7 +16,7 @@
 #include <algorithm> // ??
 
 class Message;
-class Chanel
+class Channel
 {
 	private:
 		std::string	_name;
@@ -36,8 +36,8 @@ class Chanel
 		int		_nb_user_in;
 
 	public:
-		Chanel();
-		~Chanel();
+		Channel();
+		~Channel();
 
 		std::string	getName(); //getter de _name
 		void		setName(std::string chanName); //setter de _name
@@ -51,7 +51,7 @@ class Chanel
 		std::vector<int>&	getOperatorUser();//getter de _operator
 
 
-		void	sendMessageToChanel(int userSender, std::string &msg);
+		void	sendMessageToChannel(int userSender, std::string &msg);
 
 		void				setInvitedUser(int fd);//setter de _invitedUser
 		std::vector<int>	getInvitedUser();//getter de _invitedUser
@@ -77,11 +77,11 @@ class Chanel
 
 };
 
-void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);
-void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients); //cmd INVITE
-void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients);
+void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients);
+void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients); //cmd INVITE
+void	modeCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients);
 
 int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
-std::vector<Chanel>::iterator find_channel_with_name(std::string &channelName, std::vector<Chanel> &_chanel); //trouver un channel a partir de son nom
+std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel); //trouver un channel a partir de son nom
 
 #endif

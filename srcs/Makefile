@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
+#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/15 16:43:53 by tebandam         ###   ########.fr        #
+#    Updated: 2025/01/30 15:30:23 by gmersch          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 SRCS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
-		Chanel.cpp \
+		Channel.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \

@@ -6,14 +6,14 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/17 15:04:58 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/01/30 15:38:20 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 #include <algorithm> //A METTRE .H
 
 
@@ -69,7 +69,7 @@ Par Exemple si Galaad est connecté au server et q'il tape KICK #general Toto
 Galaad est l'expediteur, Toto la target.
 */
 
-bool Server::isSenderInChannel(int fd, Chanel &channel)
+bool Server::isSenderInChannel(int fd, Channel &channel)
 {
 	const std::vector<int>& users = channel.getUserInChannel();
 	for (std::vector<int>::const_iterator userIt = users.begin();
@@ -85,7 +85,7 @@ bool Server::isSenderInChannel(int fd, Chanel &channel)
 Cette fonction vérifie si l'expéditeur est un operateur.
 Cela permet de savoir si l'utilisateur a les privilèges pour faire la command KICK
 */
-bool Server::isSenderOperator(int fd, Chanel &channel)
+bool Server::isSenderOperator(int fd, Channel &channel)
 {
 	// dans channel il y a une liste d'operator
 	// on stock la liste de fd (les operator) dans le vector operators.
@@ -103,7 +103,7 @@ Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le c
 le retire de la liste des utilisateurs.
 */
 
-// bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
+// bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel)
 // {
 //     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
 //     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
@@ -122,7 +122,7 @@ le retire de la liste des utilisateurs.
 //     return false;
 // }
 
-bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel, int fd)
+bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, int fd)
 {
     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
@@ -144,24 +144,24 @@ bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel, i
 Cette fonction informe tous les utilisateurs d'un canal qu'un utilisateur a été expulsé.
 */
 
-void Server::notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason)
+void Server::notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason)
 {
 	// Creation d'un message sous forme de chaîne .
     std::string kickMessage = ":" + sender + " KICK " + channel.getName() + " " + targetUser + " :" + reason + "\r\n";
 
 	// -1 pour envoyer le message a tout le monde sauf a celui qui viens de se faire kick
-	channel.sendMessageToChanel(-1, kickMessage);
+	channel.sendMessageToChannel(-1, kickMessage);
 }
 
 
-void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
+void Server::handleKick(int fd, Message &msg, std::vector<Channel> &_channel)
 {
 	std::string channel;
 	std::string targetUser;
 
 	if (!validateKickArgs(fd, msg, channel, targetUser))
         return;
-	for (std::vector<Chanel>::iterator i = _chanel.begin(); i != _chanel.end(); i++)
+	for (std::vector<Channel>::iterator i = _channel.begin(); i != _channel.end(); i++)
 	{
 		if ((*i).getName() == channel)
 		{

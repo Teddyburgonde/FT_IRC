@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:40:30 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 14:40:02 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/01/30 15:30:35 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ Message &Message::operator=(Message const &src)
 
 /* Setters */
 
-// void Message::setNameChanel(std::string nameChanel)
+// void Message::setNameChannel(std::string nameChannel)
 // {
-// 	this->_nameChanel.push_back(nameChanel);
+// 	this->_nameChannel.push_back(nameChannel);
 // }
 
 void Message::setCommand(std::string command)

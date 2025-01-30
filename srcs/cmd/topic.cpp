@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/16 18:10:54 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/01/30 15:40:01 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 
 
 /*
@@ -24,21 +24,21 @@ A quoi elle sert ?
 - Permet de définir ou d'afficher le sujet (topic) d'un canal.
 
 Afficher le sujet d'un canal
-- TOPIC <channel>
+- TOPIC <Channel>
 
 Changer le sujet d'un canal
-- TOPIC <channel> :<new_topic>
+- TOPIC <Channel> :<new_topic>
 
 Reponses possibles du serveur
 
 1. Afficher le sujet existant :
 
-- 332 <user> <channel> :<topic> : Le sujet actuel du canal.
-- 331 <user> <channel> :No topic is set : Aucun sujet n'est défini pour le canal.
+- 332 <user> <Channel> :<topic> : Le sujet actuel du canal.
+- 331 <user> <Channel> :No topic is set : Aucun sujet n'est défini pour le canal.
 
 2. Changer le sujet :
-- 482 <user> <channel> :You're not channel operator : L'utilisateur n'a pas les droits nécessaires.
-- 403 <user> <channel> :No such channel : Le canal n'existe pas.
+- 482 <user> <Channel> :You're not Channel operator : L'utilisateur n'a pas les droits nécessaires.
+- 403 <user> <Channel> :No such Channel : Le canal n'existe pas.
 - 461 <user> TOPIC :Not enough parameters : La commande est incomplète.
 
 */
@@ -50,19 +50,19 @@ void Server::sendError(int fd, const std::string &errorMessage)
 	send(fd, errorMessage.c_str(), errorMessage.size(), 0);
 }
 
-/*Permet de trouver le channel */
+/*Permet de trouver le Channel */
 
-Chanel* Server::findChannel(const std::string &channelName, std::vector<Chanel> &_chanel)
+Channel* Server::findChannel(const std::string &ChannelName, std::vector<Channel> &_Channel)
 {
-	for (std::vector<Chanel>::iterator it = _chanel.begin(); it != _chanel.end(); ++it)
+	for (std::vector<Channel>::iterator it = _Channel.begin(); it != _Channel.end(); ++it)
 	{
-		if (it->getName() == channelName)
+		if (it->getName() == ChannelName)
 			return &(*it);
 	}
 	return NULL;
 }
 
-void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel)
+void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Channel)
 {
 	// 1. Vérifier si un canal est spécifié
 	size_t spacePos = msg.getArgument().find(' ');
@@ -75,7 +75,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 	}
 
 	// 2. Trouver le canal correspondant
-	Chanel* targetChannel = findChannel(channel, _chanel);
+	Channel* targetChannel = findChannel(channel, _Channel);
 	if (!targetChannel)
 	{
 		sendError(fd, ERR_NOSUCHCHANNEL(channel));
@@ -122,5 +122,5 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chane
 	std::ostringstream oss;
 	oss << fd;
 	std::string notification = ":" + oss.str() + " TOPIC " + targetChannel->getName() + " :" + targetChannel->getTopic() + "\r\n";
-	targetChannel->sendMessageToChanel(fd, notification);
+	targetChannel->sendMessageToChannel(fd, notification);
 }
