@@ -3,16 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
+#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2025/01/31 16:01:01 by gmersch          ###   ########.fr        #
+#    Updated: 2024/12/21 17:56:42 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #=================== NAME ===================#
 
-NAME = irc
 NAME_BONUS = bot
 
 #================ COMPILATOR ================#
@@ -25,13 +24,14 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 
 #================== SOURCES =================#
 
-SRCS = main.cpp \
+SRCS_BONUS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
-		Channel.cpp \
+		Chanel.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \
+		bot.cpp \
 		serverClose.cpp \
 		serverSignals.cpp \
 		serverClear.cpp \
@@ -45,14 +45,9 @@ SRCS = main.cpp \
 		cmd/topic.cpp \
 		cmd/user.cpp \
 
-SRCS_BONUS = ../bonus/main.cpp \
-			../bonus/Server.cpp \
-			../bonus/serverIncomingConnections_bonus.cpp \
-
 
 #============== OBJECT FILES ================#
 
-OBJS = $(SRCS:.cpp=.o)
 OBJS_BONUS = $(SRCS_BONUS:.cpp=.o)
 
 #==========GENERATION BINARY FILES ==========#
@@ -70,22 +65,16 @@ RESET = \033[0m
 
 RM = rm -f
 
-all: $(NAME)
-
-$(NAME) : $(OBJS)
-	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(GREEN) EXECUTABLE READY !$(RESET)"
-
 bonus: $(OBJS_BONUS)
 	$(CPP) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
 	@echo "$(GREEN) EXECUTABLE BONUS READY !$(RESET)"
 
 clean:
-	@$(RM) $(OBJS)
+	@$(RM) $(OBJS) $(OBJS_BONUS)
 
 fclean: clean
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) $(NAME_BONUS)
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re

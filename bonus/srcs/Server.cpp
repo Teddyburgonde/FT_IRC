@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/31 16:03:46 by gmersch          ###   ########.fr       */
+/*   Updated: 2024/12/19 16:35:21 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
-#include "../include/Channel.hpp"
+#include "../include/Chanel.hpp"
 #include <algorithm>
 #include <cstring>
 #include <netinet/in.h>
