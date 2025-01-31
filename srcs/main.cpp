@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/20 10:25:21 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/01/31 15:59:09 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cstdlib>
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
-#include "../include/Chanel.hpp"
+#include "../include/Channel.hpp"
 #include <algorithm>
 #include <cstring>
 

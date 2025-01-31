@@ -3,16 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
+#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/21 09:26:24 by tebandam         ###   ########.fr        #
+#    Updated: 2025/01/31 16:01:01 by gmersch          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #=================== NAME ===================#
-
-
 
 NAME = irc
 NAME_BONUS = bot
@@ -30,7 +28,7 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 SRCS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
-		Chanel.cpp \
+		Channel.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \
@@ -50,7 +48,7 @@ SRCS = main.cpp \
 SRCS_BONUS = ../bonus/main.cpp \
 			../bonus/Server.cpp \
 			../bonus/serverIncomingConnections_bonus.cpp \
-		
+
 
 #============== OBJECT FILES ================#
 
@@ -83,11 +81,11 @@ bonus: $(OBJS_BONUS)
 	@echo "$(GREEN) EXECUTABLE BONUS READY !$(RESET)"
 
 clean:
-	@$(RM) $(OBJS) $(OBJS_BONUS)
+	@$(RM) $(OBJS)
 
 fclean: clean
-	@$(RM) $(NAME) $(NAME_BONUS)
+	@$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

@@ -1,7 +1,4 @@
-FIX Chanel, c'est Channel avec deux 'n'....
-
 JOIN MODE +k et autre mode
-
 
 remplacer findChannel par find_channel_it (le miens)
 
@@ -11,3 +8,13 @@ demander a Teddy si send_error on doit pas mettre le nom du gars qui a fais l'er
 
 A test:
 -Tout les modes
+
+SEND ??? devrais utiliser PRVMSG
+
+
+
+
+ERREUR :
+
+-on peux se kick nous meme
+-Pas de message pour prevenir que la commande "MODE #general +i" à bien fonctionner et est mis en place

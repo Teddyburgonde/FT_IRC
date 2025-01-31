@@ -6,14 +6,14 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/17 15:03:28 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/01/30 15:35:24 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 
 static std::string	find_arg_chan(const char *argument, int &index)
 {
@@ -49,12 +49,12 @@ std::vector<std::string> create_chanName(const char *argument, int &i)
 }
 
 //DEBUG, PERMET DE PRINT TOUT LES USER DE TOUT LES CHANNEL, A GARDER DE COTE
-void	print_userInchan(std::vector<Chanel> &_chanel)
+void	print_userInchan(std::vector<Channel> &_channel)
 {
-	std::vector<Chanel>::iterator	it = _chanel.begin();
+	std::vector<Channel>::iterator	it = _channel.begin();
 	std::vector<int> id_userInChannel;
 
-	while (it != _chanel.end())
+	while (it != _channel.end())
 	{
 		std::cout << "Dans le channel " << (*it).getName();;
 		id_userInChannel = (*it).getUserInChannel();
@@ -70,7 +70,7 @@ void	print_userInchan(std::vector<Chanel> &_chanel)
 }
 
 //return 1 if error
-int	check_active_mode(std::vector<Chanel>::iterator	&it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
+int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
 {
 	std::cout << "mode i = " << (*it_ChanExist).getModeI() << std::endl; //!debug
 	//EST CE QUE PLUSIEUR ERREURDOIVENT S'QFFICHER SI ERREUR ?? OU JUSTE UNE SEUL ET FAIRE DES ELSE IF
@@ -92,9 +92,9 @@ int	check_active_mode(std::vector<Chanel>::iterator	&it_ChanExist, int fd, std::
 	return (0);
 }
 
-void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)
+void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
 {
-	std::vector<Chanel>::iterator 		it_ChanExist; //channel existant
+	std::vector<Channel>::iterator 		it_ChanExist; //channel existant
 	std::vector<std::string>::const_iterator	it_chanNew;
 	int i = 0;
 	std::string argumentStr = msg.getArgument();
@@ -111,20 +111,20 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<
 	it_chanNew = chanName.begin();
 	while (it_chanNew != chanName.end())
 	{
-		it_ChanExist = _chanel.begin(); //on repart du debut de la list de channel existant afin de la parcourir en entier et de bien chercher partout
-		while (it_ChanExist != _chanel.end()) //tant qu'on a pas chercher dans tout ceux existant
+		it_ChanExist = _channel.begin(); //on repart du debut de la list de channel existant afin de la parcourir en entier et de bien chercher partout
+		while (it_ChanExist != _channel.end()) //tant qu'on a pas chercher dans tout ceux existant
 		{
 			if ((*it_ChanExist).getName() == *it_chanNew) //si le nom du chan est le meme qu'un chan existant
 				break; //on break pour garder l'iterator sur le bon chan
 			it_ChanExist++;
 		}
-		if (it_ChanExist == _chanel.end()) //si chan existe pas, (donc 'it' est a la fin car on a tout parcouru sans trouver)
+		if (it_ChanExist == _channel.end()) //si chan existe pas, (donc 'it' est a la fin car on a tout parcouru sans trouver)
 		{
 			std::cout << "Create chan: " << *it_chanNew << std::endl; //!debug, à retirer!
-			Chanel newChan;
+			Channel newChan;
 			newChan.setName(*it_chanNew);
 			newChan.addUser(fd, true);
-			_chanel.push_back(newChan);
+			_channel.push_back(newChan);
 			std::string joinMessage = RPL_JOIN(user_sender.getNickname(), newChan.getName());
 			send (fd, joinMessage.c_str(), joinMessage.size(), 0);
 		}
@@ -132,7 +132,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<
 		{
 			(*it_ChanExist).addUser(fd, false);
 			std::string joinMessage = RPL_JOIN(user_sender.getNickname(), (*it_ChanExist).getName());
-			(*it_ChanExist).sendMessageToChanel(fd, joinMessage); //on envoie le message comme quoi quelun  a join a tout les gens du salon
+			(*it_ChanExist).sendMessageToChannel(fd, joinMessage); //on envoie le message comme quoi quelun  a join a tout les gens du salon
 			send (fd, joinMessage.c_str(), joinMessage.size(), 0);
 		}
 		it_chanNew++; //On passe au prochain channel que la personne veut rejoindre

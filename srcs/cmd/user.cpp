@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/20 15:13:40 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/01/31 16:16:15 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Server.hpp"
-#include "../../include/Chanel.hpp"
 #include "../../include/Message.hpp"
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 #include "../../include/Message.hpp"
 
 // Valider le format du nom d'utilisateur.

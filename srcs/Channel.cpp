@@ -1,48 +1,48 @@
-#include "../include/Chanel.hpp"
+#include "../include/Channel.hpp"
 
-Chanel::Chanel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_l(false), _nb_user_in(0)
+Channel::Channel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_l(false), _nb_user_in(0)
 {
 
 }
 
-Chanel::~Chanel()
+Channel::~Channel()
 {
 
 }
 
-std::string	Chanel::getName()
+std::string	Channel::getName()
 {
 	return (this->_name);
 }
 
-void		Chanel::setName(std::string chanName)
+void		Channel::setName(std::string chanName)
 {
 	this->_name = chanName;
 }
 
 // Récupérer le sujet actuel du canal
-std::string Chanel::getTopic() const
+std::string Channel::getTopic() const
 {
     return _topic;
 }
 
 // Définir ou modifier le sujet du canal
-void Chanel::setTopic(const std::string& topic)
+void Channel::setTopic(const std::string& topic)
 {
     _topic = topic;
 }
 
-std::string	Chanel::getPassword()
+std::string	Channel::getPassword()
 {
 	return (this->_password);
 }
 
-void	Chanel::setPassword(std::string passwordStr) //setter de _name
+void	Channel::setPassword(std::string passwordStr) //setter de _name
 {
 	this->_password = passwordStr;
 }
 
-void	Chanel::addUser(int newUser, bool isOperator)
+void	Channel::addUser(int newUser, bool isOperator)
 {
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
@@ -66,7 +66,7 @@ void	Chanel::addUser(int newUser, bool isOperator)
 	}
 }
 
-void	Chanel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
+void	Channel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 {
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
@@ -91,14 +91,14 @@ void	Chanel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 	this->set_nb_user_in(false);
 }
 
-std::vector<int>&	Chanel::getOperatorUser()//getter de _operator
+std::vector<int>&	Channel::getOperatorUser()//getter de _operator
 {
 	return (this->_operator);
 }
 
-void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
+void	Channel::sendMessageToChannel(int userSender, std::string &msg)
 {
-	std::vector<int>::iterator it =  this->_userInChannel.begin(); //je set l'iterateur au debut du vecteur _userInChannel qui contient tout les user du chanel
+	std::vector<int>::iterator it =  this->_userInChannel.begin(); //je set l'iterateur au debut du vecteur _userInChannel qui contient tout les user du channel
 
 	while (it != this->_userInChannel.end()) //tant que ont a pas envoyé à touts les user du chan
 	{
@@ -114,73 +114,73 @@ void	Chanel::sendMessageToChanel(int userSender, std::string &msg)
 }
 
 
-std::vector<int>&	Chanel::getUserInChannel()
+std::vector<int>&	Channel::getUserInChannel()
 {
 	return (this->_userInChannel);
 }
 
-void	Chanel::setInvitedUser(int fd)//setter de _invitedUser
+void	Channel::setInvitedUser(int fd)//setter de _invitedUser
 {
 	this->_invitedUser.push_back(fd);
 }
 
-std::vector<int>	Chanel::getInvitedUser()//getter de _invitedUser
+std::vector<int>	Channel::getInvitedUser()//getter de _invitedUser
 {
 	return (this->_invitedUser);
 }
 
-void	Chanel::setModeI(bool set)
+void	Channel::setModeI(bool set)
 {
 	this->_mode_i = set;
 }
 
-void	Chanel::setModeT(bool set)
+void	Channel::setModeT(bool set)
 {
 	this->_mode_t = set;
 }
 
-void	Chanel::setModeK(bool set)
+void	Channel::setModeK(bool set)
 {
 	this->_mode_k = set;
 }
 
-void	Chanel::setModeL(bool set)
+void	Channel::setModeL(bool set)
 {
 	this->_mode_l = set;
 }
 
-bool	Chanel::getModeI()
+bool	Channel::getModeI()
 {
 	return (this->_mode_i);
 }
 
-bool	Chanel::getModeT()
+bool	Channel::getModeT()
 {
 	return (this->_mode_t);
 }
 
-bool	Chanel::getModeK()
+bool	Channel::getModeK()
 {
 	return (this->_mode_k);
 }
 
-bool	Chanel::getModeL()
+bool	Channel::getModeL()
 {
 	return (this->_mode_l);
 }
 
-void	Chanel::set_nb_user_max(int nb)
+void	Channel::set_nb_user_max(int nb)
 {
 	this->_nb_user_max = nb;
 }
 
-int		Chanel::get_nb_user_max()
+int		Channel::get_nb_user_max()
 {
 	return (this->_nb_user_max);
 }
 
 //if add_remove = true, add somewone. If = false, remove somewone.
-void	Chanel::set_nb_user_in(bool add_remove)
+void	Channel::set_nb_user_in(bool add_remove)
 {
 	if (add_remove)
 		this->_nb_user_in++;
@@ -188,7 +188,7 @@ void	Chanel::set_nb_user_in(bool add_remove)
 		this->_nb_user_in--;
 }
 
-int	Chanel::get_nb_user_in()
+int	Channel::get_nb_user_in()
 {
 	return (this->_nb_user_in);
 }

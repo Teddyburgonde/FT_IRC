@@ -1,0 +1,8 @@
+ajoute le fichier Bot.cpp et ajoute une delaration dans Channel.hpp
+handdlebot dans serveur.hpp 
+
+
+if (strstr(buffer.c_str(), "zut") != NULL)
+		handleBot(fd);
+
+dans parsing.cpp
