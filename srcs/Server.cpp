@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/31 16:03:46 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/03 15:19:48 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Server::~Server()
 
 int Server::getFd() const
 {
-	return this->_fd;
+	return (this->_fd);
 }
 
 
@@ -92,7 +92,7 @@ void Server::createServerSocket()
 
 bool Server::verifyPassword(const std::string& clientPassword) const 
 {
-        return _password == clientPassword;
+        return (_password == clientPassword);
 }
 
 /*

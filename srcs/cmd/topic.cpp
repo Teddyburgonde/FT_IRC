@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/30 15:40:01 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/03 15:07:41 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
-
 
 /*
 TOPIC
@@ -59,7 +58,7 @@ Channel* Server::findChannel(const std::string &ChannelName, std::vector<Channel
 		if (it->getName() == ChannelName)
 			return &(*it);
 	}
-	return NULL;
+	return (NULL);
 }
 
 void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Channel)

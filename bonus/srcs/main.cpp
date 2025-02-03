@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/20 10:25:21 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/03 14:19:55 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char **argv)
 			throw std::runtime_error("Error: Invalid port number. Please provide a valid port (1-65535).");
 		std::string password = argv[2];
 		Server server(port, password);
-
+		
 		signal(SIGINT, Server::signalHandler); //-> catch the signal (ctrl + c)
 		signal(SIGQUIT, Server::signalHandler); //-> catch the signal (ctrl + \)
 		

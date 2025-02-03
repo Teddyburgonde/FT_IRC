@@ -16,30 +16,29 @@ bool Server::authenticatedClients(int fd,  const std::string &buffer)
 			std::string clientPassword = std::string(buffer.begin() + 5, buffer.end());
 			clientPassword.erase(std::remove(clientPassword.begin(), clientPassword.end(), '\r'), clientPassword.end());
 			clientPassword.erase(std::remove(clientPassword.begin(), clientPassword.end(), '\n'), clientPassword.end());
-
 			if (clientPassword == _password) 
 			{
 				_authenticatedClients[fd] = true; // Authentifie le client
 				send(fd, "OK :Password accepted\n", 23, 0);
-				return true; 
+				return (true); 
 			}
 			else
 			{
 				send(fd, "ERROR :Invalid password\n", 25, 0);
-				return false;
+				return (false);
 			}
 		}
 		else
 		{
 			send(fd, "ERROR :You must authenticate first using PASS\r\n", 47, 0);
-			return false;
+			return (false);
 		}
 	}
-	return true;
+	return (true);
 }
 void Server::analyzeData(int fd,  const std::string &buffer)
 {
-	 if (!authenticatedClients(fd, buffer))
+	if (!authenticatedClients(fd, buffer))
         return;
 	Message msg;
 
@@ -47,7 +46,7 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
 	parse_buffer(stringBuffer, msg);
 	if (msg.getCommand().empty())
-		return ;
+		return;
 	std::string newNick;
 	if (strncmp(buffer.data(), "NICK ", 5) == 0)
 	{
@@ -109,17 +108,15 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 void parse_buffer(std::vector <std::string> &buffer, Message& msg)
 {
 	//Message msg;
-
 	// Est t'il vide ?
 	if (buffer.empty())
         throw std::runtime_error("Buffer is empty");
-
 
 	std::string firstElement = buffer.front();
 	if (firstElement[0] == ' ')
 	{
 		std::cout <<  "The command must not be preceded by a space." << std::endl;
-		return ;
+		return;
 		//throw(std::runtime_error("The command must not be preceded by a space."));
 	}
 	size_t spacePos = firstElement.find(' ');
@@ -133,8 +130,8 @@ void parse_buffer(std::vector <std::string> &buffer, Message& msg)
 	}
 	else
 	{
-    	msg.setCommand(firstElement);
-        msg.setArgument(""); // Aucun argument
+		msg.setCommand(firstElement);
+		msg.setArgument(""); // Aucun argument
 	}
-    return ;
+	return;
 }

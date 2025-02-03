@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/30 15:38:20 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/03 15:05:56 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
         // Envoyer la réponse d'erreur au client qui a envoyé la commande.
         send(fd, response.c_str(), response.size(), 0);
         // false le format n'est pas correct.
-        return false;
+        return (false);
     }
     // Extraire le nom du canal en prenant la sous-chaîne avant l'espace.
     // donc la il y a #channel dans la variable channel
@@ -52,14 +52,14 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
 	targetUser.erase(std::remove(targetUser.begin(), targetUser.end(), '\n'), targetUser.end());
 	if (channel.empty() || targetUser.empty())
 	{
-        std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-        // Envoyer la réponse d'erreur au client qui a envoyé la commande.
-        send(fd, response.c_str(), response.size(), 0);
-         // false le format n'est pas correct.
-        return false;
-    }
-    // Command valid
-    return true;
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+		// Envoyer la réponse d'erreur au client qui a envoyé la commande.
+		send(fd, response.c_str(), response.size(), 0);
+		 // false le format n'est pas correct.
+		return (false);
+	}
+	// Command valid
+	return (true);
 }
 
 /*
@@ -76,9 +76,9 @@ bool Server::isSenderInChannel(int fd, Channel &channel)
 			userIt != users.end(); ++userIt)
 	{
 		if (*userIt == fd) // il a trouvé l'expéditeur.
-			return true;
+			return (true);
 	}
-	return false;
+	return (false);
 }
 
 /*
@@ -134,10 +134,10 @@ bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, 
 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser)
         {
 			channel.removeUser(*userIt, fd, this->_clients); // Supprime l'utilisateur de la liste
-            return true;
+            return (true);
         }
     }
-    return false;
+    return (false);
 }
 
 /*
@@ -181,14 +181,14 @@ void Server::handleKick(int fd, Message &msg, std::vector<Channel> &_channel)
 			{
 				std::string response = ERR_USERNOTINCHANNEL(std::string("Server"), targetUser, channel);
 				send(fd, response.c_str(), response.size(), 0);
-				return ;
+				return;
 			}
 			std::ostringstream oss;
 
 			oss << fd;
 			std::string fdStr = oss.str();
 			notifyKick(*i, fdStr, targetUser, "Kicked by operator");
-			return ;
+			return;
 		}
 	}
 	// Si aucun canal correspondant n'est trouvé

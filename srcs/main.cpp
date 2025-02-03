@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/31 15:59:09 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/03 15:18:07 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	main(int argc, char **argv)
 	catch (const std::exception& e)
 	{
 		std::cerr << "Server Error: " << e.what() << std::endl;
-		return 1;
+		return (1);
 	}
 	std::cout << "The Server Closed!" << std::endl;
 	return (0);

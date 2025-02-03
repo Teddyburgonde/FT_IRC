@@ -31,7 +31,7 @@ static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plu
 	if (nb_user_max.empty())
 	{
 		send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
-		return ;
+		return;
 	}
 	std::stringstream ss(nb_user_max);
 	if (!(ss >> number) || !ss.eof()) //si on essaye de mettre ss dans number et que ca marche pas ou vide

@@ -14,7 +14,7 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 	{
 		std::string response = ERR_NORECIPIENT(std::string ("Server"), "");
 		send(fd, response.c_str(), response.size(), 0);
-		return ;
+		return;
 	}
 	if (msg.getArgument().empty())
 	{
@@ -36,10 +36,10 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 		{
 			std::string response = ERR_NOSUCHCHANNEL(recipient);
 			send(fd, response.c_str(), response.size(), 0);
-			return ;
+			return;
 		}
 		(*it_channel_to_send).sendMessageToChannel(fd, message);
-		return ;
+		return;
 	}
 	if (message.empty())
 	{

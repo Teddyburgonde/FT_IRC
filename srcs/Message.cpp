@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:40:30 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/30 15:30:35 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/03 15:18:30 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ Message &Message::operator=(Message const &src)
 	{
 		this->_command = src._command;
 	}
-	return *this;
+	return (*this);
 }
 
 /* Setters */
@@ -57,11 +57,11 @@ void Message::setArgument(std::string argument)
 
 std::string Message::getCommand() const
 {
-	return this->_command;
+	return (this->_command);
 }
 
 std::string Message::getArgument() const
 {
-	return this->_argument;
+	return (this->_argument);
 }
 

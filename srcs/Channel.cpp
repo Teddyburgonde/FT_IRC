@@ -23,7 +23,7 @@ void		Channel::setName(std::string chanName)
 // Récupérer le sujet actuel du canal
 std::string Channel::getTopic() const
 {
-    return _topic;
+	return (_topic);
 }
 
 // Définir ou modifier le sujet du canal
