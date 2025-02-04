@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:40:30 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 14:40:02 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/03 15:18:30 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ Message &Message::operator=(Message const &src)
 	{
 		this->_command = src._command;
 	}
-	return *this;
+	return (*this);
 }
 
 /* Setters */
 
-// void Message::setNameChanel(std::string nameChanel)
+// void Message::setNameChannel(std::string nameChannel)
 // {
-// 	this->_nameChanel.push_back(nameChanel);
+// 	this->_nameChannel.push_back(nameChannel);
 // }
 
 void Message::setCommand(std::string command)
@@ -57,11 +57,11 @@ void Message::setArgument(std::string argument)
 
 std::string Message::getCommand() const
 {
-	return this->_command;
+	return (this->_command);
 }
 
 std::string Message::getArgument() const
 {
-	return this->_argument;
+	return (this->_argument);
 }
 

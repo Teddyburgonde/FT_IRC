@@ -1,9 +1,9 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 
-void Server::handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel)
+void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 {
 	int	index;
 
@@ -14,7 +14,7 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel)
 	{
 		std::string response = ERR_NORECIPIENT(std::string ("Server"), "");
 		send(fd, response.c_str(), response.size(), 0);
-		return ;
+		return;
 	}
 	if (msg.getArgument().empty())
 	{
@@ -31,15 +31,15 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel)
 	std::string message = get_next_argument(msg.getArgument().c_str(), index);
 	if (recipient[0] == '#')
 	{
-		std::vector<Chanel>::iterator it_channel_to_send = find_channel_with_name(recipient, _chanel);
-		if (it_channel_to_send == _chanel.end())
+		std::vector<Channel>::iterator it_channel_to_send = find_channel_with_name(recipient, _channel);
+		if (it_channel_to_send == _channel.end())
 		{
 			std::string response = ERR_NOSUCHCHANNEL(recipient);
 			send(fd, response.c_str(), response.size(), 0);
-			return ;
+			return;
 		}
-		(*it_channel_to_send).sendMessageToChanel(fd, message);
-		return ;
+		(*it_channel_to_send).sendMessageToChannel(fd, message);
+		return;
 	}
 	if (message.empty())
 	{

@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2024/12/17 15:22:15 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/01/31 15:55:36 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@
 
 class Message;
 class Client;
-class Chanel;
+class Channel;
 
 /* Utils */
 
@@ -94,7 +94,7 @@ class Server
 		static bool Signal; // variable pour le signal
 		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
 		std::vector<struct pollfd> _pollFds; // tableau où sera stocker tous les sockets à surveiller
-		std::vector<Chanel> _chanel;
+		std::vector<Channel> _channel;
 	public:
 		Server();
 		Server(int port, std::string &password);
@@ -108,17 +108,18 @@ class Server
 		void receiveNewData(int fd); // Reception de la data
 		void analyzeData(int fd,  const std::string &buffer);
 		void handleNick(int fd, const std::string& newNick) ;
-		void handlePrivMsg(int fd, Message &msg, std::vector<Chanel> &_chanel);
-		void handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel);
-		bool isSenderInChannel(int fd, Chanel &channel);
-		bool isSenderOperator(int fd, Chanel &channel);
+		void handleUser(int fd, const std::string& user);
+		void handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel);
+		void handleKick(int fd, Message &msg, std::vector<Channel> &_channel);
+		bool isSenderInChannel(int fd, Channel &channel);
+		bool isSenderOperator(int fd, Channel &channel);
 		bool validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
-		bool isTargetInChannel(const std::string &targetUser, Chanel &channel, int fd);
-		void notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
-		void handleTopic(int fd, const Message &msg, std::vector<Chanel> &_chanel);
+		bool isTargetInChannel(const std::string &targetUser, Channel &channel, int fd);
+		void notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
+		void handleTopic(int fd, const Message &msg, std::vector<Channel> &_channel);
 		void sendError(int fd, const std::string &errorMessage);
 		bool verifyPassword(const std::string& clientPassword) const; 
-		Chanel* findChannel(const std::string &channelName, std::vector<Chanel> &_chanel);
+		Channel* findChannel(const std::string &channelName, std::vector<Channel> &_channel);
 		std::map<int, bool> _authenticatedClients; // test 
 		bool authenticatedClients(int fd,  const std::string &buffer);
 	public:

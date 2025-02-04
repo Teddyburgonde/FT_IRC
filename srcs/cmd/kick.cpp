@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/17 15:04:58 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/03 15:05:56 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 #include <algorithm> //A METTRE .H
 
 
@@ -38,7 +38,7 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
         // Envoyer la réponse d'erreur au client qui a envoyé la commande.
         send(fd, response.c_str(), response.size(), 0);
         // false le format n'est pas correct.
-        return false;
+        return (false);
     }
     // Extraire le nom du canal en prenant la sous-chaîne avant l'espace.
     // donc la il y a #channel dans la variable channel
@@ -52,14 +52,14 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
 	targetUser.erase(std::remove(targetUser.begin(), targetUser.end(), '\n'), targetUser.end());
 	if (channel.empty() || targetUser.empty())
 	{
-        std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-        // Envoyer la réponse d'erreur au client qui a envoyé la commande.
-        send(fd, response.c_str(), response.size(), 0);
-         // false le format n'est pas correct.
-        return false;
-    }
-    // Command valid
-    return true;
+		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
+		// Envoyer la réponse d'erreur au client qui a envoyé la commande.
+		send(fd, response.c_str(), response.size(), 0);
+		 // false le format n'est pas correct.
+		return (false);
+	}
+	// Command valid
+	return (true);
 }
 
 /*
@@ -69,23 +69,23 @@ Par Exemple si Galaad est connecté au server et q'il tape KICK #general Toto
 Galaad est l'expediteur, Toto la target.
 */
 
-bool Server::isSenderInChannel(int fd, Chanel &channel)
+bool Server::isSenderInChannel(int fd, Channel &channel)
 {
 	const std::vector<int>& users = channel.getUserInChannel();
 	for (std::vector<int>::const_iterator userIt = users.begin();
 			userIt != users.end(); ++userIt)
 	{
 		if (*userIt == fd) // il a trouvé l'expéditeur.
-			return true;
+			return (true);
 	}
-	return false;
+	return (false);
 }
 
 /*
 Cette fonction vérifie si l'expéditeur est un operateur.
 Cela permet de savoir si l'utilisateur a les privilèges pour faire la command KICK
 */
-bool Server::isSenderOperator(int fd, Chanel &channel)
+bool Server::isSenderOperator(int fd, Channel &channel)
 {
 	// dans channel il y a une liste d'operator
 	// on stock la liste de fd (les operator) dans le vector operators.
@@ -103,7 +103,7 @@ Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le c
 le retire de la liste des utilisateurs.
 */
 
-// bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel)
+// bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel)
 // {
 //     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
 //     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
@@ -122,7 +122,7 @@ le retire de la liste des utilisateurs.
 //     return false;
 // }
 
-bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel, int fd)
+bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, int fd)
 {
     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
@@ -134,34 +134,34 @@ bool Server::isTargetInChannel(const std::string &targetUser, Chanel &channel, i
 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser)
         {
 			channel.removeUser(*userIt, fd, this->_clients); // Supprime l'utilisateur de la liste
-            return true;
+            return (true);
         }
     }
-    return false;
+    return (false);
 }
 
 /*
 Cette fonction informe tous les utilisateurs d'un canal qu'un utilisateur a été expulsé.
 */
 
-void Server::notifyKick(Chanel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason)
+void Server::notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason)
 {
 	// Creation d'un message sous forme de chaîne .
     std::string kickMessage = ":" + sender + " KICK " + channel.getName() + " " + targetUser + " :" + reason + "\r\n";
 
 	// -1 pour envoyer le message a tout le monde sauf a celui qui viens de se faire kick
-	channel.sendMessageToChanel(-1, kickMessage);
+	channel.sendMessageToChannel(-1, kickMessage);
 }
 
 
-void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
+void Server::handleKick(int fd, Message &msg, std::vector<Channel> &_channel)
 {
 	std::string channel;
 	std::string targetUser;
 
 	if (!validateKickArgs(fd, msg, channel, targetUser))
         return;
-	for (std::vector<Chanel>::iterator i = _chanel.begin(); i != _chanel.end(); i++)
+	for (std::vector<Channel>::iterator i = _channel.begin(); i != _channel.end(); i++)
 	{
 		if ((*i).getName() == channel)
 		{
@@ -181,14 +181,14 @@ void Server::handleKick(int fd, Message &msg, std::vector<Chanel> &_chanel)
 			{
 				std::string response = ERR_USERNOTINCHANNEL(std::string("Server"), targetUser, channel);
 				send(fd, response.c_str(), response.size(), 0);
-				return ;
+				return;
 			}
 			std::ostringstream oss;
 
 			oss << fd;
 			std::string fdStr = oss.str();
 			notifyKick(*i, fdStr, targetUser, "Kicked by operator");
-			return ;
+			return;
 		}
 	}
 	// Si aucun canal correspondant n'est trouvé

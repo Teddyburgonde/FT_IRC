@@ -1,11 +1,11 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 
-void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)
+void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
 {
-	std::vector<Chanel>::iterator it_channel = _chanel.begin();
+	std::vector<Channel>::iterator it_channel = _channel.begin();
 	int			fdUserToInvite;
 	std::string	argument = msg.getArgument();
 	std::string	channelName; //channel en question ou on veut inviter
@@ -22,9 +22,9 @@ void	inviteCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vect
 		return;
 	}
 	channelName = get_next_argument(argument.c_str(), i);
-	while (it_channel != _chanel.end() && (*it_channel).getName() != channelName) //tant qu'on est pas sur le bon channel ou a la fin car on peut inviter dans un channel qui existe pas
+	while (it_channel != _channel.end() && (*it_channel).getName() != channelName) //tant qu'on est pas sur le bon channel ou a la fin car on peut inviter dans un channel qui existe pas
 		it_channel++;
-	if (channelName.empty() || channelName[0] != '#' || it_channel == _chanel.end())
+	if (channelName.empty() || channelName[0] != '#' || it_channel == _channel.end())
 	{
 		send_error(ERR_NOSUCHCHANNEL(channelName), fd);
 		return;

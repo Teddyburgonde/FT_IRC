@@ -1,9 +1,9 @@
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
-#include "../../include/Chanel.hpp"
+#include "../../include/Channel.hpp"
 
-static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plus, Chanel &it_channel, std::string nickname)
+static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plus, Channel &it_channel, std::string nickname)
 {
 	std::string password;
 	int			i = 0;
@@ -21,7 +21,7 @@ static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plu
 		it_channel.setPassword("");
 }
 
-static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plus, Chanel &it_channel, std::string nickname)
+static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plus, Channel &it_channel, std::string nickname)
 {
 	std::string	nb_user_max;
 	int i = 0;
@@ -31,7 +31,7 @@ static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plu
 	if (nb_user_max.empty())
 	{
 		send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
-		return ;
+		return;
 	}
 	std::stringstream ss(nb_user_max);
 	if (!(ss >> number) || !ss.eof()) //si on essaye de mettre ss dans number et que ca marche pas ou vide
@@ -43,7 +43,7 @@ static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plu
 	it_channel.setModeL(is_plus);
 }
 
-static void handle_modeO(std::string argument, int fd, Message &msg, bool is_plus, Chanel &it_channel, std::string nickname, std::vector<Client> &_clients)
+static void handle_modeO(std::string argument, int fd, Message &msg, bool is_plus, Channel &it_channel, std::string nickname, std::vector<Client> &_clients)
 {
 	int			i = 0;
 	std::string	new_operator_name = get_next_argument(argument.c_str(), i);
@@ -67,7 +67,7 @@ static void handle_modeO(std::string argument, int fd, Message &msg, bool is_plu
 	it_channel.addUser(find_fd_with_nickname(new_operator_name, _clients), is_plus);
 }
 
-static void	find_mode(std::string &mode, std::vector<Chanel>::iterator it_channel, std::string nickname_of_sender, int fd, std::string &argument, Message &msg, std::vector<Client> &_clients)
+static void	find_mode(std::string &mode, std::vector<Channel>::iterator it_channel, std::string nickname_of_sender, int fd, std::string &argument, Message &msg, std::vector<Client> &_clients)
 {
 	bool is_plus; //true if +, false if -
 
@@ -89,9 +89,9 @@ static void	find_mode(std::string &mode, std::vector<Chanel>::iterator it_channe
 		send_error(ERR_UNKNOWNMODE(nickname_of_sender, mode[1]), fd);
 }
 
-void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector<Client> &_clients)
+void	modeCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
 {
-	std::vector<Chanel>::iterator it_channel = _chanel.begin();
+	std::vector<Channel>::iterator it_channel = _channel.begin();
 	std::string	str_string = msg.getArgument();
 	const char	*line = str_string.c_str();
 	std::string nickname_of_sender;
@@ -106,8 +106,8 @@ void	modeCommand(int fd, Message &msg, std::vector<Chanel> &_chanel, std::vector
 		send_error(ERR_NOSUCHCHANNEL(channelName), fd);
 		return;
 	}
-	it_channel = find_channel_with_name(channelName, _chanel); //it_channel = le bon channel
-	if (it_channel == _chanel.end()) //donc si le bon channel existe pas, erreur
+	it_channel = find_channel_with_name(channelName, _channel); //it_channel = le bon channel
+	if (it_channel == _channel.end()) //donc si le bon channel existe pas, erreur
 	{
 		send_error(ERR_NOSUCHCHANNEL(channelName), fd);
 		return;

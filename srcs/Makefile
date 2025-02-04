@@ -3,16 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
+#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/15 16:43:53 by tebandam         ###   ########.fr        #
+#    Updated: 2025/01/31 16:01:01 by gmersch          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #=================== NAME ===================#
 
 NAME = irc
+NAME_BONUS = bot
 
 #================ COMPILATOR ================#
 
@@ -27,7 +28,7 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 SRCS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
-		Chanel.cpp \
+		Channel.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \
@@ -42,14 +43,17 @@ SRCS = main.cpp \
 		cmd/nick.cpp \
 		cmd/privMsg.cpp \
 		cmd/topic.cpp \
-		
-		
+		cmd/user.cpp \
 
+SRCS_BONUS = ../bonus/main.cpp \
+			../bonus/Server.cpp \
+			../bonus/serverIncomingConnections_bonus.cpp \
 
 
 #============== OBJECT FILES ================#
 
 OBJS = $(SRCS:.cpp=.o)
+OBJS_BONUS = $(SRCS_BONUS:.cpp=.o)
 
 #==========GENERATION BINARY FILES ==========#
 
@@ -72,6 +76,10 @@ $(NAME) : $(OBJS)
 	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(GREEN) EXECUTABLE READY !$(RESET)"
 
+bonus: $(OBJS_BONUS)
+	$(CPP) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
+	@echo "$(GREEN) EXECUTABLE BONUS READY !$(RESET)"
+
 clean:
 	@$(RM) $(OBJS)
 
@@ -80,4 +88,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
