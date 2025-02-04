@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/01/31 15:55:36 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/04 18:20:41 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 
 #define ERR_USERNOTINCHANNEL(client, nick, channel)    (": 441 " + client + " " + nick + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(client, channel)            (": 442 " + client + " " + channel + " :Not on that channel\r\n")
-#define ERR_NOTREGISTERED(client)                    (": 451 " + client + " :You have not registered\r\n")
+#define ERR_NOTREGISTERED()                   		(": 451 :You have not registered\r\n")
 #define ERR_NEEDMOREPARAMS(client, cmd)                (": 461 " + client + " " + cmd + " :Not enough parameters\r\n")
 #define ERR_ALREADYREGISTRED(client)                (": 462 " + client + " :You may not reregister\r\n")
 #define ERR_PASSWDMISMATCH(client)                    (": 464 " + client + " :Password incorrect\r\n")

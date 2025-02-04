@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/01/30 15:35:24 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/04 18:45:35 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	print_userInchan(std::vector<Channel> &_channel)
 //return 1 if error
 int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
 {
-	std::cout << "mode i = " << (*it_ChanExist).getModeI() << std::endl; //!debug
+	//std::cout << "mode i = " << (*it_ChanExist).getModeI() << std::endl; //!debug
 	//EST CE QUE PLUSIEUR ERREURDOIVENT S'QFFICHER SI ERREUR ?? OU JUSTE UNE SEUL ET FAIRE DES ELSE IF
 	if ((*it_ChanExist).getModeI() == true && !is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
 	{
@@ -84,7 +84,7 @@ int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std:
 		send_error(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
 		return (1);
 	}
-	if ((*it_ChanExist).getModeL() == true && (*it_ChanExist).get_nb_user_in() == (*it_ChanExist).get_nb_user_max()) // nb limite de personne
+	if ((*it_ChanExist).getModeL() == true && (*it_ChanExist).get_nb_user_in() >= (*it_ChanExist).get_nb_user_max()) // nb limite de personne
 	{
 		send_error(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
 		return (1);
@@ -120,7 +120,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vecto
 		}
 		if (it_ChanExist == _channel.end()) //si chan existe pas, (donc 'it' est a la fin car on a tout parcouru sans trouver)
 		{
-			std::cout << "Create chan: " << *it_chanNew << std::endl; //!debug, à retirer!
+			//std::cout << "Create chan: " << *it_chanNew << std::endl; //!debug, à retirer!
 			Channel newChan;
 			newChan.setName(*it_chanNew);
 			newChan.addUser(fd, true);

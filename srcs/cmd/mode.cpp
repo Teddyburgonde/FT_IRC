@@ -8,17 +8,19 @@ static void	handle_modeK(std::string argument, int fd, Message &msg, bool is_plu
 	std::string password;
 	int			i = 0;
 
-	password = get_next_argument(argument.c_str(), i);
-	if (password.empty())
-	{
-		send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
-		return;
-	}
-	it_channel.setModeK(is_plus);
 	if (is_plus)
+	{
+		password = get_next_argument(argument.c_str(), i);
+		if (password.empty())
+		{
+			send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
+			return;
+		}
 		it_channel.setPassword(argument);
+	}
 	else
 		it_channel.setPassword("");
+	it_channel.setModeK(is_plus);
 }
 
 static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plus, Channel &it_channel, std::string nickname)
@@ -27,19 +29,22 @@ static void	handle_modeL(std::string argument, int fd, Message &msg, bool is_plu
 	int i = 0;
 	int number;
 
-	nb_user_max = get_next_argument(argument.c_str(), i);
-	if (nb_user_max.empty())
+	if (is_plus)
 	{
-		send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
-		return;
+		nb_user_max = get_next_argument(argument.c_str(), i);
+		if (nb_user_max.empty())
+		{
+			send_error(ERR_NEEDMOREPARAMS(nickname, msg.getCommand()), fd);
+			return;
+		}
+		std::stringstream ss(nb_user_max);
+		if (!(ss >> number) || !ss.eof()) //si on essaye de mettre ss dans number et que ca marche pas ou vide
+		{
+			send_error(ERR_TOOMUCHPARAMS(nickname, msg.getCommand()), fd);
+			return;
+		}
+		it_channel.set_nb_user_max(number); // on defini le nb
 	}
-	std::stringstream ss(nb_user_max);
-	if (!(ss >> number) || !ss.eof()) //si on essaye de mettre ss dans number et que ca marche pas ou vide
-	{
-		send_error(ERR_TOOMUCHPARAMS(nickname, msg.getCommand()), fd);
-		return;
-	}
-	it_channel.set_nb_user_max(number); // on defini le nb
 	it_channel.setModeL(is_plus);
 }
 

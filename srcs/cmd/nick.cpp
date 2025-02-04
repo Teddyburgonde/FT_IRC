@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 16:34:07 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:07:10 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/04 15:44:32 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,23 @@ void Server::handleNick(int fd, const std::string& newNick)
         send(fd, response.c_str(), response.size(), 0);
         return;
     }
-
+    
     for (size_t i = 0; i < _clients.size(); ++i)
 	{
-        if (_clients[i].getNickname() == newNick) {
+        if (_clients[i].getNickname() == newNick)
+        {
             std::string response = ERR_NICKNAMEINUSE(std::string("Server"), newNick);
             send(fd, response.c_str(), response.size(), 0);
             return;
         }
 
-        if (_clients[i].getFd() == fd) {
+        if (_clients[i].getFd() == fd)
+        {
             _clients[i].setNickname(newNick);
+            //!Est ce que on dois faire le messages ci dessous tout le temps ?!
             std::string response = RPL_WELCOME(newNick);
             send(fd, response.c_str(), response.size(), 0);
-            std::cout << "Client FD: " << fd << " Nickname: " << newNick << std::endl;
+            /*DEBUG ???*/ std::cout << "Client FD: " << fd << " Nickname: " << newNick << std::endl;
             return;
         }
     }
