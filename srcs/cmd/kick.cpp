@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:05:56 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/04 17:32:52 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,25 +103,6 @@ Cherche si dans la liste des utilisateurs il y a la cible a kick , si c'est le c
 le retire de la liste des utilisateurs.
 */
 
-// bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel)
-// {
-//     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
-//     for (std::vector<int>::iterator userIt = users.begin(); userIt != users.end(); ++userIt)
-//     {
-//         // std::ostringstream oss;
-//         // oss << *userIt; // converti un entier en chaine de caractere
-//         std::ostringstream oss;
-//         oss << *userIt; // converti un entier en chaine de caractere
-// 		std::cout << oss.str();
-// 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser)
-//         {
-//             channel.removeUser(*userIt); // Supprime l'utilisateur de la liste
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
 bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, int fd)
 {
     std::vector<int>& users = channel.getUserInChannel(); // Référence non-constante pour pouvoir modifier
@@ -134,7 +115,7 @@ bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, 
 		if (find_nickname_with_fd(*userIt, this->_clients) == targetUser)
         {
 			channel.removeUser(*userIt, fd, this->_clients); // Supprime l'utilisateur de la liste
-            return (true);
+			return (true);
         }
     }
     return (false);
@@ -173,9 +154,9 @@ void Server::handleKick(int fd, Message &msg, std::vector<Channel> &_channel)
 			}
 			if (!isSenderOperator(fd, *i))
 			{
-    			std::string response = ERR_CHANOPRIVSNEEDED(std::string("Server"), channel);
-   				send(fd, response.c_str(), response.size(), 0);
-    			return;
+				std::string response = ERR_CHANOPRIVSNEEDED(std::string("Server"), channel);
+				send(fd, response.c_str(), response.size(), 0);
+				return;
 			}
 			if (!isTargetInChannel(targetUser, *i, fd))
 			{

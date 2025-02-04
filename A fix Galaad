@@ -1,45 +1,6 @@
-remplacer findChannel par find_channel_it (le miens)
+NOUVELLES ERREUR :
 
-return logique donc tous avec () ou tous sans
-
-demander a Teddy si send_error on doit pas mettre le nom du gars qui a fais l'erreur ? Lui met juste 'Server' dans la case client
-
-SEND ??? devrais utiliser PRVMSG
+aucune ahahahhahahh on est des goat
 
 
-
-
-ERREUR :
-
--on peux se kick nous meme
-
--Pas de message pour prevenir que la commande "MODE #general +i" à bien fonctionner et est mis en place
-
--"MODE #general -l" quand on veut retirer le mode +l (limite de user), il demande un param en plus et si on met un autre mot random ca fais too much parameter.
-ET print le nom du user quand met 'too much parameter' normal ??
-
-Le mode +l bug si on met une limite de user plus petite que le nnombre de user deja dans le channel. comme il y q trop de gens dans le channel, tout le monde peux rejoindre alors que ca ne devrais pas etre possible. Le check du mode -l doit etre bug.
-
--Quand on fait 'MODE #general -k' il demande un autre parametre alors que le parametre supplemetaire devrais etre que pour le +k, et non pas pour le -k.
-
--On peux faire des commandes tel que 'JOIN' alors qu'on a pas defini notre nickname avec 'NICK.
-Est problèmatique car les channels utilisent et stock les nicknames des user dans le channel pour savoir qui est op et qui est juste dans le channel...
-Je pense que on dervais faire au tout debut une erreur si on essaye d'ecrire autre choses que NICK ?
-
--Si on fait ctrl+c ou ctrl+d dans un client, je pense que ca fait des erreurs si le user etais le seul operateur d'un channel. Le channel se retrouve sans operateur et donc ça deviens un serveur anarchie où plus personne ne modère.
-
-
--La fonction MODE ne gère pas les ':' pour donner un argument. il recupere le : alors qu'il ne dervais pas je crois.
-
--Quand on supprime le mode invite only (-i), la liste des gens invité est toujours gardé en memoir, et si on reactive le mode +i, alors les gens invité avant peuvent rejoindre. Est ce normal ?? (check si ca dervais avoir ce comportement.
-
-
-Le sujet dis :
-
-"Utilisez ctrl+D pour envoyer la commande en plusieurs parties : ’com’, puis ’man’,
-puis ’d\n’.
-Afin de traiter une commande, vous devez en premier lieu la reconstituer en concaté-
-nant les paquets reçus."
-
-Je ne crois pas que l'on gère cela.
 
