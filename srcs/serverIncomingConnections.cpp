@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:03:05 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 15:59:38 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/03 15:00:19 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "../include/Client.hpp"
 
 /*
-Gere les nouvelles connextion entrante sur le serveur.
+Gere les nouvelles connexion entrante sur le serveur.
 1. Preparer les structures necessaires
 2. Appeller accept
 */
@@ -24,6 +24,7 @@ void Server::acceptNewClient()
 {
 	Client client;
 
+	const char* message = "enter password :\n";
 	struct pollfd newPoll; // c'est une structure qui va contenir toutes les informations de la socket client
 	struct sockaddr_in clientAddr; // Structure pour les informations du client
 	socklen_t clientAddrLen = sizeof(clientAddr); // Taille de la structure
@@ -33,6 +34,7 @@ void Server::acceptNewClient()
 	if (fcntl(_fdAccept, F_SETFL, O_NONBLOCK) == -1)
 		throw(std::runtime_error("accept() faild"));
 	std::cout << "New client connected with FD: " << _fdAccept << std::endl;
+	send(_fdAccept, message, strlen(message), 0);
 	client.setFd(_fdAccept); // On set le fd du client
 	client.setIpAddress(inet_ntoa(clientAddr.sin_addr)); // On set l'adresse IP du client
 	_clients.push_back(client); // On ajoute le client a la liste des clients connectes

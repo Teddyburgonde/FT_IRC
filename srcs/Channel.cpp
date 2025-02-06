@@ -23,7 +23,7 @@ void		Channel::setName(std::string chanName)
 // Récupérer le sujet actuel du canal
 std::string Channel::getTopic() const
 {
-    return _topic;
+	return (_topic);
 }
 
 // Définir ou modifier le sujet du canal
@@ -70,6 +70,7 @@ void	Channel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 {
 	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
 	std::vector<int>::iterator op_it;
+	std::vector<int>::iterator iv_it; //invite list
 	bool	user_found = false;
 
 	us_it = std::find(this->_userInChannel.begin(), this->_userInChannel.end(), newUser);
@@ -79,9 +80,15 @@ void	Channel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 		user_found = true;
 	}
 	op_it = std::find(this->_operator.begin(), this->_operator.end(), newUser);
-	if (op_it != _operator.end())
+	if (op_it != this->_operator.end())
 	{
 		this->_operator.erase(op_it);
+	}
+	if (!this->_invitedUser.empty())
+	{
+		iv_it = std::find(this->_invitedUser.begin(), this->_invitedUser.end(), newUser);
+		if (iv_it != this->_invitedUser.end())
+			this->_invitedUser.erase(iv_it);
 	}
 	if (user_found == false)
 	{
@@ -132,6 +139,8 @@ std::vector<int>	Channel::getInvitedUser()//getter de _invitedUser
 void	Channel::setModeI(bool set)
 {
 	this->_mode_i = set;
+	if (!set && !this->_invitedUser.empty())
+		this->_invitedUser.clear();
 }
 
 void	Channel::setModeT(bool set)
