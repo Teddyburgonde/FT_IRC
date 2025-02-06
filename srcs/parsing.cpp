@@ -63,7 +63,6 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\n'), userArguments.end());
 		handleUser(fd, userArguments);
 	}
-	//On check si le nicknames est défini avant de faire d'autre commandes
 	else if (find_nickname_with_fd(fd, this->_clients).empty())
 		send_error(ERR_NOTREGISTERED(), fd);
 	else if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
@@ -84,10 +83,7 @@ void Server::analyzeData(int fd,  const std::string &buffer)
         handleKick(fd, msg, this->_channel);
     }
 	else if (!strncmp(buffer.data(), "JOIN ", 5))
-	{
-		//std::cout << "made join " << std::endl; //debug, a retirer
 		handleJoin(fd, msg, this->_channel, this->_clients);
-	}
 	else if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size()))
 		inviteCommand(fd, msg, this->_channel, this->_clients);
 	else if (!strncmp((msg.getCommand()).c_str(), "MODE", msg.getCommand().size())) 

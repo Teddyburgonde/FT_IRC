@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/04 18:45:35 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/06 17:58:09 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,11 @@ static std::string	find_arg_chan(const char *argument, int &index)
 }
 
 //La fonction ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
-std::vector<std::string> create_chanName(const char *argument, int &i)
+static std::vector<std::string> create_chanName(const char *argument, int &i, int fd)
 {
 	int	f;
 	std::vector<std::string>	chanName;
+	std::vector<std::string>	error;
 	//le while ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
 	//si je fais ##general ca va faire de la merde ??
 	while (argument[i] && argument[i] != ' ') //on stop quand espace ou fin de ligne //ATTENTION, PROBABLEMENT \r ou \t je sais plus
@@ -42,7 +43,11 @@ std::vector<std::string> create_chanName(const char *argument, int &i)
 		if ((i == 0 && argument[0] == '#') || (i > 0 && argument[i - 1] == ',' && argument[i] == '#')) //si le premier carractere est un #, ou sinon faut que le #soit juste apres une ','.
 			chanName.push_back(find_arg_chan(argument, f)); //on recupere une chaine qui debute à i et qui fini à f et on l'ajoute au vecteur chanName;
 		else if (i == 0)
-			std::cout << find_arg_chan(argument, f) << " :Invalid channel name" << std::endl;
+		{
+			send_error(ERR_NOSUCHCHANNEL((std::string)argument), fd);
+			return (error);
+		}
+			//std::cout << find_arg_chan(argument, f) << " :Invalid channel name" << std::endl;
 		i++; //on incremente i pour que si 'i' vallais '#', il se décale pour en chercher un autre
 	} //On boucle afin de recuperer tout les differents channel dont on parle
 	return (chanName);
@@ -99,13 +104,16 @@ void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vecto
 	int i = 0;
 	std::string argumentStr = msg.getArgument();
 	const char	*argument = argumentStr.c_str(); //arguement  est egale a la string stocker dans la class msg._argument
-	const std::vector<std::string> 			&chanName = create_chanName(argument, i);
+	int f = 0;
+	const std::vector<std::string> 			&chanName = create_chanName(get_next_argument(argument, f).c_str(), i, fd);
+	if (chanName.empty())
+		return;
 	std::string arg_after_channel = get_next_argument(argument, i);
 	Client		user_sender = find_it_client_with_fd(fd, _clients);
 
 	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
 	{
-		std::cout << "No channel joined. Try JOIN #<channel>" << std::endl; //erreur, pqs cout
+		send_error(ERR_NEEDMOREPARAMS(find_nickname_with_fd(fd, _clients), msg.getArgument()), fd);
 		return;
 	}
 	it_chanNew = chanName.begin();
