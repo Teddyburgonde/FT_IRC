@@ -92,7 +92,7 @@ void	Channel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 	}
 	if (user_found == false)
 	{
-		send_error(ERR_NOTONCHANNEL(find_nickname_with_fd(newUser, _clients), this->_name), fd);
+		betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(newUser, _clients), this->_name), fd);
 		return;
 	}
 	this->set_nb_user_in(false);

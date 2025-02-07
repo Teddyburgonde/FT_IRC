@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/06 17:58:09 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:42:59 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static std::vector<std::string> create_chanName(const char *argument, int &i, in
 			chanName.push_back(find_arg_chan(argument, f)); //on recupere une chaine qui debute à i et qui fini à f et on l'ajoute au vecteur chanName;
 		else if (i == 0)
 		{
-			send_error(ERR_NOSUCHCHANNEL((std::string)argument), fd);
+			betterSend(ERR_NOSUCHCHANNEL((std::string)argument), fd);
 			return (error);
 		}
 			//std::cout << find_arg_chan(argument, f) << " :Invalid channel name" << std::endl;
@@ -81,17 +81,17 @@ int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std:
 	//EST CE QUE PLUSIEUR ERREURDOIVENT S'QFFICHER SI ERREUR ?? OU JUSTE UNE SEUL ET FAIRE DES ELSE IF
 	if ((*it_ChanExist).getModeI() == true && !is_user_in_chan(fd, (*it_ChanExist).getInvitedUser())) //Si invite only et pas invité
 	{
-		send_error(ERR_INVITEONLYCHAN(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		betterSend(ERR_INVITEONLYCHAN(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
 		return (1);
 	}
 	if ((*it_ChanExist).getModeK() == true && (arg_after_channel.empty() || arg_after_channel != (*it_ChanExist).getPassword()))
 	{
-		send_error(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		betterSend(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
 		return (1);
 	}
 	if ((*it_ChanExist).getModeL() == true && (*it_ChanExist).get_nb_user_in() >= (*it_ChanExist).get_nb_user_max()) // nb limite de personne
 	{
-		send_error(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		betterSend(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
 		return (1);
 	}
 	return (0);
@@ -113,7 +113,7 @@ void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vecto
 
 	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
 	{
-		send_error(ERR_NEEDMOREPARAMS(find_nickname_with_fd(fd, _clients), msg.getArgument()), fd);
+		betterSend(ERR_NEEDMOREPARAMS(find_nickname_with_fd(fd, _clients), msg.getArgument()), fd);
 		return;
 	}
 	it_chanNew = chanName.begin();

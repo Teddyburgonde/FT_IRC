@@ -20,19 +20,42 @@ bool Server::authenticatedClients(int fd,  const std::string &buffer)
 			{
 				_authenticatedClients[fd] = true; // Authentifie le client
 				send(fd, "OK :Password accepted\n", 23, 0);
-				return (false); 
 			}
 			else
-			{
 				send(fd, "ERROR :Invalid password\n", 25, 0);
-				return (false);
-			}
 		}
 		else
-		{
 			send(fd, "ERROR :You must authenticate first using PASS\r\n", 47, 0);
-			return (false);
+		return (false);
+	}
+	//sinon si le nickname est pas defini
+	else if (find_nickname_with_fd(fd, this->_clients).empty())
+	{
+		std::string newNick;
+		if (strncmp(buffer.data(), "NICK ", 5) == 0)
+		{
+			std::string newNick = std::string(buffer.begin() + 5, buffer.end());
+			newNick.erase(std::remove(newNick.begin(), newNick.end(), '\r'), newNick.end());
+			newNick.erase(std::remove(newNick.begin(), newNick.end(), '\n'), newNick.end());
+			handleNick(fd, newNick);
 		}
+		else
+			betterSend(ERR_NOTREGISTERED(), fd);
+		return (false);
+	}
+	//sinon si pas de username defini
+	else if (find_username_with_fd(fd, this->_clients).empty())
+	{
+		if (strncmp(buffer.data(), "USER ", 5) == 0)
+		{
+			std::string userArguments = std::string(buffer.begin() + 5, buffer.end());
+			userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\r'), userArguments.end());
+			userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\n'), userArguments.end());
+			handleUser(fd, userArguments);
+		}
+		else
+			betterSend(ERR_NOTREGISTERED(), fd);
+		return (false);
 	}
 	return (true);
 }
@@ -48,40 +71,12 @@ void Server::analyzeData(int fd,  const std::string &buffer)
 	parse_buffer(stringBuffer, msg);
 	if (msg.getCommand().empty())
 		return;
-	std::string newNick;
-	if (strncmp(buffer.data(), "NICK ", 5) == 0)
-	{
-    	std::string newNick = std::string(buffer.begin() + 5, buffer.end());
-    	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\r'), newNick.end());
-    	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\n'), newNick.end());
-    	handleNick(fd, newNick);
-	}
-	else if (strncmp(buffer.data(), "USER ", 5) == 0)
-	{
-		std::string userArguments = std::string(buffer.begin() + 5, buffer.end());
-		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\r'), userArguments.end());
-		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\n'), userArguments.end());
-		handleUser(fd, userArguments);
-	}
-	else if (find_nickname_with_fd(fd, this->_clients).empty())
-		send_error(ERR_NOTREGISTERED(), fd);
 	else if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
-	{
-		std::string topicArguments = std::string(buffer.begin() + 6, buffer.end());
-    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\r'), topicArguments.end());
-    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\n'), topicArguments.end());
-    	Message msg;
-		msg.setCommand("TOPIC");
-		msg.setArgument(topicArguments);
 		handleTopic(fd, msg, _channel);
-	}
 	else if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
 		handlePrivMsg(fd, msg, this->_channel);
-		// handlePrivMsg(fd, std::string(buffer));
-	else if (msg.getCommand() == "KICK") 
-	{  // Ajout de la commande KICK
+	else if (msg.getCommand() == "KICK")
         handleKick(fd, msg, this->_channel);
-    }
 	else if (!strncmp(buffer.data(), "JOIN ", 5))
 		handleJoin(fd, msg, this->_channel, this->_clients);
 	else if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size()))

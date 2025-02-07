@@ -48,7 +48,7 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 		//si le userSender est pas dans le channel en question
 		if (!is_user_in_chan(fd, it_channel_to_send->getUserInChannel()))
 		{
-			send_error(ERR_NOTONCHANNEL(find_nickname_with_fd(fd, _clients), it_channel_to_send->getName()), fd);
+			betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(fd, _clients), it_channel_to_send->getName()), fd);
 			return;
 		}
 		it_channel_to_send->sendMessageToChannel(fd, message);

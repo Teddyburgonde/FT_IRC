@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/06 15:56:10 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:43:37 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,11 @@ class Channel;
 
 int			skipSpaces(const char *str);
 std::string get_next_argument(const char *line, int &index);
-void		send_error(std::string error, int fd);
+void		betterSend(std::string error, int fd);
 int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
 std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
+std::string find_username_with_fd(int fd, std::vector<Client> &_clients);
 
 
 
@@ -117,7 +118,6 @@ class Server
 		bool isTargetInChannel(const std::string &targetUser, Channel &channel, int fd);
 		void notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
 		void handleTopic(int fd, const Message &msg, std::vector<Channel> &_channel);
-		void sendError(int fd, const std::string &errorMessage);
 		bool verifyPassword(const std::string& clientPassword) const; 
 		Channel* findChannel(const std::string &channelName, std::vector<Channel> &_channel);
 		std::map<int, bool> _authenticatedClients; // test 

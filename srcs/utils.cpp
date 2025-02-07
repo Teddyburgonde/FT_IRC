@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/06 17:22:03 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 15:42:59 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,18 @@ int	is_user_in_chan(int fd, std::vector<int> userInChannel)
 		it_userInChannelInChannel++;
 	}
 	return (0);
+}
+
+std::string find_username_with_fd(int fd, std::vector<Client> &_clients)
+{
+    for (size_t i = 0; i < _clients.size(); i++)
+    {
+        if (_clients[i].getFd() == fd)
+        {
+            return _clients[i].getUsername();
+        }
+    }
+    return "";
 }
 
 //utils ?? sert a trouver un channel a partir d'un nom
@@ -76,7 +88,7 @@ std::string get_next_argument(const char *line, int &index)
     return (std::string(line + start, line + index));
 }
 
-void	send_error(std::string error, int fd)
+void	betterSend(std::string error, int fd)
 {
 	send(fd, error.c_str(), error.size(), 0);
 }
