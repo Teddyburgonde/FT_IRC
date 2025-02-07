@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:12:49 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/07 17:02:01 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,39 @@ static bool isValidUsername(const std::string& user)
 	return (true);
 }
 
+//NOUVEAU
+// void Server::handleUser(int fd, const std::string &user)
+// {
+// 	std::istringstream ss(user);
+// 	std::string username;
+// 	ss >> username;  // Récupère uniquement le premier mot
+// 	if (!isValidUsername(username))
+// 	{
+// 		std::string response = ERR_ERRONEUSNICKNAME("Server", username);
+// 		send(fd, response.c_str(), response.size(), 0);
+// 		std::cerr << "Erreur : Username invalide '" << username << "' pour le client FD: " << fd << std::endl;
+// 		return;
+// 	}
+// 	// Défini le username
+// 	for (size_t i = 0; i < _clients.size(); ++i)
+// 	{
+// 		if (_clients[i].getFd() == fd)
+// 		{
+// 			_clients[i].setUsername(username);
+// 			// Envoyer le message de bienvenue
+// 			std::string response = RPL_WELCOME(username);
+// 			send(fd, response.c_str(), response.size(), 0);
+// 			return;
+// 		}
+// 	}
+// }
+
 void Server::handleUser(int fd, const std::string& user)
 {
 	if (!isValidUsername(user))
 	{
 		std::string response = ERR_ERRONEUSNICKNAME(std::string("Server"), user);
 		send(fd, response.c_str(), response.size(), 0);
-		return;
-	}
-	// Vérifier si la liste des clients est vide
-	if (_clients.empty()) 
-	{
-		std::cerr << "Error: No clients connected, handleUser aborted." << std::endl;
 		return;
 	}
 	// Vérifie si l'utilisateur a déjà défini un nom

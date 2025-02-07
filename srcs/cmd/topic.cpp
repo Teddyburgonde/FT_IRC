@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:07:41 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:13:26 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,6 @@ Reponses possibles du serveur
 
 */
 
-
-/* Le server envoie un message d'erreur aux clients connectés */
-void Server::sendError(int fd, const std::string &errorMessage)
-{
-	send(fd, errorMessage.c_str(), errorMessage.size(), 0);
-}
-
 /*Permet de trouver le Channel */
 
 Channel* Server::findChannel(const std::string &ChannelName, std::vector<Channel> &_Channel)
@@ -64,12 +57,11 @@ Channel* Server::findChannel(const std::string &ChannelName, std::vector<Channel
 void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Channel)
 {
 	// 1. Vérifier si un canal est spécifié
-	size_t spacePos = msg.getArgument().find(' ');
-	std::string channel = (spacePos == std::string::npos) ? msg.getArgument() : msg.getArgument().substr(0, spacePos);
-
+	int			index;
+	std::string channel = get_next_argument(msg.getArgument().c_str(), index);
 	if (channel.empty())
 	{
-		sendError(fd, ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"));
+		betterSend(ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"), fd);
 		return;
 	}
 
@@ -77,49 +69,40 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Chan
 	Channel* targetChannel = findChannel(channel, _Channel);
 	if (!targetChannel)
 	{
-		sendError(fd, ERR_NOSUCHCHANNEL(channel));
+		betterSend(ERR_NOSUCHCHANNEL(channel), fd);
 		return;
 	}
 
 	// 3. Vérifier si l'expéditeur est dans le canal
 	if (!isSenderInChannel(fd, *targetChannel))
 	{
-		sendError(fd, ERR_NOTONCHANNEL(std::string("Server"), channel));
-		return;
-	}
-
-	//!AJOUT GALAAD
-	//Si pas operateur et que le mode operateur only est active pour les topics (+t)
-	//erreur
-	if (!is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
-	{
-		send_error(ERR_CHANOPRIVSNEEDED(find_nickname_with_fd(fd, this->_clients), targetChannel->getName()), fd);
+		betterSend(ERR_NOTONCHANNEL(std::string("Server"), channel), fd);
 		return;
 	}
 
 	// 4. Vérifier si un nouveau sujet est fourni
-	size_t topicStart = msg.getArgument().find(':');
-	if (topicStart == std::string::npos)
+	std::string newTopic = get_next_argument(msg.getArgument().c_str(), index);
+	if (newTopic.empty())
 	{
 		// Pas de nouveau sujet fourni, afficher le sujet actuel
 		if (!targetChannel->getTopic().empty())
-			sendError(fd, RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic()));
+			betterSend(RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic()), fd);
 		else
-			sendError(fd, RPL_NOTOPIC(std::string("Server"), targetChannel->getName()));
+			betterSend(RPL_NOTOPIC(std::string("Server"), targetChannel->getName()), fd);
 		return;
 	}
-
-	// 5. Extraire et mettre à jour le sujet
-	std::string newTopic = msg.getArgument().substr(topicStart + 1);
-	if (newTopic.empty())
+	
+	//!AJOUT GALAAD
+	//Si pas operateur et que le mode operateur only est active pour les topics (+t), erreur
+	if (!is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
 	{
-		sendError(fd, ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"));
+		betterSend(ERR_CHANOPRIVSNEEDED(find_nickname_with_fd(fd, this->_clients), targetChannel->getName()), fd);
 		return;
 	}
-
+	
 	targetChannel->setTopic(newTopic);
-	std::ostringstream oss;
-	oss << fd;
-	std::string notification = ":" + oss.str() + " TOPIC " + targetChannel->getName() + " :" + targetChannel->getTopic() + "\r\n";
-	targetChannel->sendMessageToChannel(fd, notification);
+	//!on envoie a tout le monde le nouveau topic. Peux etre pas le bon message !
+	std::string notification = RPL_SEETOPIC(std::string("Server"), targetChannel->getName(), targetChannel->getTopic());
+	//là on envoie le message au gens du channel
+	targetChannel->sendMessageToChannel(-1, notification);
 }

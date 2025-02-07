@@ -1,0 +1,8 @@
+Galaad :
+
+-Fix some error in handleJoin (std::cout instead of send_error()) and other 
+-Remove debug cout in Channel.cpp and in parsing.cpp
+
+-authenticatedClients : big change done for user and nickname and PASS
+
+-Remove sendError from teddy, and change all send_error to -> betterSend.

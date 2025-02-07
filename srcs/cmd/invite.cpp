@@ -18,7 +18,7 @@ void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::ve
 	fdUserToInvite = find_fd_with_nickname(nameInvite, _clients); //on recupere le fd correspondant au nom
 	if (fdUserToInvite == 0) //error si le nickname est pas trouve
 	{
-		send_error(ERR_NOSUCHNICK(nick_of_sender, nameInvite), fd);
+		betterSend(ERR_NOSUCHNICK(nick_of_sender, nameInvite), fd);
 		return;
 	}
 	channelName = get_next_argument(argument.c_str(), i);
@@ -26,17 +26,17 @@ void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::ve
 		it_channel++;
 	if (channelName.empty() || channelName[0] != '#' || it_channel == _channel.end())
 	{
-		send_error(ERR_NOSUCHCHANNEL(channelName), fd);
+		betterSend(ERR_NOSUCHCHANNEL(channelName), fd);
 		return;
 	}
 	if (is_user_in_chan(fd, (*it_channel).getUserInChannel()) == false) //si pers qui fait cmd pas dans chan
 	{
-		send_error(ERR_USERNOTINCHANNEL(nick_of_sender, nick_of_sender, channelName), fd);
+		betterSend(ERR_USERNOTINCHANNEL(nick_of_sender, nick_of_sender, channelName), fd);
 		return;
 	}
 	if (is_user_in_chan(fd, (*it_channel).getOperatorUser()) == false) //check si la pers qui a fait la cmd est op du chan
 	{
-		send_error(ERR_CHANOPRIVSNEEDED(nick_of_sender, channelName), fd);
+		betterSend(ERR_CHANOPRIVSNEEDED(nick_of_sender, channelName), fd);
 		return;
 	}
 	(*it_channel).setInvitedUser(fdUserToInvite);

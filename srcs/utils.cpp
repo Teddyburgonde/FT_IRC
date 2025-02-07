@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/04 18:43:49 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:56:22 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,18 @@ int	is_user_in_chan(int fd, std::vector<int> userInChannel)
 	return (0);
 }
 
+std::string find_username_with_fd(int fd, std::vector<Client> &_clients)
+{
+    for (size_t i = 0; i < _clients.size(); i++)
+    {
+        if (_clients[i].getFd() == fd)
+        {
+            return _clients[i].getUsername();
+        }
+    }
+    return "";
+}
+
 //utils ?? sert a trouver un channel a partir d'un nom
 std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel)
 {
@@ -47,7 +59,7 @@ std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, 
 	it_channel = _channel.begin();
 	while (it_channel != _channel.end())
 	{
-		if ((*it_channel).getName() == channelName)
+		if (it_channel->getName() == channelName)
 			return (it_channel);
 		it_channel++;
 	}
@@ -76,7 +88,7 @@ std::string get_next_argument(const char *line, int &index)
     return (std::string(line + start, line + index));
 }
 
-void	send_error(std::string error, int fd)
+void	betterSend(std::string error, int fd)
 {
 	send(fd, error.c_str(), error.size(), 0);
 }
@@ -87,8 +99,8 @@ int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients) // a
 
 	while (it != _clients.end()) //on parcour tout les clients existant
 	{
-		if (name == (*it).getNickname()) //si le nom d'un client est le meme que celui donne en parametre
-			return ((*it).getFd()); //on return le fd (int) du client.
+		if (name == it->getNickname()) //si le nom d'un client est le meme que celui donne en parametre
+			return (it->getFd()); //on return le fd (int) du client.
 		it++;
 	}
 	return (0);
@@ -100,7 +112,7 @@ Client	find_it_client_with_fd(int fd, std::vector<Client> &_clients) // amettre 
 
 	while (it != _clients.end()) //on parcour tout les clients existant
 	{
-		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
+		if (fd == it->getFd()) //si le nom d'un client est le meme que celui donne en parametre
 			return (*it); //on return le fd (int) du client.
 		it++;
 	}
@@ -114,9 +126,23 @@ std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients)
 
 	while (it != _clients.end()) //on parcour tout les clients existant
 	{
-		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
-			return ((*it).getNickname()); //on return le fd (int) du client.
+		if (fd == it->getFd()) //si le nom d'un client est le meme que celui donne en parametre
+			return (it->getNickname()); //on return le fd (int) du client.
 		it++;
 	}
 	return ("");
+}
+
+std::string formatIrcMessage(const std::string &nickname, 
+	const std::string &username,
+	const std::string &host,
+	const std::string &command,
+	const std::string &target,
+	const std::string &message)
+{
+    if (message.empty())
+    {
+        return ":" + nickname + "!" + username + "@" + host + " " + command + " " + target + "\r\n";
+    }
+    return ":" + nickname + "!" + username + "@" + host + " " + command + " " + target + " :" + message + "\r\n";
 }

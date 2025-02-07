@@ -92,7 +92,7 @@ void	Channel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
 	}
 	if (user_found == false)
 	{
-		send_error(ERR_NOTONCHANNEL(find_nickname_with_fd(newUser, _clients), this->_name), fd);
+		betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(newUser, _clients), this->_name), fd);
 		return;
 	}
 	this->set_nb_user_in(false);
@@ -105,19 +105,14 @@ std::vector<int>&	Channel::getOperatorUser()//getter de _operator
 
 void	Channel::sendMessageToChannel(int userSender, std::string &msg)
 {
-	std::vector<int>::iterator it =  this->_userInChannel.begin(); //je set l'iterateur au debut du vecteur _userInChannel qui contient tout les user du channel
+	std::vector<int>::iterator it =  this->_userInChannel.begin();
 
-	while (it != this->_userInChannel.end()) //tant que ont a pas envoyé à touts les user du chan
+	while (it != this->_userInChannel.end())
 	{
-		std::cout << "user in chan: " << *it << std::endl;
-		if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
-			send(*it, msg.c_str()/*faut env des char, obligé de c_str*/, msg.size(), 0); //on envoie le message au socket des users.
-		//send est comme write : on envoie dans quel fd on veux ecrire, on envoye le message et la taille du message comme write
-		//sauf que send permet de mettre des flags mais c'est a pousser.
-		it++; //on passe au user suivant
+		if (*it != userSender)
+			send(*it, msg.c_str(), msg.size(), 0);
+		it++; 
 	}
-	//if (*it != userSender)//si ce n'est pas l'envoyeur (on veux pas envoyé le message a sois meme)
-	//	send(*it, msg.c_str(), msg.size(), 0);
 }
 
 

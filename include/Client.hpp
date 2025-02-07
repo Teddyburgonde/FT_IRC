@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/11 16:10:16 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:26:33 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ class Client
 		void    setUsername(std::string newUsername);
 };
 
-int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients); // amettre dans utils ??
-std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
+
 
 
 #endif
