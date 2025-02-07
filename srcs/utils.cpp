@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/07 15:42:59 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:56:22 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, 
 	it_channel = _channel.begin();
 	while (it_channel != _channel.end())
 	{
-		if ((*it_channel).getName() == channelName)
+		if (it_channel->getName() == channelName)
 			return (it_channel);
 		it_channel++;
 	}
@@ -99,8 +99,8 @@ int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients) // a
 
 	while (it != _clients.end()) //on parcour tout les clients existant
 	{
-		if (name == (*it).getNickname()) //si le nom d'un client est le meme que celui donne en parametre
-			return ((*it).getFd()); //on return le fd (int) du client.
+		if (name == it->getNickname()) //si le nom d'un client est le meme que celui donne en parametre
+			return (it->getFd()); //on return le fd (int) du client.
 		it++;
 	}
 	return (0);
@@ -112,7 +112,7 @@ Client	find_it_client_with_fd(int fd, std::vector<Client> &_clients) // amettre 
 
 	while (it != _clients.end()) //on parcour tout les clients existant
 	{
-		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
+		if (fd == it->getFd()) //si le nom d'un client est le meme que celui donne en parametre
 			return (*it); //on return le fd (int) du client.
 		it++;
 	}
@@ -126,9 +126,23 @@ std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients)
 
 	while (it != _clients.end()) //on parcour tout les clients existant
 	{
-		if (fd == (*it).getFd()) //si le nom d'un client est le meme que celui donne en parametre
-			return ((*it).getNickname()); //on return le fd (int) du client.
+		if (fd == it->getFd()) //si le nom d'un client est le meme que celui donne en parametre
+			return (it->getNickname()); //on return le fd (int) du client.
 		it++;
 	}
 	return ("");
+}
+
+std::string formatIrcMessage(const std::string &nickname, 
+	const std::string &username,
+	const std::string &host,
+	const std::string &command,
+	const std::string &target,
+	const std::string &message)
+{
+    if (message.empty())
+    {
+        return ":" + nickname + "!" + username + "@" + host + " " + command + " " + target + "\r\n";
+    }
+    return ":" + nickname + "!" + username + "@" + host + " " + command + " " + target + " :" + message + "\r\n";
 }

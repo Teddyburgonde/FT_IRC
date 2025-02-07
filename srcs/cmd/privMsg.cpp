@@ -3,19 +3,12 @@
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
+
 void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 {
 	int	index;
 
 	index = 0;
-	// Trouver le destinataire
-	// size_t spacePos = msg.getArgument().find(' ', 8);
-	// if (spacePos == std::string::npos)
-	// {
-	// 	std::string response = ERR_NORECIPIENT(std::string ("Server"), "");
-	// 	send(fd, response.c_str(), response.size(), 0);
-	// 	return;
-	// }
 	if (msg.getArgument().empty())
 	{
     	std::cout << "Aucun argument dans le message" << std::endl;
@@ -29,13 +22,13 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 		return;
 	}
 	std::string message = get_next_argument(msg.getArgument().c_str(), index);
+	message += "\n";
 	if (message.empty())
 	{
 		std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
-	message += "\n";
 	if (recipient[0] == '#')
 	{
 		std::vector<Channel>::iterator it_channel_to_send = find_channel_with_name(recipient, _channel);
@@ -54,12 +47,19 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 		it_channel_to_send->sendMessageToChannel(fd, message);
 		return;
 	}
-	// Envoyer le message au destinataire
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
 		if (_clients[i].getNickname() == recipient)
 		{
-			send(_clients[i].getFd(), message.c_str(), message.size(), 0);
+			// Récupération des informations de l'émetteur
+			std::string senderNickname = find_nickname_with_fd(fd, _clients);
+			std::string senderUsername = find_username_with_fd(fd, _clients);
+
+			std::string host = "localhost";
+			
+			// Construction du message IRC complet
+			std::string ircMessage = formatIrcMessage(senderNickname, senderUsername, host, "PRIVMSG", recipient, message);
+			send(_clients[i].getFd(), ircMessage.c_str(), ircMessage.size(), 0);
 			return;
 		}
 	}

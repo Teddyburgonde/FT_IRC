@@ -3,16 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   serverIncomingConnections.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:03:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:00:19 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/07 16:53:55 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
+#include <ostream>
+#include <sstream>
+#include <string>
 
 /*
 Gere les nouvelles connexion entrante sur le serveur.
@@ -64,10 +67,16 @@ void	Server::receiveNewData(int fd)
 	else
 	{
 		buffer[bytes] = '\0';
-		// Afficher les datas sur le server
-		// std::cout << "Client <" << fd << "> sent:" << buffer << std::endl;
 		std::string bufferVector(buffer, buffer + bytes);
-		analyzeData(fd, bufferVector);
+		std::stringstream	tmp_stream(buffer);
+		std::string			tmp_buffer;
+		while (std::getline(tmp_stream, tmp_buffer))
+		{
+			if (!tmp_buffer.find("CAP"))
+				continue ;
+			std::cout << "cuted buffer: " << tmp_buffer << std::endl;
+			analyzeData(fd, tmp_buffer);
+		}
 	}
 }
 // void Server::analyzeData(int fd,  const std::string &buffer);

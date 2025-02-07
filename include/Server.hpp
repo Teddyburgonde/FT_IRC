@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/07 15:43:37 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:27:10 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 #define ERR_CANNOTSENDTOCHAN(client, channel)        (": 404 " + client + " " + channel + " :Cannot send to channel\r\n")
 #define ERR_NOTEXTTOSEND(client)                    (": 412 " + client + " :No text to send\r\n")
 #define ERR_NONICKNAMEGIVEN(client, nick)            (": 431 " + client + " " + nick + " :No nickname given\r\n")
-#define ERR_ERRONEUSNICKNAME(client, nickname)        (": 432 " + client + " " + nickname + " :Erroneus nickname\r\n")
+#define ERR_ERRONEUSNICKNAME(client, nickname) (std::string(": 432 ") + client + " " + nickname + " :Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(client, nick)                (": 433 * " + client + " " + nick + " :Nickname is already in use\r\n")
 #define ERR_NORECIPIENT(client, command) 				(": 411 " + client + " " + command + " :No recipient given\r\n")
 
@@ -55,7 +55,7 @@
 #define ERR_NOTONCHANNEL(client, channel)            (": 442 " + client + " " + channel + " :Not on that channel\r\n")
 #define ERR_NOTREGISTERED()                   		(": 451 :You have not registered\r\n")
 #define ERR_NEEDMOREPARAMS(client, cmd)                (": 461 " + client + " " + cmd + " :Not enough parameters\r\n")
-#define ERR_ALREADYREGISTRED(client)                (": 462 " + client + " :You may not reregister\r\n")
+#define ERR_ALREADYREGISTRED(client) (std::string(": 462 ") + client + " :You may not reregister\r\n")
 #define ERR_PASSWDMISMATCH(client)                    (": 464 " + client + " :Password incorrect\r\n")
 #define ERR_KEYSET(channel)                            (": 467 " + channel + " :Channel key already set\r\n")
 #define ERR_CHANNELISFULL(client, channel)            (": 471 " + client + " " + channel + " :Cannot join channel (+l)\r\n")
@@ -78,7 +78,7 @@ int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
 std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
 std::string find_username_with_fd(int fd, std::vector<Client> &_clients);
-
+std::string formatIrcMessage(const std::string &nickname, const std::string &username, const std::string &host, const std::string &command, const std::string &target, const std::string &message);
 
 
 /*

@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/07 15:42:59 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/07 16:32:24 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,52 +97,71 @@ int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std:
 	return (0);
 }
 
-void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
+static std::string trim(const std::string &str)
 {
-	std::vector<Channel>::iterator 		it_ChanExist; //channel existant
-	std::vector<std::string>::const_iterator	it_chanNew;
-	int i = 0;
-	std::string argumentStr = msg.getArgument();
-	const char	*argument = argumentStr.c_str(); //arguement  est egale a la string stocker dans la class msg._argument
-	int f = 0;
-	const std::vector<std::string> 			&chanName = create_chanName(get_next_argument(argument, f).c_str(), i, fd);
-	if (chanName.empty())
-		return;
-	std::string arg_after_channel = get_next_argument(argument, i);
-	Client		user_sender = find_it_client_with_fd(fd, _clients);
+	size_t start = str.find_first_not_of(" \t\n\r");
+	size_t end = str.find_last_not_of(" \t\n\r");
+	return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
+}
 
-	if (chanName.empty()) //si y'a pas de channel valide dans la commande reçu
-	{
-		betterSend(ERR_NEEDMOREPARAMS(find_nickname_with_fd(fd, _clients), msg.getArgument()), fd);
-		return;
-	}
-	it_chanNew = chanName.begin();
-	while (it_chanNew != chanName.end())
-	{
-		it_ChanExist = _channel.begin(); //on repart du debut de la list de channel existant afin de la parcourir en entier et de bien chercher partout
-		while (it_ChanExist != _channel.end()) //tant qu'on a pas chercher dans tout ceux existant
+void handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
+{
+
+    std::vector<Channel>::iterator it_ChanExist;
+    std::vector<std::string>::const_iterator it_chanNew;
+    int i = 0;
+
+    std::string argumentStr = msg.getArgument();
+    const char *argument = argumentStr.c_str();
+    const std::vector<std::string> &chanName = create_chanName(argument, i, fd);
+    std::string arg_after_channel = get_next_argument(argument, i);
+    Client user_sender = find_it_client_with_fd(fd, _clients);
+
+    if (chanName.empty())
+    {
+        std::cout << "Erreur : Aucun canal fourni. Utilisateur : " << user_sender.getNickname() << std::endl;
+        return;
+    }
+    for (it_chanNew = chanName.begin(); it_chanNew != chanName.end(); ++it_chanNew)
+    {
+        std::cout << *it_chanNew << " ";
+    }
+    std::cout << std::endl;
+
+    it_chanNew = chanName.begin();
+    while (it_chanNew != chanName.end())
+    {
+		std::string trimmedChanName = trim(*it_chanNew);  // Trim du nom du canal à comparer
+        for (std::vector<Channel>::iterator it = _channel.begin(); it != _channel.end(); ++it)
+			std::cout << it->getName() << " ";
+		std::cout << std::endl;
+
+		// Recherche du canal existant
+		it_ChanExist = _channel.begin();
+		while (it_ChanExist != _channel.end())
 		{
-			if ((*it_ChanExist).getName() == *it_chanNew) //si le nom du chan est le meme qu'un chan existant
-				break; //on break pour garder l'iterator sur le bon chan
-			it_ChanExist++;
+			std::string trimmedExistingName = trim(it_ChanExist->getName());  // Trim du nom du canal existant
+			if (trimmedExistingName == trimmedChanName)
+				break;
+			++it_ChanExist;
 		}
-		if (it_ChanExist == _channel.end()) //si chan existe pas, (donc 'it' est a la fin car on a tout parcouru sans trouver)
+
+		if (it_ChanExist == _channel.end())
 		{
-			//std::cout << "Create chan: " << *it_chanNew << std::endl; //!debug, à retirer!
 			Channel newChan;
-			newChan.setName(*it_chanNew);
+			newChan.setName(trimmedChanName);
 			newChan.addUser(fd, true);
 			_channel.push_back(newChan);
-			std::string joinMessage = RPL_JOIN(user_sender.getNickname(), newChan.getName());
-			send (fd, joinMessage.c_str(), joinMessage.size(), 0);
+			std::string joinMessage = formatIrcMessage(user_sender.getNickname(), user_sender.getUsername(), "localhost", "JOIN", newChan.getName(), "");
+			send(fd, joinMessage.c_str(), joinMessage.size(), 0);
 		}
-		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0 && check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)//sinon, donc le channel existais deja
+		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0 && check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)
 		{
-			(*it_ChanExist).addUser(fd, false);
-			std::string joinMessage = RPL_JOIN(user_sender.getNickname(), (*it_ChanExist).getName());
-			(*it_ChanExist).sendMessageToChannel(fd, joinMessage); //on envoie le message comme quoi quelun  a join a tout les gens du salon
-			send (fd, joinMessage.c_str(), joinMessage.size(), 0);
+			it_ChanExist->addUser(fd, false);
+
+			std::string joinMessage = formatIrcMessage(user_sender.getNickname(), user_sender.getUsername(), "localhost", "JOIN", (*it_ChanExist).getName(), "");
+			it_ChanExist->sendMessageToChannel(fd, joinMessage);
 		}
-		it_chanNew++; //On passe au prochain channel que la personne veut rejoindre
+		++it_chanNew;
 	}
 }
