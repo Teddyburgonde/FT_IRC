@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/08 18:35:58 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/08 19:35:39 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 #include <sys/poll.h>
 #include <iostream>
 #include <string.h>
+#include <ostream>
+#include <sstream>
+#include <string>
 
 #define RPL_JOIN(nick, user, channel)				(":" + nick + "!" + user + "@localhost" + " JOIN " + channel + "\r\n")
 #define RPL_PART(client, channel)					(":" + client + " PART " + channel + "\r\n")
@@ -71,7 +74,7 @@ class Channel;
 
 int			skipSpaces(const char *str);
 std::string get_next_argument(const char *line, int &index);
-void		betterSend(std::string str, int fd);
+void		betterSend(std::string error, int fd);
 int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
 std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
@@ -88,6 +91,7 @@ class Server
 	private:
 		int	_fd; // file descriptor du client
 		int _port;  // port du serveur
+		int _fdAccept;
 		std::string _password; // password
 		int _serverSocketFd; // file descriptor du serveur socket
 		static bool Signal; // variable pour le signal
@@ -98,30 +102,34 @@ class Server
 		Server();
 		Server(int port, std::string &password);
 		~Server();
-		void serverInit(); // initialisation du serveur
-		void createServerSocket(); // creation du serveur socket
-		static void signalHandler(int signal); // handler pour le signal
-		void closeFds(); // fermeture des file descriptors
-		void clearClients(int fd); // effacer les clients
-		void acceptNewClient(); // Accepter les nouveaux clients
-		void receiveNewData(int fd); // Reception de la data
-		void analyzeData(int fd,  const std::string &buffer);
-		void handleNick(int fd, const std::string& newNick) ;
-		void handleUser(int fd, const std::string& user);
-		void handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel);
-		void handleKick(int fd, Message &msg, std::vector<Channel> &_channel);
-		bool isSenderInChannel(int fd, Channel &channel);
-		bool isSenderOperator(int fd, Channel &channel);
-		bool validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
-		bool isTargetInChannel(const std::string &targetUser, Channel &channel, int fd);
-		void notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
-		void handleTopic(int fd, const Message &msg, std::vector<Channel> &_channel);
-		bool verifyPassword(const std::string& clientPassword) const; 
 		Channel* findChannel(const std::string &channelName, std::vector<Channel> &_channel);
-		std::map<int, bool> _authenticatedClients; // test 
-		bool authenticatedClients(int fd,  const std::string &buffer);
-	public:
-		int getFd() const; // getter pour le file descriptor
+		std::map<int, bool> _authenticatedClients;
+		static void	signalHandler(int signal);
+		void	serverInit();
+		void	createServerSocket();
+		void	closeFds();
+		void	clearClients(int fd);
+		void	acceptNewClient();
+		void	receiveNewData(int fd);
+		void	analyzeData(int fd, std::string &buffer);
+		void	handleNick(int fd, const std::string& newNick) ;
+		void	handleUser(int fd, const std::string& user);
+		void	handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel);
+		void	handleKick(int fd, Message &msg, std::vector<Channel> &_channel);
+		bool	isSenderInChannel(int fd, Channel &channel);
+		bool	isSenderOperator(int fd, Channel &channel);
+		bool	validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
+		bool	isTargetInChannel(const std::string &targetUser, Channel &channel, int fd);
+		void	notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
+		void	handleTopic(int fd, const Message &msg, std::vector<Channel> &_channel);
+		bool	verifyPassword(const std::string& clientPassword) const; 
+		bool	authenticatedClients(int fd, std::string &buffer);
+		void	socketConfigurationForPoll(int fd);
+		int		acceptionConnection(struct sockaddr_in &clientAddr);
+		void	addClientToList(int _fdAccept, struct sockaddr_in &clientAddr);
+		void	sendEnterPasswordMessage(int fd);
+		int		getFd() const;
+		int		getFdAccept() const;
 };
 
 

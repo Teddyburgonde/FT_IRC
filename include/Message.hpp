@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 16:44:37 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/08 19:34:21 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,9 @@ class Message
 
 	
 	public :
-		/* Setters */
 		void setCommand(std::string command);
 		void setArgument(std::string command);
 
-		/* Getters */
 		std::string getCommand() const;
 		std::string getArgument() const;
 };
