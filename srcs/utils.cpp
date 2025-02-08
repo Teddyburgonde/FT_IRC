@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/07 16:56:22 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/08 18:08:33 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,16 @@ std::string get_next_argument(const char *line, int &index)
 		index++;
 	}
 	start = index;
-    while (line[index] && line[index] != '\n' && (line[index] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
+    while (line[index] && line[index] != '\n' && line[index] != '\r' && (line[index] != ' ' || full_arg == true)) //en gros si c'est un espace ca s'arrete sauf si full_arg == true
 		index++;
 	if (index == start)
         return ("");
     return (std::string(line + start, line + index));
 }
 
-void	betterSend(std::string error, int fd)
+void	betterSend(std::string str, int fd)
 {
-	send(fd, error.c_str(), error.size(), 0);
+	send(fd, str.c_str(), str.size(), 0);
 }
 
 int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients) // amettre dans utils ??
