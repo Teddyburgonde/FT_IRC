@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/07 16:32:24 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/08 18:48:21 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,45 +15,9 @@
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
-static std::string	find_arg_chan(const char *argument, int &index)
-{
-	bool	full_arg = false;
-	int		start = index;
 
-	while (argument[index] && ((argument[index] != ',' && argument[index] != ' ' && argument[index] != '\n') || full_arg == true)) //on set f au bout de la chaine qu'on veut recup
-	{
-		if (argument[index] == ':')
-			full_arg = true;
-		index++;
-	}
-	return(std::string(argument + start, argument + index));
-}
 
-//La fonction ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
-static std::vector<std::string> create_chanName(const char *argument, int &i, int fd)
-{
-	int	f;
-	std::vector<std::string>	chanName;
-	std::vector<std::string>	error;
-	//le while ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
-	//si je fais ##general ca va faire de la merde ??
-	while (argument[i] && argument[i] != ' ') //on stop quand espace ou fin de ligne //ATTENTION, PROBABLEMENT \r ou \t je sais plus
-	{
-		f = i;
-		if ((i == 0 && argument[0] == '#') || (i > 0 && argument[i - 1] == ',' && argument[i] == '#')) //si le premier carractere est un #, ou sinon faut que le #soit juste apres une ','.
-			chanName.push_back(find_arg_chan(argument, f)); //on recupere une chaine qui debute à i et qui fini à f et on l'ajoute au vecteur chanName;
-		else if (i == 0)
-		{
-			betterSend(ERR_NOSUCHCHANNEL((std::string)argument), fd);
-			return (error);
-		}
-			//std::cout << find_arg_chan(argument, f) << " :Invalid channel name" << std::endl;
-		i++; //on incremente i pour que si 'i' vallais '#', il se décale pour en chercher un autre
-	} //On boucle afin de recuperer tout les differents channel dont on parle
-	return (chanName);
-}
-
-//DEBUG, PERMET DE PRINT TOUT LES USER DE TOUT LES CHANNEL, A GARDER DE COTE
+//!DEBUG, PERMET DE PRINT TOUT LES USER DE TOUT LES CHANNEL, A ENLEVER POUR PUSH
 void	print_userInchan(std::vector<Channel> &_channel)
 {
 	std::vector<Channel>::iterator	it = _channel.begin();
@@ -97,70 +61,85 @@ int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std:
 	return (0);
 }
 
-static std::string trim(const std::string &str)
+static std::string	find_arg_chan(const char *argument, int &index)
 {
-	size_t start = str.find_first_not_of(" \t\n\r");
-	size_t end = str.find_last_not_of(" \t\n\r");
-	return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
+	bool	full_arg = false;
+	int		start = index;
+
+	while (argument[index] && ((argument[index] != ',' && argument[index] != ' ' && argument[index] != '\n' && argument[index] != '\r') || full_arg == true)) //on set f au bout de la chaine qu'on veut recup
+	{
+		if (argument[index] == ':')
+			full_arg = true;
+		index++;
+	}
+	return(std::string(argument + start, argument + index));
+}
+
+//La fonction ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
+static std::vector<std::string> create_chanName(const char *argument, int &i, int fd)
+{
+	int	f;
+	std::vector<std::string>	chanName;
+	std::vector<std::string>	error;
+	//le while ci-dessous sert à recuperer tout les channels dont on parle, donc tout ce qui est apres un #
+	//si je fais ##general ca va faire de la merde ??
+	while (argument[i] && argument[i] != ' ') //on stop quand espace ou fin de ligne //ATTENTION, PROBABLEMENT \r ou \t je sais plus
+	{
+		f = i;
+		if ((i == 0 && argument[0] == '#') || (i > 0 && argument[i - 1] == ',' && argument[i] == '#')) //si le premier carractere est un #, ou sinon faut que le #soit juste apres une ','.
+			chanName.push_back(find_arg_chan(argument, f)); //on recupere une chaine qui debute à i et qui fini à f et on l'ajoute au vecteur chanName;
+		else if (i == 0)
+		{
+			betterSend(ERR_NOSUCHCHANNEL((std::string)argument), fd);
+			return (error);
+		}
+		i++; //on incremente i pour que si 'i' vallais '#', il se décale pour en chercher un autre
+	} //On boucle afin de recuperer tout les differents channel dont on parle
+	return (chanName);
 }
 
 void handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
 {
-
-    std::vector<Channel>::iterator it_ChanExist;
-    std::vector<std::string>::const_iterator it_chanNew;
-    int i = 0;
-
-    std::string argumentStr = msg.getArgument();
-    const char *argument = argumentStr.c_str();
-    const std::vector<std::string> &chanName = create_chanName(argument, i, fd);
-    std::string arg_after_channel = get_next_argument(argument, i);
-    Client user_sender = find_it_client_with_fd(fd, _clients);
+    std::vector<Channel>::iterator 				it_ChanExist;
+    std::vector<std::string>::const_iterator	it_chanNew;
+	std::string									tmp = msg.getArgument();
+    const char 									*argument = tmp.c_str();
+    int											i = 0;
+    const std::vector<std::string>				&chanName = create_chanName(argument, i, fd); //i est incrementé ici
+    std::string									arg_after_channel = get_next_argument(argument, i);
+    Client										user_sender = find_it_client_with_fd(fd, _clients);
 
     if (chanName.empty())
     {
-        std::cout << "Erreur : Aucun canal fourni. Utilisateur : " << user_sender.getNickname() << std::endl;
-        return;
+		betterSend(ERR_NEEDMOREPARAMS(user_sender.getNickname(), "JOIN"), fd);
+		return;
     }
-    for (it_chanNew = chanName.begin(); it_chanNew != chanName.end(); ++it_chanNew)
-    {
-        std::cout << *it_chanNew << " ";
-    }
-    std::cout << std::endl;
-
     it_chanNew = chanName.begin();
     while (it_chanNew != chanName.end())
     {
-		std::string trimmedChanName = trim(*it_chanNew);  // Trim du nom du canal à comparer
-        for (std::vector<Channel>::iterator it = _channel.begin(); it != _channel.end(); ++it)
-			std::cout << it->getName() << " ";
-		std::cout << std::endl;
-
 		// Recherche du canal existant
 		it_ChanExist = _channel.begin();
 		while (it_ChanExist != _channel.end())
 		{
-			std::string trimmedExistingName = trim(it_ChanExist->getName());  // Trim du nom du canal existant
-			if (trimmedExistingName == trimmedChanName)
+			if (it_ChanExist->getName() == *it_chanNew)
 				break;
 			++it_ChanExist;
 		}
-
 		if (it_ChanExist == _channel.end())
 		{
 			Channel newChan;
-			newChan.setName(trimmedChanName);
+			newChan.setName(*it_chanNew);
 			newChan.addUser(fd, true);
 			_channel.push_back(newChan);
-			std::string joinMessage = formatIrcMessage(user_sender.getNickname(), user_sender.getUsername(), "localhost", "JOIN", newChan.getName(), "");
-			send(fd, joinMessage.c_str(), joinMessage.size(), 0);
+			betterSend(RPL_JOIN(user_sender.getNickname(), user_sender.getUsername(), newChan.getName()), fd);
 		}
-		else if (is_user_in_chan(fd, (*it_ChanExist).getUserInChannel()) == 0 && check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)
+		//si il est pas deja dans le channel et que ya pas de mode bloquant
+		else if (is_user_in_chan(fd, it_ChanExist->getUserInChannel()) == 0 && check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)
 		{
 			it_ChanExist->addUser(fd, false);
-
-			std::string joinMessage = formatIrcMessage(user_sender.getNickname(), user_sender.getUsername(), "localhost", "JOIN", (*it_ChanExist).getName(), "");
-			it_ChanExist->sendMessageToChannel(fd, joinMessage);
+			std::string message = RPL_JOIN(user_sender.getNickname(), user_sender.getUsername(), it_ChanExist->getName());
+			//-1 pour que tout le monde ai le message, meme celui qui envoie
+			it_ChanExist->sendMessageToChannel(-1, message);
 		}
 		++it_chanNew;
 	}

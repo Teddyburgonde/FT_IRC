@@ -41,6 +41,7 @@ void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::ve
 	}
 	(*it_channel).setInvitedUser(fdUserToInvite);
 	//on envoie un message a la personne invitee
-	std::string msgForUserToInvite = RPL_INVITESNDR(nick_of_sender, nameInvite, channelName);
-	send(fdUserToInvite, msgForUserToInvite.c_str(), msgForUserToInvite.size(), 0);
+	betterSend(RPL_INVITERCVR(nick_of_sender, nameInvite, channelName), fdUserToInvite);
+	//on envoie un msg à la personne qui as invitee qq pour qu'il sache que ça a fonctionner
+	betterSend(RPL_INVITESNDR(nick_of_sender, nameInvite, channelName), fd);
 }
