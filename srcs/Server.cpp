@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 19:40:32 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 20:38:38 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void Server::serverInit()
 {
 	createServerSocket();
 
-	std::cout << "Waiting to accept a connection...\n"; //! il faut ?
+	std::cout << "Waiting to accept a connection...\n";
 	while (!Server::Signal)
 	{
 		if ((poll(&_pollFds[0], _pollFds.size(), -1) == -1))

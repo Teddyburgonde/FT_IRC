@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 20:26:40 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 20:35:30 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,21 @@
 #include "../../include/Channel.hpp"
 
 //This function return 1 if there is an error.
-static int	check_active_mode(std::vector<Channel>::iterator	&it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
+static int	check_active_mode(std::vector<Channel>::iterator &it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
 {
-	if ((*it_ChanExist).getModeI() == true && !is_user_in_chan(fd, (*it_ChanExist).getInvitedUser()))
+	if (it_ChanExist->getModeI() == true && !is_user_in_chan(fd, it_ChanExist->getInvitedUser()))
 	{
-		betterSend(ERR_INVITEONLYCHAN(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		betterSend(ERR_INVITEONLYCHAN(find_nickname_with_fd(fd, _clients), it_ChanExist->getName()), fd);
 		return (1);
 	}
-	if ((*it_ChanExist).getModeK() == true && (arg_after_channel.empty() || arg_after_channel != (*it_ChanExist).getPassword()))
+	if (it_ChanExist->getModeK() == true && (arg_after_channel.empty() || arg_after_channel != it_ChanExist->getPassword()))
 	{
-		betterSend(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		betterSend(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), it_ChanExist->getName()), fd);
 		return (1);
 	}
-	if ((*it_ChanExist).getModeL() == true && (*it_ChanExist).get_nb_user_in() >= (*it_ChanExist).get_nb_user_max())
+	if (it_ChanExist->getModeL() == true && it_ChanExist->get_nb_user_in() >= it_ChanExist->get_nb_user_max())
 	{
-		betterSend(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), (*it_ChanExist).getName()), fd);
+		betterSend(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), it_ChanExist->getName()), fd);
 		return (1);
 	}
 	return (0);

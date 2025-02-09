@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
+/*   Updated: 2025/02/09 20:38:07 by gmersch          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/Client.hpp"
 #include "../include/Server.hpp"
 #include "../include/Channel.hpp"
@@ -92,29 +104,4 @@ void parse_buffer(std::vector <std::string> &buffer, Message& msg)
 		index++;
 	msg.setArgument(std::string((*buffer.begin()).c_str() + index));
 }
-// void parse_buffer(std::vector <std::string> &buffer, Message& msg)
-// {
-// 	if (buffer.empty())
-//         throw std::runtime_error("Buffer is empty");
-// 	std::string firstElement = buffer.front();
-// 	if (firstElement[0] == ' ')
-// 	{
-// 		std::cout <<  "The command must not be preceded by a space." << std::endl;
-// 		return;
-// 	}
-// 	size_t spacePos = firstElement.find(' ');
-// 	if (spacePos != std::string::npos)
-// 	{
-//     	std::string line = firstElement.substr(0, spacePos);
-// 		msg.setCommand(line);
-// 		std::string argument = firstElement.substr(spacePos + 1);
-//         msg.setArgument(argument);
-// 	}
-// 	else
-// 	{
-// 		msg.setCommand(firstElement);
-// 		msg.setArgument("");
-// 	}
-// 	return;
-// }
 
