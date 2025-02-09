@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/08 19:35:39 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 17:27:13 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@
 #include <sstream>
 #include <string>
 
-#define RPL_JOIN(nick, user, channel)				(":" + nick + "!" + user + "@localhost" + " JOIN " + channel + "\r\n")
+#define CLIENT(nick, user)							(nick + "!" + user + "@localhost")
+#define PRIVMSG(client, target, message)			(":" + client + " PRIVMSG " + target + " :" + message + "\r\n")
+
+#define RPL_JOIN(client, channel)					(":" + client + " JOIN " + channel + "\r\n")
 #define RPL_PART(client, channel)					(":" + client + " PART " + channel + "\r\n")
 #define RPL_MODE(client, channel, mode, name)		(":" + client + " MODE " + channel + " " + mode + " " + name + "\r\n")
 #define RPL_KICK(client, channel, target)			(":" + client + " KICK " + channel + " " + target + "\r\n")
@@ -74,7 +77,7 @@ class Channel;
 
 int			skipSpaces(const char *str);
 std::string get_next_argument(const char *line, int &index);
-void		betterSend(std::string error, int fd);
+void		betterSend(std::string str, int fd);
 int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
 std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);

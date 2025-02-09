@@ -6,10 +6,9 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/08 19:41:03 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 19:40:32 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
@@ -20,8 +19,6 @@
 #include <sys/socket.h>
 #include "../include/Message.hpp"
 
-
-/* Constructor */
 Server::Server()
 {
 
@@ -32,14 +29,11 @@ Server::Server(int port, std::string& password) : _port(port), _password(passwor
 
 }
 
-/* Destructor */
 Server::~Server()
 {
-	// closeFds(); // Fermer tous les descripteurs ouverts
-    // std::cout << "Server resources have been cleaned up!" << std::endl; ???
+	
 }
 
-/* Getters */
 
 int Server::getFd() const
 {
@@ -50,25 +44,27 @@ int	Server::getFdAccept() const
 {
 	return (_fdAccept);
 }
-/* Configuration de la socket serveur pour poll() */
+
+/* Server socket configuration for poll() */
 void Server::socketConfigurationForPoll(int fd)
 {
 	struct pollfd newPoll;
+
 	newPoll.fd = fd;
 	newPoll.events = POLLIN;
 	newPoll.revents = 0;
 	_pollFds.push_back(newPoll);
 }
 
-/* Cette fonction crée et configure une socket.*/
+/* This function creates and configures a socket.*/
 void Server::createServerSocket()
 {
 	int enable = 1;
 	struct sockaddr_in serverAddr;
+
 	_serverSocketFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocketFd == -1)
 		throw(std::runtime_error("faild to create socket"));
-	
 	if (setsockopt(_serverSocketFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable)) == -1)
 		throw(std::runtime_error("faild to set option (SO_REUSEADDR) on socket"));
 	if (fcntl(_serverSocketFd,  F_SETFL, O_NONBLOCK) == -1)
@@ -88,12 +84,12 @@ bool Server::verifyPassword(const std::string& clientPassword) const
 	return (_password == clientPassword);
 }
 
-/* Création et initialisation du server */
+/* Creation and initialization of the server */
 void Server::serverInit()
 {
 	createServerSocket();
 
-	std::cout << "Waiting to accept a connection...\n";
+	std::cout << "Waiting to accept a connection...\n"; //! il faut ?
 	while (!Server::Signal)
 	{
 		if ((poll(&_pollFds[0], _pollFds.size(), -1) == -1))

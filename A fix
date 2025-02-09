@@ -13,3 +13,31 @@ deux personne peuvent avoir le meme nom de USER
 
 
 TESTER DE CREE UN CHANNEL AVEC SEULEMENT #
+
+-FIX TOUT LES EERRUER OU YA CLIENT PAR CLIENT
+
+A CHECK LES INCLUDE DANS CHAQUE FICHIER !!!
+
+
+
+FONCTION UTILE POUR PRINT TOUT LES MEC DUN CHANNEL :
+
+void	print_userInchan(std::vector<Channel> &_channel)
+{
+	std::vector<Channel>::iterator	it = _channel.begin();
+	std::vector<int> id_userInChannel;
+
+	while (it != _channel.end())
+	{
+		std::cout << "Dans le channel " << (*it).getName();;
+		id_userInChannel = (*it).getUserInChannel();
+		std::vector<int>::iterator	it_id = id_userInChannel.begin();
+		while (it_id != id_userInChannel.end())
+		{
+			std::cout << "	dans channel: " << *it_id << std::endl;
+			it_id++;
+		}
+		it++;
+		std::cout << std::endl;
+	}
+}

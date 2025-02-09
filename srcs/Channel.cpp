@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Channel.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/09 19:05:34 by gmersch           #+#    #+#             */
+/*   Updated: 2025/02/09 19:56:05 by gmersch          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/Channel.hpp"
 
 Channel::Channel() : _mode_i(false), _mode_t(false), _mode_k(false), _mode_l(false), _nb_user_in(0)
@@ -20,13 +32,11 @@ void		Channel::setName(std::string chanName)
 	this->_name = chanName;
 }
 
-// Récupérer le sujet actuel du canal
 std::string Channel::getTopic() const
 {
 	return (_topic);
 }
 
-// Définir ou modifier le sujet du canal
 void Channel::setTopic(const std::string& topic)
 {
     _topic = topic;
@@ -37,68 +47,66 @@ std::string	Channel::getPassword()
 	return (this->_password);
 }
 
-void	Channel::setPassword(std::string passwordStr) //setter de _name
+void	Channel::setPassword(std::string passwordStr)
 {
 	this->_password = passwordStr;
 }
 
 void	Channel::addUser(int newUser, bool isOperator)
 {
-	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
-	std::vector<int>::iterator op_it;
+	std::vector<int>::iterator	us_it;
+	std::vector<int>::iterator	op_it;
 
 	us_it = std::find(this->_userInChannel.begin(), this->_userInChannel.end(), newUser);
 	if (us_it == _userInChannel.end())
 	{
 		this->_userInChannel.push_back(newUser);
-		this->set_nb_user_in(true);//on ajoute 1 au nombre de personne dans le channel
+		this->set_nb_user_in(true);
 	}
 	op_it = std::find(this->_operator.begin(), this->_operator.end(), newUser);
-	if (isOperator) // il doit etre op
+	if (isOperator)
 	{
 		if (op_it == _operator.end())
 			this->_operator.push_back(newUser);
 	}
-	else //le user ne dois pas etre op
+	else
 	{
 		if (op_it != _operator.end())
 			this->_operator.erase(op_it);
 	}
 }
 
-void	Channel::removeUser(int newUser, int fd, std::vector<Client> &_clients)
+void	Channel::removeUser(int userRemove, int fd, std::vector<Client> &_clients)
 {
-	std::vector<int>::iterator us_it; //comme un pointeur sur une case de notre tableau _userInChannel
-	std::vector<int>::iterator op_it;
-	std::vector<int>::iterator iv_it; //invite list
-	bool	user_found = false;
+	std::vector<int>::iterator	us_it;
+	std::vector<int>::iterator	op_it;
+	std::vector<int>::iterator	iv_it;
+	bool						user_found = false;
 
-	us_it = std::find(this->_userInChannel.begin(), this->_userInChannel.end(), newUser);
+	us_it = std::find(this->_userInChannel.begin(), this->_userInChannel.end(), userRemove);
 	if (us_it != _userInChannel.end())
 	{
 		this->_userInChannel.erase(us_it);
 		user_found = true;
 	}
-	op_it = std::find(this->_operator.begin(), this->_operator.end(), newUser);
+	op_it = std::find(this->_operator.begin(), this->_operator.end(), userRemove);
 	if (op_it != this->_operator.end())
-	{
 		this->_operator.erase(op_it);
-	}
 	if (!this->_invitedUser.empty())
 	{
-		iv_it = std::find(this->_invitedUser.begin(), this->_invitedUser.end(), newUser);
+		iv_it = std::find(this->_invitedUser.begin(), this->_invitedUser.end(), userRemove);
 		if (iv_it != this->_invitedUser.end())
 			this->_invitedUser.erase(iv_it);
 	}
 	if (user_found == false)
 	{
-		betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(newUser, _clients), this->_name), fd);
+		betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(userRemove, _clients), this->_name), fd);
 		return;
 	}
 	this->set_nb_user_in(false);
 }
 
-std::vector<int>&	Channel::getOperatorUser()//getter de _operator
+std::vector<int>&	Channel::getOperatorUser()
 {
 	return (this->_operator);
 }
@@ -121,12 +129,12 @@ std::vector<int>&	Channel::getUserInChannel()
 	return (this->_userInChannel);
 }
 
-void	Channel::setInvitedUser(int fd)//setter de _invitedUser
+void	Channel::setInvitedUser(int fd)
 {
 	this->_invitedUser.push_back(fd);
 }
 
-std::vector<int>	Channel::getInvitedUser()//getter de _invitedUser
+std::vector<int>	Channel::getInvitedUser()
 {
 	return (this->_invitedUser);
 }
@@ -183,7 +191,7 @@ int		Channel::get_nb_user_max()
 	return (this->_nb_user_max);
 }
 
-//if add_remove = true, add somewone. If = false, remove somewone.
+//if add_remove = true, add someone. If = false, remove someone.
 void	Channel::set_nb_user_in(bool add_remove)
 {
 	if (add_remove)

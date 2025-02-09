@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/07 17:02:01 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 19:01:10 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,67 +17,41 @@
 #include "../../include/Channel.hpp"
 #include "../../include/Message.hpp"
 
-// Valider le format du nom d'utilisateur.
+// Validate the format of username
 static bool isValidUsername(const std::string& user) 
 {
-	if (user.empty() || user.size() > 10) // Limite de 9 caractères pour le nom d'utilisateur
+	if (user.empty() || user.size() > 10)
 		return (false);
-	if (!std::isalpha(user[0])) // Premier caractère doit être une lettre
+	if (!std::isalpha(user[0]))
 		return (false);
 	for (size_t i = 0; i < user.size(); ++i) 
 	{
 		if (!std::isalnum(user[i]) && user[i] != '_')
-			return (false); // Seulement des lettres, chiffres et underscores
+			return (false);
 	}
 	return (true);
 }
 
-//NOUVEAU
-// void Server::handleUser(int fd, const std::string &user)
-// {
-// 	std::istringstream ss(user);
-// 	std::string username;
-// 	ss >> username;  // Récupère uniquement le premier mot
-// 	if (!isValidUsername(username))
-// 	{
-// 		std::string response = ERR_ERRONEUSNICKNAME("Server", username);
-// 		send(fd, response.c_str(), response.size(), 0);
-// 		std::cerr << "Erreur : Username invalide '" << username << "' pour le client FD: " << fd << std::endl;
-// 		return;
-// 	}
-// 	// Défini le username
-// 	for (size_t i = 0; i < _clients.size(); ++i)
-// 	{
-// 		if (_clients[i].getFd() == fd)
-// 		{
-// 			_clients[i].setUsername(username);
-// 			// Envoyer le message de bienvenue
-// 			std::string response = RPL_WELCOME(username);
-// 			send(fd, response.c_str(), response.size(), 0);
-// 			return;
-// 		}
-// 	}
-// }
-
 void Server::handleUser(int fd, const std::string& user)
 {
+	std::string response;
+
 	if (!isValidUsername(user))
 	{
-		std::string response = ERR_ERRONEUSNICKNAME(std::string("Server"), user);
-		send(fd, response.c_str(), response.size(), 0);
+		response = ERR_ERRONEUSNICKNAME(std::string("Server"), user);//!A changer par CLIENT
+		betterSend(response, fd);
 		return;
 	}
-	// Vérifie si l'utilisateur a déjà défini un nom
 	for (size_t i = 0; i < this->_clients.size(); ++i) 
 	{
-		if (this->_clients[i].getFd() == fd && ! this->_clients[i].getUsername().empty()) {
-			std::string response = ERR_ALREADYREGISTRED(std::string("Server"));
-			send(fd, response.c_str(), response.size(), 0);
+		if (this->_clients[i].getFd() == fd && ! this->_clients[i].getUsername().empty())
+		{
+			response = ERR_ALREADYREGISTRED(std::string("Server"));//!A changer par CLIENT
+			betterSend(response, fd);
 			return;
 		}
 	}
-	// Associer l'utilisateur à la structure Client
-	for (size_t i = 0; i < _clients.size(); ++i) 
+	for (size_t i = 0; i < _clients.size(); ++i)
 	{
 		if (_clients[i].getFd() == fd) 
 		{
@@ -85,7 +59,6 @@ void Server::handleUser(int fd, const std::string& user)
 			break;
 		}
 	}
-	std::string response = RPL_WELCOME(user);
-	send(fd, response.c_str(), response.size(), 0);
-	std::cout << "Client FD: " << fd << " User: " << user << std::endl;
+	response = RPL_WELCOME(user);//!A changer par CLIENT
+	betterSend(response, fd);
 }

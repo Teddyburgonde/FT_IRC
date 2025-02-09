@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:40:30 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:18:30 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/09 19:06:31 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,6 @@ Message &Message::operator=(Message const &src)
 	return (*this);
 }
 
-/* Setters */
-
-// void Message::setNameChannel(std::string nameChannel)
-// {
-// 	this->_nameChannel.push_back(nameChannel);
-// }
-
 void Message::setCommand(std::string command)
 {
 	this->_command = command;
@@ -52,8 +45,6 @@ void Message::setArgument(std::string argument)
 {
 	this->_argument = argument;
 }
-/* Getters */
-
 
 std::string Message::getCommand() const
 {
