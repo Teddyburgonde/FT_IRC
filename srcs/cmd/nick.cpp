@@ -6,10 +6,9 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 16:34:07 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/07 17:15:50 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 20:35:00 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
@@ -18,37 +17,29 @@
 
 void Server::handleNick(int fd, const std::string &newNick)
 {
+	std::string response;
 
-	// Vérification si le nickname est vide
 	if (newNick.empty())
 	{
-		std::string response = ERR_NONICKNAMEGIVEN(std::string("Server"), "");
+		response = ERR_NONICKNAMEGIVEN(std::string("Server"), ""); //!A changer par CLIENT
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
-
-	// Vérification si le nickname est déjà utilisé
 	for (size_t i = 0; i < _clients.size(); ++i)
 	{
 		if (_clients[i].getNickname() == newNick)
 		{
-			std::string response = ERR_NICKNAMEINUSE(std::string("Server"), newNick);
+			response = ERR_NICKNAMEINUSE(std::string("Server"), newNick);//!A changer par CLIENT
 			send(fd, response.c_str(), response.size(), 0);
 			return;
 		}
 	}
-
-	// Associer le nickname au client
 	for (size_t i = 0; i < _clients.size(); ++i)
 	{
 		if (_clients[i].getFd() == fd)
 		{
 			_clients[i].setNickname(newNick);
-			// Définir le username temporairement si nécessaire
-			//if (_clients[i].getUsername().empty())
-			//	_clients[i].setUsername(newNick);
-			// Envoi du message de bienvenue
-			std::string response = RPL_WELCOME(newNick);
+			response = RPL_WELCOME(newNick);//!A changer par CLIENT
 			send(fd, response.c_str(), response.size(), 0);
 			return;
 		}

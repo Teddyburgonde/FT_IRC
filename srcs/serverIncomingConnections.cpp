@@ -6,15 +6,14 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:03:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/08 19:41:29 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/09 20:04:44 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
 
-/* Accepte une connection client sur une socket */
+/* Accepts a client connection on a socket */
 int Server::acceptionConnection(struct sockaddr_in &clientAddr)
 {
 	socklen_t	clientAddrLen;
@@ -29,14 +28,14 @@ int Server::acceptionConnection(struct sockaddr_in &clientAddr)
 	return (_fdAccept);
 }
 
-/* Imprime les differentes informations sur le client */
+/* Prints the different information about the client */
 static void	printClientInfo(int	_fdAccept, struct sockaddr_in &clientAddr)
 {
 	std::cout << "New client connected with FD: " << _fdAccept << " with ip " << inet_ntoa(clientAddr.sin_addr)
 	<< " with Port: " << ntohs(clientAddr.sin_port) << std::endl;
 }
 
-/* Ajoute un client dans la liste des clients */
+/* Adds a client to the client list */
 void	Server::addClientToList(int _fdAccept, struct sockaddr_in &clientAddr)
 {
 	Client	client;
@@ -67,10 +66,9 @@ void Server::acceptNewClient()
 	addClientToList(fdAccept, clientAddr);
 	socketConfigurationForPoll(fdAccept);
 	printClientInfo(fdAccept, clientAddr);
-	//sendEnterPasswordMessage(fdAccept);
 }
 
-/* Reçoit les données envoyées par un client connecté. */
+/* Receives data sent by a connected client. */
 void	Server::receiveNewData(int fd)
 {
 	char buffer[1024] = {0};

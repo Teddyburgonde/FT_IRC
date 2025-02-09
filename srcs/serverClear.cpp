@@ -3,47 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   serverClear.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:04:29 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 09:04:52 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/09 20:12:46 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
-
-
-/*
-Le but de cette fonction est de supprimer un client de la liste des clients connectés au serveur.
-Elle est en deux parties :
-- La première boucle sert a supprimer
-le fd du client de la liste des fd socket.
-- La deuxième boucle sert a supprimer le client de la liste des clients connectés.
-Un client se sert d'une socket pour se connecter au serveur.
-*/
+#include "../include/Channel.hpp"
 
 void Server::clearClients(int _fd)
 {
-	// Parcours toute la liste des fd socket
+	//!Ajout du 1er block par Galaad : Permet de retirer la personne de la liste des channels quand elle quitte le serv.
+	std::vector<Channel>::iterator	it_chan;
+	std::vector<int>::iterator		it_user;
+
+	for (it_chan = this->_channel.begin(); it_chan != this->_channel.end(); it_chan++)
+	{
+		it_user = std::find(it_chan->getUserInChannel().begin(), it_chan->getUserInChannel().end(), _fd);
+		if (it_user != it_chan->getUserInChannel().end())
+			it_chan->removeUser(_fd, 0, this->_clients);
+	}
+
 	for (size_t i = 0; i < _pollFds.size(); i++)
 	{
-		// On parcours la liste des fd socket et si on trouve le fd qu'on veut supprimer
-		// on le supprime et la fonction s'arrete avec le break;
 		if (_pollFds[i].fd == _fd)
 		{
-			// erase supprime l'element a l'index i
 			_pollFds.erase(_pollFds.begin() + i);
-			break; // On sort de la boucle car le fd a été trouvé et supprimé
+			break;
 		}
 	}
-	// On parcours la liste des clients connectés au serveur
-	// et on supprime le client qui a le fd qu'on veut supprimer
-	// de la liste des clients connectés.
-	// on sort de la boucle avec le break;
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
-		// getFd() permet de recuperer le fd du client (c'est un getter)
 		if (_clients[i].getFd() == _fd)
 		{
 			_clients.erase(_clients.begin() + i);

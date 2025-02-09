@@ -47,7 +47,7 @@ class Channel
 
 		void	addUser(int newUser, bool isOperator); //setter de _userInChannel, isOperator set le user aussi dans _operator si 'true'
 		std::vector<int>& getUserInChannel(); //getter de _userInChannel
-		void	removeUser(int newUser, int fd, std::vector<Client> &_clients);
+		void	removeUser(int userRemove, int fd, std::vector<Client> &_clients);
 		std::vector<int>&	getOperatorUser();//getter de _operator
 
 

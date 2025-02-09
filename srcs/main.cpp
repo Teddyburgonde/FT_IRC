@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/03 15:18:07 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/09 19:05:59 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 #include "../include/Client.hpp"
 #include "../include/Channel.hpp"
 #include <algorithm>
-#include <cstring>
-
+#include <cstring> // !ATTENTION INCLUDE
 
 int	main(int argc, char **argv)
 {

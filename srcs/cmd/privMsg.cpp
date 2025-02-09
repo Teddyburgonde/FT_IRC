@@ -1,68 +1,78 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   privMsg.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/09 17:11:46 by gmersch           #+#    #+#             */
+/*   Updated: 2025/02/09 17:31:45 by gmersch          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
-
 void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 {
-	int	index;
+	int			index;
+	std::string	target;
+	std::string response;
+	std::string message;
+	std::string senderNickname = find_nickname_with_fd(fd, _clients);
+	std::string senderUsername = find_username_with_fd(fd, _clients);
 
 	index = 0;
 	if (msg.getArgument().empty())
 	{
-    	std::cout << "Aucun argument dans le message" << std::endl;
+    	betterSend(ERR_NEEDMOREPARAMS(CLIENT(find_nickname_with_fd(fd, this->_clients), find_username_with_fd(fd, this->_clients)), "PRIVMSG"), fd);
     	return;
 	}
-	std::string recipient = get_next_argument(msg.getArgument().c_str(), index);
-	if (recipient.empty())
+	target = get_next_argument(msg.getArgument().c_str(), index);
+	if (target.empty())
 	{
-		std::string response = ERR_NORECIPIENT(std::string("Server"), "");
+		//!PAS BONNE ERREUR
+		response = ERR_NORECIPIENT(std::string("Server"), "");//!A changer par CLIENT
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
-	std::string message = get_next_argument(msg.getArgument().c_str(), index);
+	message = get_next_argument(msg.getArgument().c_str(), index);
 	message += "\n";
 	if (message.empty())
 	{
-		std::string response = ERR_NOTEXTTOSEND(std::string("Server"));
+		response = ERR_NOTEXTTOSEND(std::string("Server"));//!A changer par CLIENT
 		send(fd, response.c_str(), response.size(), 0);
 		return;
 	}
-	if (recipient[0] == '#')
+	if (target[0] == '#')
 	{
-		std::vector<Channel>::iterator it_channel_to_send = find_channel_with_name(recipient, _channel);
+		std::vector<Channel>::iterator it_channel_to_send = find_channel_with_name(target, _channel);
 		if (it_channel_to_send == _channel.end())
 		{
-			std::string response = ERR_NOSUCHCHANNEL(recipient);
+			response = ERR_NOSUCHCHANNEL(target);
 			send(fd, response.c_str(), response.size(), 0);
 			return;
 		}
-		//si le userSender est pas dans le channel en question
 		if (!is_user_in_chan(fd, it_channel_to_send->getUserInChannel()))
 		{
-			betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(fd, _clients), it_channel_to_send->getName()), fd);
+			betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(fd, _clients), it_channel_to_send->getName()), fd);//!A changer par CLIENT
 			return;
 		}
-		it_channel_to_send->sendMessageToChannel(fd, message);
+		std::string IRCmessage = PRIVMSG(CLIENT(senderNickname, senderUsername), target, message);
+		it_channel_to_send->sendMessageToChannel(fd, IRCmessage);
 		return;
 	}
 	for (size_t i = 0; i < _clients.size(); i++)
 	{
-		if (_clients[i].getNickname() == recipient)
+		if (_clients[i].getNickname() == target)
 		{
-			// Récupération des informations de l'émetteur
-			std::string senderNickname = find_nickname_with_fd(fd, _clients);
-			std::string senderUsername = find_username_with_fd(fd, _clients);
-
-			std::string host = "localhost";
-			
-			// Construction du message IRC complet
-			std::string ircMessage = formatIrcMessage(senderNickname, senderUsername, host, "PRIVMSG", recipient, message);
-			send(_clients[i].getFd(), ircMessage.c_str(), ircMessage.size(), 0);
+			std::string IRCmessage = PRIVMSG(CLIENT(senderNickname, senderUsername), target, message);
+			betterSend(IRCmessage, _clients[i].getFd());
 			return;
 		}
 	}
-	std::string response = ERR_NOSUCHNICK(std::string("Server"), recipient);
+	response = ERR_NOSUCHNICK(std::string("Server"), target);//!A changer par CLIENT
 	send(fd, response.c_str(), response.size(), 0);
 }
