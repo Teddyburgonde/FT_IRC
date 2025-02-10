@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/10 14:16:54 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 15:05:16 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,9 @@ class Server
 		Server();
 		Server(int port, std::string &password);
 		~Server();
-		Channel* findChannel(const std::string &channelName, std::vector<Channel> &_channel);
+		Channel* findChannel(const std::string &channelName);
 		std::map<int, bool> _authenticatedClients;
 		static void	signalHandler(int signal);
-		std::string get_next_argument(const char *line, int &index);
 		void	serverInit();
 		void	createServerSocket();
 		void	closeFds();
@@ -110,14 +109,14 @@ class Server
 		void	analyzeData(int fd, std::string &buffer);
 		void	handleNick(int fd, const std::string& newNick) ;
 		void	handleUser(int fd, const std::string& user);
-		void	handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel);
-		void	handleKick(int fd, Message &msg, std::vector<Channel> &_channel);
+		void	handlePrivMsg(int fd, Message &msg);
+		void	handleKick(int fd, Message &msg);
 		bool	isSenderInChannel(int fd, Channel &channel);
 		bool	isSenderOperator(int fd, Channel &channel);
 		bool	validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser);
 		bool	isTargetInChannel(const std::string &targetUser, Channel &channel, int fd);
 		void	notifyKick(Channel &channel, const std::string &sender, const std::string &targetUser, const std::string &reason);
-		void	handleTopic(int fd, const Message &msg, std::vector<Channel> &_channel);
+		void	handleTopic(int fd, const Message &msg);
 		bool	verifyPassword(const std::string& clientPassword) const; 
 		bool	authenticatedClients(int fd, std::string &buffer);
 		void	socketConfigurationForPoll(int fd);
@@ -126,12 +125,19 @@ class Server
 		void	sendEnterPasswordMessage(int fd);
 		int		getFd() const;
 		int		getFdAccept() const;
+
+		void	inviteCommand(int fd, Message &msg);
+		void	handleJoin(int fd, Message &msg);
+		void	modeCommand(int fd, Message &msg);
+};
+
+		std::string get_next_argument(const char *line, int &index);
 		std::string find_username_with_fd(int fd, std::vector<Client> &_clients);
 		void		betterSend(std::string str, int fd);
 		int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
 		std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 		Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
-};
-
+		int			is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
+		std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel); //trouver un channel a partir de son nom
 
 #endif

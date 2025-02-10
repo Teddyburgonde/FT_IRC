@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/10 10:04:56 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/10 15:03:39 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ bool Server::authenticatedClients(int fd,  std::string &buffer)
 	std::string	cmd;
 	std::string	newNick;
 	std::string	userArguments;
-
 	int			i;
 
 	i  = 0;
@@ -73,32 +72,30 @@ void Server::analyzeData(int fd,  std::string &buffer)
 	if (authenticatedClients(fd, buffer) == false)
 		return;
 	Message msg;
-	Channel channel;
 
 	msg.parse_buffer(buffer, msg);
 	if (msg.getCommand().empty())
 		return;
 	else if (msg.getCommand() == "TOPIC")
-		handleTopic(fd, msg, _channel);
+		handleTopic(fd, msg);
 	else if (msg.getCommand() == "PRIVMSG")
-		handlePrivMsg(fd, msg, this->_channel);
+		handlePrivMsg(fd, msg);
 	else if (msg.getCommand() == "KICK")
-        handleKick(fd, msg, this->_channel);
+        handleKick(fd, msg);
 	else if (msg.getCommand(), "JOIN")
-		channel.handleJoin(fd, msg, this->_channel, this->_clients);
+		handleJoin(fd, msg);
 	else if (msg.getCommand() == "INVITE")
-		channel.inviteCommand(fd, msg, this->_channel, this->_clients);
-	else if (msg.getCommand() == "MODE") 
-		channel.modeCommand(fd, msg, this->_channel, _clients);
+		inviteCommand(fd, msg);
+	else if (msg.getCommand() == "MODE")
+		modeCommand(fd, msg);
 }
 
 void Message::parse_buffer(const std::string &buffer, Message& msg)
 {
-	Server server;
 	int	index;
 
 	index = 0;
-	msg.setCommand(server.get_next_argument(buffer.c_str(), index));
+	msg.setCommand(get_next_argument(buffer.c_str(), index));
 	while (buffer[index] && buffer[index] == ' ')
 		index++;
 	msg.setArgument(std::string(buffer.c_str() + index));
