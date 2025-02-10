@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 18:58:46 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 11:14:06 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Chan
 	std::string channel = get_next_argument(msg.getArgument().c_str(), index);
 	std::string newTopic;
 	std::string notification;
+	Channel		ptrChannel;
 
 	if (channel.empty())
 	{
@@ -57,7 +58,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Chan
 			betterSend(RPL_NOTOPIC(std::string("Server"), targetChannel->getName()), fd);//!A changer par CLIENT
 		return;
 	}
-	if (!is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
+	if (!ptrChannel.is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
 	{
 		betterSend(ERR_CHANOPRIVSNEEDED(find_nickname_with_fd(fd, this->_clients), targetChannel->getName()), fd);//!A changer par CLIENT
 		return;

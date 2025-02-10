@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 09:43:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 20:38:38 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 08:45:24 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
-#include "../include/Client.hpp"
 #include "../include/Channel.hpp"
-#include <algorithm>
-#include <cstring>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include "../include/Message.hpp"
 
 Server::Server()
 {

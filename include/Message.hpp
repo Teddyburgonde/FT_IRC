@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/08 19:34:21 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 09:18:31 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Message
 
 	
 	public :
+		void parse_buffer(const std::string &buffer, Message& msg);
 		void setCommand(std::string command);
 		void setArgument(std::string command);
 
@@ -39,6 +40,5 @@ class Message
 		std::string getArgument() const;
 };
 
-void parse_buffer(std::vector <std::string> &buffer, Message& msg);
 
 #endif 
