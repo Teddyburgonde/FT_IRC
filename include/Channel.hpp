@@ -73,15 +73,14 @@ class Channel
 		int		get_nb_user_in();
 
 		std::string getTopic() const;
-    	void setTopic(const std::string&);
-
+		void setTopic(const std::string&);
+		void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients); //cmd INVITE
+		void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients);
+		void	modeCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients);
+		int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
+		std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel); //trouver un channel a partir de son nom
 };
 
-void	handleJoin(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients);
-void	inviteCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients); //cmd INVITE
-void	modeCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients);
 
-int		is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
-std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel); //trouver un channel a partir de son nom
 
 #endif

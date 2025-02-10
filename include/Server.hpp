@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/09 17:27:13 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 13:59:38 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,10 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
+#include <algorithm>
+#include <sys/socket.h>
+#include <fcntl.h>
 
 #define CLIENT(nick, user)							(nick + "!" + user + "@localhost")
 #define PRIVMSG(client, target, message)			(":" + client + " PRIVMSG " + target + " :" + message + "\r\n")
@@ -75,14 +79,6 @@ class Channel;
 
 /* Utils */
 
-int			skipSpaces(const char *str);
-std::string get_next_argument(const char *line, int &index);
-void		betterSend(std::string str, int fd);
-int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
-std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
-Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
-std::string find_username_with_fd(int fd, std::vector<Client> &_clients);
-std::string formatIrcMessage(const std::string &nickname, const std::string &username, const std::string &host, const std::string &command, const std::string &target, const std::string &message);
 
 
 /*
@@ -108,6 +104,7 @@ class Server
 		Channel* findChannel(const std::string &channelName, std::vector<Channel> &_channel);
 		std::map<int, bool> _authenticatedClients;
 		static void	signalHandler(int signal);
+		std::string get_next_argument(const char *line, int &index);
 		void	serverInit();
 		void	createServerSocket();
 		void	closeFds();
@@ -133,6 +130,11 @@ class Server
 		void	sendEnterPasswordMessage(int fd);
 		int		getFd() const;
 		int		getFdAccept() const;
+		std::string find_username_with_fd(int fd, std::vector<Client> &_clients);
+		void		betterSend(std::string str, int fd);
+		int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
+		std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
+		Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
 };
 
 
