@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/09 20:38:07 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 10:04:56 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ bool Server::authenticatedClients(int fd,  std::string &buffer)
 	std::string	cmd;
 	std::string	newNick;
 	std::string	userArguments;
+
 	int			i;
 
 	i  = 0;
@@ -72,36 +73,33 @@ void Server::analyzeData(int fd,  std::string &buffer)
 	if (authenticatedClients(fd, buffer) == false)
 		return;
 	Message msg;
+	Channel channel;
 
-	std::vector<std::string> stringBuffer;
-	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
-	parse_buffer(stringBuffer, msg);
+	msg.parse_buffer(buffer, msg);
 	if (msg.getCommand().empty())
 		return;
-	else if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
+	else if (msg.getCommand() == "TOPIC")
 		handleTopic(fd, msg, _channel);
-	else if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
+	else if (msg.getCommand() == "PRIVMSG")
 		handlePrivMsg(fd, msg, this->_channel);
 	else if (msg.getCommand() == "KICK")
         handleKick(fd, msg, this->_channel);
-	else if (!strncmp(buffer.data(), "JOIN ", 5))
-		handleJoin(fd, msg, this->_channel, this->_clients);
-	else if (!strncmp((msg.getCommand()).c_str(), "INVITE", msg.getCommand().size()))
-		inviteCommand(fd, msg, this->_channel, this->_clients);
-	else if (!strncmp((msg.getCommand()).c_str(), "MODE", msg.getCommand().size())) 
-		modeCommand(fd, msg, this->_channel, _clients);
+	else if (msg.getCommand(), "JOIN")
+		channel.handleJoin(fd, msg, this->_channel, this->_clients);
+	else if (msg.getCommand() == "INVITE")
+		channel.inviteCommand(fd, msg, this->_channel, this->_clients);
+	else if (msg.getCommand() == "MODE") 
+		channel.modeCommand(fd, msg, this->_channel, _clients);
 }
 
-//!POURQUOI UN VECTEUR DE STRING ???
-//!Ajout, l'ancienne version est ci dessous. demander a teddy ce quil en pense
-void parse_buffer(std::vector <std::string> &buffer, Message& msg)
+void Message::parse_buffer(const std::string &buffer, Message& msg)
 {
+	Server server;
 	int	index;
 
 	index = 0;
-	msg.setCommand(get_next_argument((*buffer.begin()).c_str(), index)); //!a changer, pourquoi vecteur ..?
-	while ((*buffer.begin()).c_str()[index] && (*buffer.begin()).c_str()[index] == ' ')
+	msg.setCommand(server.get_next_argument(buffer.c_str(), index));
+	while (buffer[index] && buffer[index] == ' ')
 		index++;
-	msg.setArgument(std::string((*buffer.begin()).c_str() + index));
+	msg.setArgument(std::string(buffer.c_str() + index));
 }
-

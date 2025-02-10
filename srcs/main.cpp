@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 19:05:59 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 10:58:01 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cstdlib>
 #include "../include/Server.hpp"
-#include "../include/Client.hpp"
-#include "../include/Channel.hpp"
-#include <algorithm>
-#include <cstring> // !ATTENTION INCLUDE
 
 int	main(int argc, char **argv)
 {
@@ -24,11 +19,12 @@ int	main(int argc, char **argv)
 		if (argc != 3)
 			throw std::runtime_error("Usage: ./ircserv <port> <password>");
 		int port;
+		std::string password;
 
 		port = std::atoi(argv[1]);
 		if (port <= 0 || port > 65535) 
 			throw std::runtime_error("Error: Invalid port number. Please provide a valid port (1-65535).");
-		std::string password = argv[2];
+		password = argv[2];
 		Server server(port, password);
 
 		signal(SIGINT, Server::signalHandler); //-> catch the signal (ctrl + c)
