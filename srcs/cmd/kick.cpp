@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 18:26:58 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 10:03:20 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, 
 	{
 		std::string stock = find_nickname_with_fd(*userIt, this->_clients);
 		if (stock == targetUser)
-        {
+		{
 			channel.removeUser(*userIt, fd, this->_clients);
 			return (true);
-        }
-    }
-    return (false);
+		}
+	}
+	return (false);
 }
 
 void Server::handleKick(int fd, Message &msg, std::vector<Channel> &_channel)

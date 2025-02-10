@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 20:14:42 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 13:59:58 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,9 @@
 #include "../include/Message.hpp"
 #include "../include/Channel.hpp"
 
-int skipSpaces(const char *str)
-{
-    int i;
-	i = 0;
-    while (str[i] && str[i] == ' ')
-		i++;
-	return (i);
-}
 
 //Allows you to search a list of users for a specific user. Returns 1 if the user is found.
-int	is_user_in_chan(int fd, std::vector<int> userInChannel)
+int	Channel::is_user_in_chan(int fd, std::vector<int> userInChannel)
 {
 	std::vector<int>::iterator it_userInChannelInChannel;
 
@@ -39,7 +31,7 @@ int	is_user_in_chan(int fd, std::vector<int> userInChannel)
 	return (0);
 }
 
-std::string find_username_with_fd(int fd, std::vector<Client> &_clients)
+std::string Server::find_username_with_fd(int fd, std::vector<Client> &_clients)
 {
     for (size_t i = 0; i < _clients.size(); i++)
     {
@@ -52,7 +44,7 @@ std::string find_username_with_fd(int fd, std::vector<Client> &_clients)
 }
 
 // Allows you to find a specific channel starting with a channel name. Return an iterator to this channel.
-std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel)
+std::vector<Channel>::iterator Channel::find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel)
 {
 	std::vector<Channel>::iterator it_channel;
 
@@ -66,7 +58,7 @@ std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, 
 	return (it_channel);
 }
 
-std::string get_next_argument(const char *line, int &index)
+std::string Server::get_next_argument(const char *line, int &index)
 {
     bool    full_arg = false;
 	int		start;
@@ -88,12 +80,12 @@ std::string get_next_argument(const char *line, int &index)
     return (std::string(line + start, line + index));
 }
 
-void	betterSend(std::string str, int fd)
+void	Server::betterSend(std::string str, int fd)
 {
 	send(fd, str.c_str(), str.size(), 0);
 }
 
-int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients)
+int	Server::find_fd_with_nickname(std::string &name, std::vector<Client> &_clients)
 {
 	std::vector<Client>::iterator	it = _clients.begin();
 
@@ -106,7 +98,7 @@ int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients)
 	return (0);
 }
 
-Client	find_it_client_with_fd(int fd, std::vector<Client> &_clients)
+Client	Server::find_it_client_with_fd(int fd, std::vector<Client> &_clients)
 {
 	std::vector<Client>::iterator	it = _clients.begin();
 
@@ -120,7 +112,7 @@ Client	find_it_client_with_fd(int fd, std::vector<Client> &_clients)
 }
 
 // Used to find a nickname from a given fd. is the opposite of find_fd_with_name.
-std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients)
+std::string	Server::find_nickname_with_fd(int fd, std::vector<Client> &_clients)
 {
 	std::vector<Client>::iterator	it = _clients.begin();
 

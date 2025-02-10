@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 19:05:34 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/09 19:56:05 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 14:02:12 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	Channel::addUser(int newUser, bool isOperator)
 
 void	Channel::removeUser(int userRemove, int fd, std::vector<Client> &_clients)
 {
+	Server	server;
 	std::vector<int>::iterator	us_it;
 	std::vector<int>::iterator	op_it;
 	std::vector<int>::iterator	iv_it;
@@ -100,7 +101,7 @@ void	Channel::removeUser(int userRemove, int fd, std::vector<Client> &_clients)
 	}
 	if (user_found == false)
 	{
-		betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(userRemove, _clients), this->_name), fd);
+		server.betterSend(ERR_NOTONCHANNEL(server.find_nickname_with_fd(userRemove, _clients), this->_name), fd);
 		return;
 	}
 	this->set_nb_user_in(false);
