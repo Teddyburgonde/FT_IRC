@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:04:29 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 20:12:46 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:31:18 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,5 @@ void Server::clearClients(int _fd)
 			break;
 		}
 	}
+	//_authenticatedClients.erase(_fd);
 }

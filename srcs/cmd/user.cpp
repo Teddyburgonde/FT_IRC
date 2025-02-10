@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 19:01:10 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:29:09 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,21 +32,28 @@ static bool isValidUsername(const std::string& user)
 	return (true);
 }
 
-void Server::handleUser(int fd, const std::string& user)
+void Server::handleUser(int fd, std::string& user)
 {
 	std::string response;
+	std::string clientMsg;
 
+	clientMsg = CLIENT(find_nickname_with_fd(fd, this->_clients), find_username_with_fd(fd, this->_clients));
 	if (!isValidUsername(user))
 	{
-		response = ERR_ERRONEUSNICKNAME(std::string("Server"), user);//!A changer par CLIENT
+		response = ERR_ERRONEUSUSERNAME(clientMsg, user);
 		betterSend(response, fd);
+		return;
+	}
+	if (find_fd_with_username(user, _clients))
+	{
+		betterSend(ERR_USERNAMEINUSE(clientMsg, user), fd);
 		return;
 	}
 	for (size_t i = 0; i < this->_clients.size(); ++i) 
 	{
 		if (this->_clients[i].getFd() == fd && ! this->_clients[i].getUsername().empty())
 		{
-			response = ERR_ALREADYREGISTRED(std::string("Server"));//!A changer par CLIENT
+			response = ERR_ALREADYREGISTRED(clientMsg);
 			betterSend(response, fd);
 			return;
 		}
@@ -59,6 +66,8 @@ void Server::handleUser(int fd, const std::string& user)
 			break;
 		}
 	}
-	response = RPL_WELCOME(user);//!A changer par CLIENT
+	response = RPL_WELCOME(find_nickname_with_fd(fd, _clients));
 	betterSend(response, fd);
 }
+
+

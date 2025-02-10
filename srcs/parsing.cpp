@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/10 15:03:39 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 19:45:45 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,16 @@ bool Server::authenticatedClients(int fd,  std::string &buffer)
 
 void Server::analyzeData(int fd,  std::string &buffer)
 {
+	int	i;
+	std::string nickUserArgument;
+
 	if (authenticatedClients(fd, buffer) == false)
 		return;
 	Message msg;
 
+	i = 0;
 	msg.parse_buffer(buffer, msg);
+	nickUserArgument = get_next_argument(msg.getArgument().c_str(), i);
 	if (msg.getCommand().empty())
 		return;
 	else if (msg.getCommand() == "TOPIC")
@@ -82,12 +87,16 @@ void Server::analyzeData(int fd,  std::string &buffer)
 		handlePrivMsg(fd, msg);
 	else if (msg.getCommand() == "KICK")
         handleKick(fd, msg);
-	else if (msg.getCommand(), "JOIN")
+	else if (msg.getCommand() == "JOIN")
 		handleJoin(fd, msg);
 	else if (msg.getCommand() == "INVITE")
 		inviteCommand(fd, msg);
 	else if (msg.getCommand() == "MODE")
 		modeCommand(fd, msg);
+	else if (msg.getCommand() == "NICK")
+		handleNick(fd, nickUserArgument);
+	else if (msg.getCommand() == "USER")
+		handleUser(fd, nickUserArgument);
 }
 
 void Message::parse_buffer(const std::string &buffer, Message& msg)
