@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 10:03:20 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/10 14:55:17 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool Server::isTargetInChannel(const std::string &targetUser, Channel &channel, 
 	return (false);
 }
 
-void Server::handleKick(int fd, Message &msg, std::vector<Channel> &_channel)
+void Server::handleKick(int fd, Message &msg)
 {
 	std::string	channel;
 	std::string	targetUser;

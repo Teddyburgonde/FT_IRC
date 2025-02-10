@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privMsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 17:11:46 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/10 13:57:13 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/10 14:59:24 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
-void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
+void Server::handlePrivMsg(int fd, Message &msg)
 {
-	Channel		channel;
 	int			index;
 	std::string	target;
 	std::string response;
@@ -52,14 +51,14 @@ void Server::handlePrivMsg(int fd, Message &msg, std::vector<Channel> &_channel)
 	}
 	if (target[0] == '#')
 	{
-		it_channel_to_send = channel.find_channel_with_name(target, _channel);
+		it_channel_to_send = find_channel_with_name(target, _channel);
 		if (it_channel_to_send == _channel.end())
 		{
 			response = ERR_NOSUCHCHANNEL(target);
 			send(fd, response.c_str(), response.size(), 0);
 			return;
 		}
-		if (!channel.is_user_in_chan(fd, it_channel_to_send->getUserInChannel()))
+		if (!is_user_in_chan(fd, it_channel_to_send->getUserInChannel()))
 		{
 			betterSend(ERR_NOTONCHANNEL(find_nickname_with_fd(fd, _clients), it_channel_to_send->getName()), fd);//!A changer par CLIENT
 			return;
