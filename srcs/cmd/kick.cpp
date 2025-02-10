@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 14:55:17 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:41:34 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,18 @@ bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::s
 
 	index = 0;
 	channel = get_next_argument(msg.getArgument().c_str(), index);
-	targetUser =  get_next_argument(msg.getArgument().c_str(), index);
+	targetUser = get_next_argument(msg.getArgument().c_str(), index);
 	if (channel.empty() || targetUser.empty())
 	{
-		std::string response = ERR_NEEDMOREPARAMS(std::string("Server"), "KICK");
-		send(fd, response.c_str(), response.size(), 0);
+		std::string response = ERR_NEEDMOREPARAMS(CLIENT(find_nickname_with_fd(fd, _clients), find_username_with_fd(fd, _clients)), "KICK");
+		betterSend(response, fd);
+		return (false);
+	}
+	std::vector<Channel>::iterator it = find_channel_with_name(channel, _channel);
+	if (it == _channel.end())
+	{
+		std::string response = ERR_NOSUCHCHANNEL(channel);
+		betterSend(response, fd);
 		return (false);
 	}
 	return (true);
@@ -81,19 +88,19 @@ void Server::handleKick(int fd, Message &msg)
 		{
 			if (!isSenderInChannel(fd, *i))
 			{
-				std::string response = ERR_NOTONCHANNEL(std::string("Server"), channel);
+				std::string response = ERR_NOTONCHANNEL(CLIENT(username_sender, nickname_sender), channel);
 				send(fd, response.c_str(), response.size(), 0);
 				return;
 			}
 			if (!isSenderOperator(fd, *i))
 			{
-				std::string response = ERR_CHANOPRIVSNEEDED(std::string("Server"), channel);
+				std::string response = ERR_CHANOPRIVSNEEDED(CLIENT(username_sender, nickname_sender), channel);
 				send(fd, response.c_str(), response.size(), 0);
 				return;
 			}
 			if (!isTargetInChannel(targetUser, *i, fd))
 			{
-				std::string response = ERR_USERNOTINCHANNEL(std::string("Server"), targetUser, channel);
+				std::string response = ERR_USERNOTINCHANNEL(CLIENT(username_sender, nickname_sender), targetUser, channel);
 				send(fd, response.c_str(), response.size(), 0);
 				return;
 			}
@@ -104,6 +111,4 @@ void Server::handleKick(int fd, Message &msg)
 			return;
 		}
 	}
-	std::string response = ERR_NOSUCHCHANNEL(channel);
-	send(fd, response.c_str(), response.size(), 0);
 }
