@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/10 15:05:16 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 18:28:07 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 #define RPL_INVITERCVR(client, invitee, channel)	(":" + client + " INVITE " + invitee + " " + channel + "\r\n")
 #define RPL_NICK(oldNick, newNick)					(":" + oldNick + " NICK " + newNick + "\r\n")
 #define RPL_TOPIC(client, channel, topic)			(":" + client + " TOPIC " + channel + " :" + topic + "\r\n")
-#define RPL_WELCOME(client)							(": 001 " + client + " :Welcome in the IRC world, " + client + "\r\n")
+#define RPL_WELCOME(nickname)						(": 001 " + nickname + " :Welcome to the IRC world, " + nickname + "\r\n")
 #define RPL_NOTOPIC(client, channel)				(": 331 " + client + " " + channel + " :No topic is set\r\n")
 #define RPL_SEETOPIC(client, channel, topic)		(": 332 " + client + " " + channel + " :" + topic + "\r\n")
 #define RPL_INVITESNDR(client, invitee, channel)	(": 341 " + client + " " + invitee + " " + channel + "\r\n")
@@ -54,9 +54,14 @@
 #define ERR_NOSUCHCHANNEL(channel)					(": 403 " + channel + " :No such channel\r\n")
 #define ERR_CANNOTSENDTOCHAN(client, channel)		(": 404 " + client + " " + channel + " :Cannot send to channel\r\n")
 #define ERR_NOTEXTTOSEND(client)					(": 412 " + client + " :No text to send\r\n")
+
+//!a utilise
 #define ERR_NONICKNAMEGIVEN(client, nick)			(": 431 " + client + " " + nick + " :No nickname given\r\n")
+
 #define ERR_ERRONEUSNICKNAME(client, nickname)		(": 432 " + client + " " + nickname + " :Erroneus nickname\r\n")
 #define ERR_NICKNAMEINUSE(client, nick)				(": 433 * " + client + " " + nick + " :Nickname is already in use\r\n")
+#define ERR_ERRONEUSUSERNAME(client, username)		(": 432 " + client + " " + username + " :Erroneus username\r\n")
+#define ERR_USERNAMEINUSE(client, username)			(": 433 * " + client + " " + username + " :Username is already in use\r\n")
 #define ERR_NORECIPIENT(client, command)			(": 411 " + client + " " + command + " :No recipient given\r\n")
 
 #define ERR_USERNOTINCHANNEL(client, nick, channel)	(": 441 " + client + " " + nick + " " + channel + " :They aren't on that channel\r\n")
@@ -108,7 +113,7 @@ class Server
 		void	receiveNewData(int fd);
 		void	analyzeData(int fd, std::string &buffer);
 		void	handleNick(int fd, const std::string& newNick) ;
-		void	handleUser(int fd, const std::string& user);
+		void	handleUser(int fd, std::string& user);
 		void	handlePrivMsg(int fd, Message &msg);
 		void	handleKick(int fd, Message &msg);
 		bool	isSenderInChannel(int fd, Channel &channel);
@@ -135,9 +140,10 @@ class Server
 		std::string find_username_with_fd(int fd, std::vector<Client> &_clients);
 		void		betterSend(std::string str, int fd);
 		int			find_fd_with_nickname(std::string &name, std::vector<Client> &_clients);
+		int	find_fd_with_username(std::string &name, std::vector<Client> &_clients);
 		std::string	find_nickname_with_fd(int fd, std::vector<Client> &_clients);
 		Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
-		int			is_user_in_chan(int fd, std::vector<int> userInChannel); //sert a savoir si un user est dans un channel
-		std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel); //trouver un channel a partir de son nom
+		int			is_user_in_chan(int fd, std::vector<int> userInChannel);
+		std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel);
 
 #endif

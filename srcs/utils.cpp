@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 15:06:02 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 17:04:52 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,19 @@ int	find_fd_with_nickname(std::string &name, std::vector<Client> &_clients)
 	while (it != _clients.end())
 	{
 		if (name == it->getNickname())
+			return (it->getFd());
+		it++;
+	}
+	return (0);
+}
+
+int	find_fd_with_username(std::string &name, std::vector<Client> &_clients)
+{
+	std::vector<Client>::iterator	it = _clients.begin();
+
+	while (it != _clients.end())
+	{
+		if (name == it->getUsername())
 			return (it->getFd());
 		it++;
 	}

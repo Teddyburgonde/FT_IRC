@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 15:53:57 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 14:52:29 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 19:03:44 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,22 @@
 //This function return 1 if there is an error.
 static int	check_active_mode(std::vector<Channel>::iterator &it_ChanExist, int fd, std::vector<Client> &_clients, std::string &arg_after_channel)
 {
+	std::string clientMsg;
+	
+	clientMsg = CLIENT(find_nickname_with_fd(fd, _clients), find_username_with_fd(fd, _clients));
 	if (it_ChanExist->getModeI() == true && !is_user_in_chan(fd, it_ChanExist->getInvitedUser()))
 	{
-		betterSend(ERR_INVITEONLYCHAN(find_nickname_with_fd(fd, _clients), it_ChanExist->getName()), fd);
+		betterSend(ERR_INVITEONLYCHAN(clientMsg, it_ChanExist->getName()), fd);
 		return (1);
 	}
 	if (it_ChanExist->getModeK() == true && (arg_after_channel.empty() || arg_after_channel != it_ChanExist->getPassword()))
 	{
-		betterSend(ERR_BADCHANNELKEY(find_nickname_with_fd(fd, _clients), it_ChanExist->getName()), fd);
+		betterSend(ERR_BADCHANNELKEY(clientMsg, it_ChanExist->getName()), fd);
 		return (1);
 	}
 	if (it_ChanExist->getModeL() == true && it_ChanExist->get_nb_user_in() >= it_ChanExist->get_nb_user_max())
 	{
-		betterSend(ERR_CHANNELISFULL(find_nickname_with_fd(fd, _clients), it_ChanExist->getName()), fd);
+		betterSend(ERR_CHANNELISFULL(clientMsg, it_ChanExist->getName()), fd);
 		return (1);
 	}
 	return (0);
@@ -56,8 +59,6 @@ static std::vector<std::string> create_chanName(const char *argument, int &i, in
 	std::vector<std::string>	chanName;
 	std::vector<std::string>	error;
 	int							f;
-	Server server;
-
 	while (argument[i] && argument[i] != ' ')
 	{
 		f = i;
@@ -77,15 +78,20 @@ void Server::handleJoin(int fd, Message &msg)
 {
 	std::vector<Channel>::iterator 				it_ChanExist;
 	std::vector<std::string>::const_iterator	it_chanNew;
-	std::string									tmp = msg.getArgument();
-	const char 									*argument = tmp.c_str();
+	const char 									*argument;
 	int											i = 0;
-	const std::vector<std::string>				&chanName = create_chanName(argument, i, fd);
-    std::string									arg_after_channel = get_next_argument(argument, i);
+	std::string									arg_after_channel;
+	std::string									tmp = msg.getArgument();
     Client										user_sender = find_it_client_with_fd(fd, _clients);
 
-	if (chanName.empty())
+	if (tmp.empty())
+	{
+		betterSend(ERR_NEEDMOREPARAMS(CLIENT(user_sender.getNickname(), user_sender.getUsername()), "JOIN"), fd);
 		return;
+	}
+	argument = tmp.c_str();
+	const std::vector<std::string>	&chanName = create_chanName(argument, i, fd);
+    arg_after_channel = get_next_argument(argument, i);
 	it_chanNew = chanName.begin();
 	while (it_chanNew != chanName.end())
 	{
@@ -104,8 +110,13 @@ void Server::handleJoin(int fd, Message &msg)
 			_channel.push_back(newChan);
 			betterSend(RPL_JOIN(CLIENT(user_sender.getNickname(), user_sender.getUsername()), newChan.getName()), fd);
 		}
-		else if (is_user_in_chan(fd, it_ChanExist->getUserInChannel()) == 0 && check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)
+		else if (check_active_mode(it_ChanExist, fd, _clients, arg_after_channel) == 0)
 		{
+			if (is_user_in_chan(fd, it_ChanExist->getUserInChannel()) == 1)
+			{
+				betterSend(ERR_USERONCHANNEL(user_sender.getNickname(), it_ChanExist->getName()), fd);
+				return;
+			}
 			it_ChanExist->addUser(fd, false);
 			std::string message = RPL_JOIN(CLIENT(user_sender.getNickname(), user_sender.getUsername()), it_ChanExist->getName());
 			it_ChanExist->sendMessageToChannel(-1, message);
