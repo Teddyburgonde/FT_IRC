@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 19:05:16 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/10 14:04:52 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/10 14:58:34 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@ static void	handle_modeK(std::string argument, int fd, bool is_plus, Channel &it
 	i = 0;
 	if (is_plus)
 	{
-		password = server.get_next_argument(argument.c_str(), i);
+		password = get_next_argument(argument.c_str(), i);
 		if (password.empty())
 		{
-			server.betterSend(ERR_NEEDMOREPARAMS(nickname, "MODE"), fd);
+			betterSend(ERR_NEEDMOREPARAMS(nickname, "MODE"), fd);
 			return;
 		}
 		it_channel.setPassword(argument);
@@ -46,16 +46,16 @@ static void	handle_modeL(std::string argument, int fd, bool is_plus, Channel &it
 
 	if (is_plus)
 	{
-		nb_user_max = server.get_next_argument(argument.c_str(), i);
+		nb_user_max = get_next_argument(argument.c_str(), i);
 		if (nb_user_max.empty())
 		{
-			server.betterSend(ERR_NEEDMOREPARAMS(nickname, "MODE"), fd);
+			betterSend(ERR_NEEDMOREPARAMS(nickname, "MODE"), fd);
 			return;
 		}
 		std::stringstream ss(nb_user_max);
 		if (!(ss >> number) || !ss.eof())
 		{
-			server.betterSend(ERR_TOOMUCHPARAMS(nickname, "MODE"), fd);
+			betterSend(ERR_TOOMUCHPARAMS(nickname, "MODE"), fd);
 			return;
 		}
 		it_channel.set_nb_user_max(number);
@@ -67,8 +67,6 @@ static void handle_modeO(std::string argument, int fd, bool is_plus, Channel &it
 {
 	std::string	new_operator_name;
 	std::string	mode;
-	Server		server;
-	Channel		channel;
 	int			i;
 	
 	i = 0;
@@ -76,25 +74,25 @@ static void handle_modeO(std::string argument, int fd, bool is_plus, Channel &it
 		mode = "+o";
 	else
 		mode = "-o";
-	new_operator_name = server.get_next_argument(argument.c_str(), i);
+	new_operator_name = get_next_argument(argument.c_str(), i);
 	if(new_operator_name.empty())
 	{
-		server.betterSend(ERR_NEEDMOREPARAMS(nickname, "MODE"), fd);
+		betterSend(ERR_NEEDMOREPARAMS(nickname, "MODE"), fd);
 		return;
 	}
-	int fd_new_op = server.find_fd_with_nickname(new_operator_name, _clients);
+	int fd_new_op = find_fd_with_nickname(new_operator_name, _clients);
 	if (fd_new_op == 0)
 	{
-		server.betterSend(ERR_NOSUCHNICK(nickname, new_operator_name), fd);
+		betterSend(ERR_NOSUCHNICK(nickname, new_operator_name), fd);
 		return;
 	}
-	if (!channel.is_user_in_chan(server.find_fd_with_nickname(new_operator_name, _clients), it_channel.getUserInChannel()))
+	if (!is_user_in_chan(find_fd_with_nickname(new_operator_name, _clients), it_channel.getUserInChannel()))
 	{
-		server.betterSend(ERR_USERNOTINCHANNEL(nickname, new_operator_name, it_channel.getName()), fd);
+		betterSend(ERR_USERNOTINCHANNEL(nickname, new_operator_name, it_channel.getName()), fd);
 		return;
 	}
-	it_channel.addUser(server.find_fd_with_nickname(new_operator_name, _clients), is_plus);
-	std::string username_sender = server.find_username_with_fd(fd, _clients);
+	it_channel.addUser(find_fd_with_nickname(new_operator_name, _clients), is_plus);
+	std::string username_sender = find_username_with_fd(fd, _clients);
 	std::string message = RPL_MODE(CLIENT(nickname, username_sender), it_channel.getName(), mode, new_operator_name);
 	it_channel.sendMessageToChannel(-1, message);
 }
@@ -119,10 +117,10 @@ static void	find_mode(std::string &mode, std::vector<Channel>::iterator it_chann
 	else if (mode[1] == 'l')
 		handle_modeL(argument, fd, is_plus, (*it_channel), nickname_of_sender);
 	else
-		server.betterSend(ERR_UNKNOWNMODE(nickname_of_sender, mode[1]), fd);
+		betterSend(ERR_UNKNOWNMODE(nickname_of_sender, mode[1]), fd);
 }
 
-void	Channel::modeCommand(int fd, Message &msg, std::vector<Channel> &_channel, std::vector<Client> &_clients)
+void	Server::modeCommand(int fd, Message &msg)
 {
 	std::vector<Channel>::iterator	it_channel = _channel.begin();
 	std::string						str_string = msg.getArgument();
@@ -132,36 +130,35 @@ void	Channel::modeCommand(int fd, Message &msg, std::vector<Channel> &_channel, 
 	std::string						channelName;
 	std::string						mode;
 	int								index;
-	Server server;
 
 	
 	index = 0;
-	nickname_of_sender = server.find_nickname_with_fd(fd, _clients);
-	channelName = server.get_next_argument(line, index);
+	nickname_of_sender = find_nickname_with_fd(fd, _clients);
+	channelName = get_next_argument(line, index);
 	if (channelName.empty() || channelName[0] != '#')
 	{
-		server.betterSend(ERR_NOSUCHCHANNEL(channelName), fd);
+		betterSend(ERR_NOSUCHCHANNEL(channelName), fd);
 		return;
 	}
 	it_channel = find_channel_with_name(channelName, _channel);
 	if (it_channel == _channel.end())
 	{
-		server.betterSend(ERR_NOSUCHCHANNEL(channelName), fd);
+		betterSend(ERR_NOSUCHCHANNEL(channelName), fd);
 		return;
 	}
 	if (is_user_in_chan(fd, (*it_channel).getOperatorUser()) == false)
 	{
-		server.betterSend(ERR_CHANOPRIVSNEEDED(nickname_of_sender, channelName), fd);
+		betterSend(ERR_CHANOPRIVSNEEDED(nickname_of_sender, channelName), fd);
 		return;
 	}
-	mode = server.get_next_argument(line, index);
+	mode = get_next_argument(line, index);
 	if (mode.empty() || (mode[0] != '+' && mode[0] != '-') || (mode.size() != 2))
 	{
-		server.betterSend(ERR_NEEDMOREPARAMS(nickname_of_sender, "MODE"), fd);
+		betterSend(ERR_NEEDMOREPARAMS(nickname_of_sender, "MODE"), fd);
 		return;
 	}
 	if (line[index] && line[index] != '\n')
-		argument = server.get_next_argument(line, index);
+		argument = get_next_argument(line, index);
 	find_mode(mode, it_channel, nickname_of_sender, fd, argument, _clients);
 }
 

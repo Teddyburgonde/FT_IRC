@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 11:14:06 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/10 15:00:30 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
-Channel* Server::findChannel(const std::string &ChannelName, std::vector<Channel> &_Channel)
+Channel* Server::findChannel(const std::string &ChannelName)
 {
-	for (std::vector<Channel>::iterator it = _Channel.begin(); it != _Channel.end(); ++it)
+	for (std::vector<Channel>::iterator it = _channel.begin(); it != _channel.end(); ++it)
 	{
 		if (it->getName() == ChannelName)
 			return &(*it);
@@ -25,20 +25,19 @@ Channel* Server::findChannel(const std::string &ChannelName, std::vector<Channel
 	return (NULL);
 }
 
-void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Channel)
+void Server::handleTopic(int fd, const Message &msg)
 {
 	int			index;
 	std::string channel = get_next_argument(msg.getArgument().c_str(), index);
 	std::string newTopic;
 	std::string notification;
-	Channel		ptrChannel;
 
 	if (channel.empty())
 	{
 		betterSend(ERR_NEEDMOREPARAMS(std::string("Server"), "TOPIC"), fd);//!A changer par CLIENT
 		return;
 	}
-	Channel* targetChannel = findChannel(channel, _Channel);
+	Channel* targetChannel = findChannel(channel);
 	if (!targetChannel)
 	{
 		betterSend(ERR_NOSUCHCHANNEL(channel), fd);
@@ -58,7 +57,7 @@ void Server::handleTopic(int fd, const Message &msg, std::vector<Channel> &_Chan
 			betterSend(RPL_NOTOPIC(std::string("Server"), targetChannel->getName()), fd);//!A changer par CLIENT
 		return;
 	}
-	if (!ptrChannel.is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
+	if (!is_user_in_chan(fd, targetChannel->getOperatorUser()) && targetChannel->getModeT())
 	{
 		betterSend(ERR_CHANOPRIVSNEEDED(find_nickname_with_fd(fd, this->_clients), targetChannel->getName()), fd);//!A changer par CLIENT
 		return;

@@ -6,7 +6,7 @@
 /*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:03:05 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 14:23:31 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/10 15:10:18 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,10 @@ void	Server::receiveNewData(int fd)
 	}
 	else
 	{
-		stockBuffer = buffer;
-		analyzeData(fd, stockBuffer);
+		buffer[bytes] = '\0';
+		std::string bufferVector(buffer, buffer + bytes);
+		std::stringstream	tmpStream(buffer);
+		while (std::getline(tmpStream, stockBuffer))
+			analyzeData(fd, stockBuffer);
 	}
 }
