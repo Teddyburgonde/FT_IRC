@@ -6,13 +6,13 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2024/12/21 17:56:42 by tebandam         ###   ########.fr        #
+#    Updated: 2025/02/11 17:47:55 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #=================== NAME ===================#
 
-NAME_BONUS = bot
+NAME = ircserv_bonus
 
 #================ COMPILATOR ================#
 
@@ -24,18 +24,18 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 
 #================== SOURCES =================#
 
-SRCS_BONUS = main.cpp \
+SRCS = main.cpp \
 	   Server.cpp \
 		Client.cpp \
-		Chanel.cpp \
+		Channel.cpp \
 		parsing.cpp \
 		Message.cpp \
 		utils.cpp \
-		bot.cpp \
 		serverClose.cpp \
 		serverSignals.cpp \
 		serverClear.cpp \
 		serverIncomingConnections.cpp \
+		bot.cpp \
 		cmd/join.cpp \
 		cmd/invite.cpp \
 		cmd/mode.cpp \
@@ -48,7 +48,7 @@ SRCS_BONUS = main.cpp \
 
 #============== OBJECT FILES ================#
 
-OBJS_BONUS = $(SRCS_BONUS:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o)
 
 #==========GENERATION BINARY FILES ==========#
 
@@ -65,15 +65,17 @@ RESET = \033[0m
 
 RM = rm -f
 
-bonus: $(OBJS_BONUS)
-	$(CPP) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
-	@echo "$(GREEN) EXECUTABLE BONUS READY !$(RESET)"
+all: $(NAME)
+
+$(NAME) : $(OBJS)
+	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
+	@echo "$(GREEN) EXECUTABLE READY !$(RESET)"
 
 clean:
-	@$(RM) $(OBJS) $(OBJS_BONUS)
+	@$(RM) $(OBJS)
 
 fclean: clean
-	@$(RM) $(NAME) $(NAME_BONUS)
+	@$(RM) $(NAME)
 
 re: fclean all
 

@@ -1,125 +1,108 @@
-#include "../include/Client.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
+/*   Updated: 2025/02/11 17:04:46 by tebandam         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/Server.hpp"
-#include "../include/Chanel.hpp"
-#include "../include/Message.hpp"
-#include <algorithm>
+#include "../include/Channel.hpp"
 
-bool Server::authenticatedClients(int fd,  const std::string &buffer)
+bool Server::authenticatedClients(int fd,  std::string &buffer)
 {
-	if (_authenticatedClients.find(fd) == _authenticatedClients.end())
-		_authenticatedClients[fd] = false;
-	if (!_authenticatedClients[fd]) 
-	{
-		// Vérifie si la commande est "PASS"
-		if (strncmp(buffer.data(), "PASS ", 5) == 0) 
-		{
-			std::string clientPassword = std::string(buffer.begin() + 5, buffer.end());
-			clientPassword.erase(std::remove(clientPassword.begin(), clientPassword.end(), '\r'), clientPassword.end());
-			clientPassword.erase(std::remove(clientPassword.begin(), clientPassword.end(), '\n'), clientPassword.end());
+	std::string	cmd;
+	std::string	newNick;
+	std::string	userArguments;
+	int			i;
 
-			if (clientPassword == _password) 
+	i  = 0;
+	cmd = get_next_argument(buffer.c_str(), i);
+	if (_authenticatedClients[fd] == false) 
+	{
+		if (strcmp(cmd.c_str(), "PASS") == 0) 
+		{
+			cmd = get_next_argument(buffer.c_str(), i);
+			if (cmd == _password) 
 			{
-				_authenticatedClients[fd] = true; // Authentifie le client
-				send(fd, "OK :Password accepted\n", 23, 0);
-				return true; 
+				_authenticatedClients[fd] = true;
+				betterSend("OK :Password accepted\n", fd);
 			}
 			else
-			{
-				send(fd, "ERROR :Invalid password\n", 25, 0);
-				return false;
-			}
+				betterSend("ERROR :Invalid password\n", fd);
 		}
 		else
-		{
-			send(fd, "ERROR :You must authenticate first using PASS\r\n", 47, 0);
-			return false;
-		}
+			betterSend("ERROR :You must authenticate first using PASS\r\n", fd);
+		return (false);
 	}
-	return true;
+	else if (find_nickname_with_fd(fd, this->_clients).empty())
+	{
+		if (strncmp(buffer.data(), "NICK ", 5) == 0)
+		{
+			newNick = get_next_argument(buffer.c_str(), i);
+			handleNick(fd, newNick);
+		}
+		else
+			betterSend(ERR_NOTREGISTERED(), fd);
+		return (false);
+	}
+	else if (find_username_with_fd(fd, this->_clients).empty())
+	{
+		if (strncmp(buffer.data(), "USER ", 5) == 0)
+		{
+			userArguments = get_next_argument(buffer.c_str(), i);
+			handleUser(fd, userArguments);
+		}
+		else
+			betterSend(ERR_NOTREGISTERED(), fd);
+		return (false);
+	}
+	return (true);
 }
 
-
-void Server::analyzeData(int fd,  const std::string &buffer)
+void Server::analyzeData(int fd,  std::string &buffer)
 {
-	 if (!authenticatedClients(fd, buffer))
-        return;
+	int	i;
+	std::string nickUserArgument;
+
+	if (authenticatedClients(fd, buffer) == false)
+		return;
 	Message msg;
 
-	std::vector<std::string> stringBuffer;
-	stringBuffer.push_back(std::string(buffer.begin(), buffer.end()));
-	parse_buffer(stringBuffer, msg);
+	i = 0;
+	msg.parse_buffer(buffer, msg);
+	nickUserArgument = get_next_argument(msg.getArgument().c_str(), i);
 	if (msg.getCommand().empty())
-		return ;
-	std::string newNick;
-	if (strncmp(buffer.data(), "NICK ", 5) == 0)
-	{
-    	std::string newNick = std::string(buffer.begin() + 5, buffer.end());
-    	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\r'), newNick.end());
-    	newNick.erase(std::remove(newNick.begin(), newNick.end(), '\n'), newNick.end());
-    	handleNick(fd, newNick);
-	}
-	if (strncmp(buffer.data(), "USER ", 5) == 0)
-	{
-		std::string userArguments = std::string(buffer.begin() + 5, buffer.end());
-		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\r'), userArguments.end());
-		userArguments.erase(std::remove(userArguments.begin(), userArguments.end(), '\n'), userArguments.end());
-		handleUser(fd, userArguments);
-	}
-	if (strncmp(buffer.data(), "TOPIC ", 6) == 0)
-	{
-		std::string topicArguments = std::string(buffer.begin() + 6, buffer.end());
-    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\r'), topicArguments.end());
-    	topicArguments.erase(std::remove(topicArguments.begin(), topicArguments.end(), '\n'), topicArguments.end());
-    	Message msg;
-		msg.setCommand("TOPIC");
-		msg.setArgument(topicArguments);
-		handleTopic(fd, msg, _chanel);
-	}
-	if (strncmp(buffer.data(), "PRIVMSG ", 8) == 0)
-		handlePrivMsg(fd, msg, this->_chanel);
-	if (msg.getCommand() == "KICK") 
-        handleKick(fd, msg, this->_chanel);
-	if (!strncmp(buffer.data(), "JOIN ", 5))
-	{
-		handleJoin(fd, msg, this->_chanel, this->_clients);
-	}
-	if (strstr(buffer.c_str(), "zut") != NULL)
-		handleBot(fd);
-	if (!strncmp((msg.getCommand()).c_str(), "MODE", msg.getCommand().size())) 
-	{
-		modeCommand(fd, msg, this->_chanel, _clients);
-		std::cout << "MODE MADE" << std::endl;
-	}
+		return;
+	else if (msg.getCommand() == "TOPIC")
+		handleTopic(fd, msg);
+	else if (msg.getCommand() == "PRIVMSG")
+		handlePrivMsg(fd, msg);
+	else if (msg.getCommand() == "KICK")
+        handleKick(fd, msg);
+	else if (msg.getCommand() == "JOIN")
+		handleJoin(fd, msg);
+	else if (msg.getCommand() == "INVITE")
+		inviteCommand(fd, msg);
+	else if (msg.getCommand() == "MODE")
+		modeCommand(fd, msg);
+	else if (msg.getCommand() == "NICK")
+		handleNick(fd, nickUserArgument);
+	else if (msg.getCommand() == "USER")
+		handleUser(fd, nickUserArgument);
 }
 
-void parse_buffer(std::vector <std::string> &buffer, Message& msg)
+void Message::parse_buffer(const std::string &buffer, Message& msg)
 {
-	//Message msg;
+	int	index;
 
-	// Est t'il vide ?
-	if (buffer.empty())
-        throw std::runtime_error("Buffer is empty");
-
-	std::string firstElement = buffer.front();
-	if (firstElement[0] == ' ')
-	{
-		std::cout <<  "The command must not be preceded by a space." << std::endl;
-		return ;
-		//throw(std::runtime_error("The command must not be preceded by a space."));
-	}
-	size_t spacePos = firstElement.find(' ');
-
-	if (spacePos != std::string::npos)
-	{
-    	std::string line = firstElement.substr(0, spacePos);
-		msg.setCommand(line);
-		std::string argument = firstElement.substr(spacePos + 1);
-        msg.setArgument(argument);
-	}
-	else
-	{
-    	msg.setCommand(firstElement);
-        msg.setArgument(""); // Aucun argument
-	}
-    return ;
+	index = 0;
+	msg.setCommand(get_next_argument(buffer.c_str(), index));
+	while (buffer[index] && buffer[index] == ' ')
+		index++;
+	msg.setArgument(std::string(buffer.c_str() + index));
 }

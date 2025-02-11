@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2024/12/05 16:44:37 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/11 16:54:05 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #define MESSAGE_HPP
 
 #include <iostream>
-#include <vector>
-
 
 class Message
 {
@@ -32,15 +30,13 @@ class Message
 
 	
 	public :
-		/* Setters */
+		void parse_buffer(const std::string &buffer, Message& msg);
 		void setCommand(std::string command);
 		void setArgument(std::string command);
 
-		/* Getters */
 		std::string getCommand() const;
 		std::string getArgument() const;
 };
 
-void parse_buffer(std::vector <std::string> &buffer, Message& msg);
 
 #endif 

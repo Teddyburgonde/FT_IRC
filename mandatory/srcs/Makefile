@@ -3,17 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+         #
+#    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2025/02/06 15:49:12 by gmersch          ###   ########.fr        #
+#    Updated: 2025/02/11 17:48:39 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #=================== NAME ===================#
 
 NAME = ircserv
-NAME_BONUS = bot
 
 #================ COMPILATOR ================#
 
@@ -45,15 +44,10 @@ SRCS = main.cpp \
 		cmd/topic.cpp \
 		cmd/user.cpp \
 
-SRCS_BONUS = ../bonus/main.cpp \
-			../bonus/Server.cpp \
-			../bonus/serverIncomingConnections_bonus.cpp \
-
 
 #============== OBJECT FILES ================#
 
 OBJS = $(SRCS:.cpp=.o)
-OBJS_BONUS = $(SRCS_BONUS:.cpp=.o)
 
 #==========GENERATION BINARY FILES ==========#
 
@@ -76,10 +70,6 @@ $(NAME) : $(OBJS)
 	$(CPP) $(CFLAGS) $(OBJS) -o $(NAME)
 	@echo "$(GREEN) EXECUTABLE READY !$(RESET)"
 
-bonus: $(OBJS_BONUS)
-	$(CPP) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
-	@echo "$(GREEN) EXECUTABLE BONUS READY !$(RESET)"
-
 clean:
 	@$(RM) $(OBJS)
 
@@ -88,4 +78,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re bonus
+.PHONY: all clean fclean re
