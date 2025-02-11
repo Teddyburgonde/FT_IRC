@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/10 19:45:45 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:04:46 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/Client.hpp"
 #include "../include/Server.hpp"
 #include "../include/Channel.hpp"
-#include "../include/Message.hpp"
-#include <algorithm>
 
 bool Server::authenticatedClients(int fd,  std::string &buffer)
 {

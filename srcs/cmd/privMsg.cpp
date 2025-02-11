@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   privMsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 17:11:46 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/10 16:52:10 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:03:10 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
-#include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
 void Server::handlePrivMsg(int fd, Message &msg)

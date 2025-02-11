@@ -3,22 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   serverClose.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:07:58 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/09 20:03:59 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:05:42 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
 #include "../include/Client.hpp"
-
-/*
-The purpose of this function is to close the file descriptors of clients connected to the server.
-We browse the list of clients connected to the server and close the file descriptors of each client.
-We also close the server file descriptor.
-This avoids memory leaks.
-*/
 
 void Server::closeFds()
 {

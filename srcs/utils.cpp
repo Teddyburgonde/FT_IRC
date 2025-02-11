@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 17:04:52 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:06:53 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,15 @@ std::string get_next_argument(const char *line, int &index)
 		index++;
 	if (line[index] == ':')
 	{
-        full_arg = true;
+		full_arg = true;
 		index++;
 	}
 	start = index;
-    while (line[index] && line[index] != '\n' && line[index] != '\r' && (line[index] != ' ' || full_arg == true))
+	while (line[index] && line[index] != '\n' && line[index] != '\r' && (line[index] != ' ' || full_arg == true))
 		index++;
 	if (index == start)
-        return ("");
-    return (std::string(line + start, line + index));
+		return ("");
+	return (std::string(line + start, line + index));
 }
 
 void	betterSend(std::string str, int fd)

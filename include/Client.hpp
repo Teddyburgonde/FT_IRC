@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 13:32:33 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 15:53:21 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 16:53:56 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,12 @@
 # define CLIENT_HPP
 
 #include <iostream>
-#include <vector>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/types.h>
 
-
-/*
-In the Customer class there is all the information about the customer
-inside the server.
-*/
 
 class Client
 {

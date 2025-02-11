@@ -1,19 +1,14 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-#include <iostream>
 #include <vector>
 #include <poll.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <csignal>
 #include <sys/poll.h>
-#include <iostream>
-#include <string.h>
 #include "Client.hpp"
-#include "Server.hpp" //??
-#include <sstream>
-#include <algorithm> // ??
+#include "Server.hpp"
 
 class Message;
 class Channel

@@ -11,9 +11,8 @@
 #include <iostream>
 #include <string.h>
 #include "Client.hpp"
-#include "Server.hpp" //??
 #include <sstream>
-#include <algorithm> // ??
+#include <algorithm>
 
 class Message;
 class Chanel
@@ -39,22 +38,22 @@ class Chanel
 		Chanel();
 		~Chanel();
 
-		std::string	getName(); //getter de _name
-		void		setName(std::string chanName); //setter de _name
+		std::string	getName();
+		void		setName(std::string chanName);
 		std::string	getPassword();
-		void		setPassword(std::string passwordStr); //setter de _name
+		void		setPassword(std::string passwordStr);
 
 
-		void	addUser(int newUser, bool isOperator); //setter de _userInChannel, isOperator set le user aussi dans _operator si 'true'
-		std::vector<int>& getUserInChannel(); //getter de _userInChannel
+		void	addUser(int newUser, bool isOperator);
+		std::vector<int>& getUserInChannel();
 		void	removeUser(int newUser, int fd, std::vector<Client> &_clients);
-		std::vector<int>&	getOperatorUser();//getter de _operator
+		std::vector<int>&	getOperatorUser();
 
 
 		void	sendMessageToChanel(int userSender, std::string &msg);
 
-		void				setInvitedUser(int fd);//setter de _invitedUser
-		std::vector<int>	getInvitedUser();//getter de _invitedUser
+		void				setInvitedUser(int fd);
+		std::vector<int>	getInvitedUser();
 
 		void	setModeI(bool set);
 		void	setModeT(bool set);

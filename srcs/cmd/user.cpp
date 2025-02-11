@@ -3,19 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 17:55:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 18:29:09 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:03:58 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Server.hpp"
-#include "../../include/Message.hpp"
 #include "../../include/Client.hpp"
-#include "../../include/Server.hpp"
-#include "../../include/Channel.hpp"
-#include "../../include/Message.hpp"
+
 
 // Validate the format of username
 static bool isValidUsername(const std::string& user) 

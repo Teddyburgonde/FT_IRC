@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/14 12:36:39 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 16:53:07 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:03:34 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
-#include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
 
 Channel* Server::findChannel(const std::string &ChannelName)

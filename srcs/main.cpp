@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 10:58:01 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/11 17:04:26 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int	main(int argc, char **argv)
 		password = argv[2];
 		Server server(port, password);
 
-		signal(SIGINT, Server::signalHandler); //-> catch the signal (ctrl + c)
-		signal(SIGQUIT, Server::signalHandler); //-> catch the signal (ctrl + \)
+		signal(SIGINT, Server::signalHandler);
+		signal(SIGQUIT, Server::signalHandler);
 		
 		server.serverInit();
 	}

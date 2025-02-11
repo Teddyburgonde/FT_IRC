@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:32:31 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 09:18:31 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/11 16:54:05 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #define MESSAGE_HPP
 
 #include <iostream>
-#include <vector>
-
 
 class Message
 {

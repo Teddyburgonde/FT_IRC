@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 11:36:47 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 18:41:34 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:02:11 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/Client.hpp"
 #include "../../include/Server.hpp"
 #include "../../include/Message.hpp"
 #include "../../include/Channel.hpp"
-#include <algorithm>
 
 bool Server::validateKickArgs(int fd, Message &msg, std::string &channel, std::string &targetUser)
 {

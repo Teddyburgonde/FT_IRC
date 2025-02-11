@@ -3,20 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   serverClear.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:04:29 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/10 17:31:18 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:05:21 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
-#include "../include/Client.hpp"
 #include "../include/Channel.hpp"
 
 void Server::clearClients(int _fd)
 {
-	//!Ajout du 1er block par Galaad : Permet de retirer la personne de la liste des channels quand elle quitte le serv.
 	std::vector<Channel>::iterator	it_chan;
 	std::vector<int>::iterator		it_user;
 
@@ -43,5 +41,5 @@ void Server::clearClients(int _fd)
 			break;
 		}
 	}
-	//_authenticatedClients.erase(_fd);
+	_authenticatedClients.erase(_fd);
 }

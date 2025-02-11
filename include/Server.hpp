@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/10 18:28:07 by gmersch          ###   ########.fr       */
+/*   Updated: 2025/02/11 17:00:39 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,9 @@
 #include <arpa/inet.h>
 #include <csignal>
 #include <sys/poll.h>
-#include <iostream>
 #include <string.h>
 #include <ostream>
 #include <sstream>
-#include <string>
 #include <cstdlib>
 #include <algorithm>
 #include <sys/socket.h>
@@ -55,7 +53,6 @@
 #define ERR_CANNOTSENDTOCHAN(client, channel)		(": 404 " + client + " " + channel + " :Cannot send to channel\r\n")
 #define ERR_NOTEXTTOSEND(client)					(": 412 " + client + " :No text to send\r\n")
 
-//!a utilise
 #define ERR_NONICKNAMEGIVEN(client, nick)			(": 431 " + client + " " + nick + " :No nickname given\r\n")
 
 #define ERR_ERRONEUSNICKNAME(client, nickname)		(": 432 " + client + " " + nickname + " :Erroneus nickname\r\n")
@@ -82,21 +79,18 @@ class Message;
 class Client;
 class Channel;
 
-/*
-Dans la class Server, il y a toute les informations  sur le serveur.
-Il y a aussi un vecteur de clients qui sont connectes au serveur.
-*/
+
 class Server
 {
 	private:
-		int	_fd; // file descriptor du client
-		int _port;  // port du serveur
+		int	_fd;
+		int _port;
 		int _fdAccept;
-		std::string _password; // password
-		int _serverSocketFd; // file descriptor du serveur socket
-		static bool Signal; // variable pour le signal
-		std::vector<Client> _clients; // liste de personnes connectees au serveur via HexChat
-		std::vector<struct pollfd> _pollFds; // tableau où sera stocker tous les sockets à surveiller
+		std::string _password;
+		int _serverSocketFd;
+		static bool Signal;
+		std::vector<Client> _clients;
+		std::vector<struct pollfd> _pollFds;
 		std::vector<Channel> _channel;
 	public:
 		Server();
