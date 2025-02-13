@@ -6,7 +6,7 @@
 #    By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/26 21:27:01 by teddybandam       #+#    #+#              #
-#    Updated: 2025/02/11 17:47:55 by tebandam         ###   ########.fr        #
+#    Updated: 2025/02/13 17:30:24 by tebandam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,26 +24,26 @@ CFLAGS = -std=c++98 -Wall -Wextra -Werror -I../include
 
 #================== SOURCES =================#
 
-SRCS = main.cpp \
-	   Server.cpp \
-		Client.cpp \
-		Channel.cpp \
-		parsing.cpp \
-		Message.cpp \
-		utils.cpp \
-		serverClose.cpp \
-		serverSignals.cpp \
-		serverClear.cpp \
-		serverIncomingConnections.cpp \
-		bot.cpp \
-		cmd/join.cpp \
-		cmd/invite.cpp \
-		cmd/mode.cpp \
-		cmd/kick.cpp \
-		cmd/nick.cpp \
-		cmd/privMsg.cpp \
-		cmd/topic.cpp \
-		cmd/user.cpp \
+SRCS = srcs/main.cpp \
+	   srcs/Server.cpp \
+		srcs/Client.cpp \
+		srcs/Channel.cpp \
+		srcs/parsing.cpp \
+		srcs/Message.cpp \
+		srcs/utils.cpp \
+		srcs/serverClose.cpp \
+		srcs/serverSignals.cpp \
+		srcs/serverClear.cpp \
+		srcs/serverIncomingConnections.cpp \
+		srcs/bot.cpp \
+		srcs/cmd/join.cpp \
+		srcs/cmd/invite.cpp \
+		srcs/cmd/mode.cpp \
+		srcs/cmd/kick.cpp \
+		srcs/cmd/nick.cpp \
+		srcs/cmd/privMsg.cpp \
+		srcs/cmd/topic.cpp \
+		srcs/cmd/user.cpp \
 
 
 #============== OBJECT FILES ================#
