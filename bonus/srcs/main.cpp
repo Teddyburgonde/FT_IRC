@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 08:10:54 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/11 17:04:26 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:51:14 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ int	main(int argc, char **argv)
 			throw std::runtime_error("Usage: ./ircserv <port> <password>");
 		int port;
 		std::string password;
-
+		if (isValidNumber(argv[1]) == 0) 
+		{
+			std::cerr << "Error: Invalid port number. Must be a valid integer." << std::endl;
+			return 1;
+		}
 		port = std::atoi(argv[1]);
 		if (port <= 0 || port > 65535) 
 			throw std::runtime_error("Error: Invalid port number. Please provide a valid port (1-65535).");

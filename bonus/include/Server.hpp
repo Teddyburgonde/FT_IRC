@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/11 18:05:52 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:49:40 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <cctype>
 
 #define CLIENT(nick, user)							(nick + "!" + user + "@localhost")
 #define PRIVMSG(client, target, message)			(":" + client + " PRIVMSG " + target + " :" + message + "\r\n")
@@ -141,5 +142,6 @@ class Server
 		Client		find_it_client_with_fd(int fd, std::vector<Client> &_clients);
 		int			is_user_in_chan(int fd, std::vector<int> userInChannel);
 		std::vector<Channel>::iterator find_channel_with_name(std::string &channelName, std::vector<Channel> &_channel);
-
+		bool	isValidNumber(const char *str);
+		size_t	ft_strlen(const char *str);
 #endif

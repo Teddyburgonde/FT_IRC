@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/11 17:06:53 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/13 16:48:21 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,29 @@
 #include "../include/Server.hpp"
 #include "../include/Message.hpp"
 #include "../include/Channel.hpp"
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+	
+}
+
+bool	isValidNumber(const char *str)
+{
+	if(!str)
+		return false;
+	for (size_t i = 0; i < ft_strlen(str); ++i)
+	{
+		if (isdigit(str[i]) == 0)
+			return false;		
+	}
+	return true;
+}
 
 
 //Allows you to search a list of users for a specific user. Returns 1 if the user is found.
