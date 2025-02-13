@@ -6,7 +6,7 @@
 /*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/13 16:49:40 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/13 17:13:09 by tebandam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 #include <arpa/inet.h>
 #include <csignal>
 #include <sys/poll.h>
-#include <string.h>
 #include <ostream>
 #include <sstream>
 #include <cstdlib>
@@ -31,6 +30,7 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <cctype>
+#include <cstring> 
 
 #define CLIENT(nick, user)							(nick + "!" + user + "@localhost")
 #define PRIVMSG(client, target, message)			(":" + client + " PRIVMSG " + target + " :" + message + "\r\n")
