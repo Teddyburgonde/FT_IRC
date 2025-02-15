@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:09:19 by tebandam          #+#    #+#             */
-/*   Updated: 2025/02/13 16:49:59 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/14 13:35:45 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ std::string get_next_argument(const char *line, int &index)
 		index++;
 	}
 	start = index;
-	while (line[index] && line[index] != '\n' && line[index] != '\r' && (line[index] != ' ' || full_arg == true))
+	while (line[index] && line[index] != '\r' && (line[index] != ' ' || full_arg == true))
 		index++;
 	if (index == start)
 		return ("");

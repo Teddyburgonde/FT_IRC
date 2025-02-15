@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 20:38:06 by gmersch           #+#    #+#             */
-/*   Updated: 2025/02/11 17:04:46 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/15 08:55:11 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,13 @@ void Server::analyzeData(int fd,  std::string &buffer)
 	else if (msg.getCommand() == "PRIVMSG")
 		handlePrivMsg(fd, msg);
 	else if (msg.getCommand() == "KICK")
-        handleKick(fd, msg);
+		handleKick(fd, msg);
 	else if (msg.getCommand() == "JOIN")
 		handleJoin(fd, msg);
 	else if (msg.getCommand() == "INVITE")
 		inviteCommand(fd, msg);
 	else if (msg.getCommand() == "MODE")
 		modeCommand(fd, msg);
-	else if (msg.getCommand() == "NICK")
-		handleNick(fd, nickUserArgument);
-	else if (msg.getCommand() == "USER")
-		handleUser(fd, nickUserArgument);
 }
 
 void Message::parse_buffer(const std::string &buffer, Message& msg)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tebandam <tebandam@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gmersch <gmersch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:58:16 by teddybandam       #+#    #+#             */
-/*   Updated: 2025/02/13 17:13:09 by tebandam         ###   ########.fr       */
+/*   Updated: 2025/02/15 08:37:26 by gmersch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "Message.hpp"
 #include <iostream>
 #include <map>
-#include <string>
 #include <vector>
 #include <poll.h>
 #include <netinet/in.h>
@@ -29,7 +28,6 @@
 #include <algorithm>
 #include <sys/socket.h>
 #include <fcntl.h>
-#include <cctype>
 #include <cstring> 
 
 #define CLIENT(nick, user)							(nick + "!" + user + "@localhost")

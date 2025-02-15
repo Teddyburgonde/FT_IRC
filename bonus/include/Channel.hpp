@@ -71,6 +71,4 @@ class Channel
 		void	setTopic(const std::string&);
 };
 
-
-
 #endif

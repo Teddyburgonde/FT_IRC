@@ -69,9 +69,6 @@ class Channel
 
 		std::string getTopic() const;
 		void	setTopic(const std::string&);
-		
 };
-
-
 
 #endif
